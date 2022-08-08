@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "E:\\wangzhilin"
+		},
+		{
+			"path": "E:\\ProgramData\\jupyter_notebooks\\wzl"
+		},
+		{
+			"path": "\\\\tsclient\\QuantumGalaxy"
+		}
+	],
+	"settings": {
+		"jupyter.jupyterServerType": "local"
+	}
+}
