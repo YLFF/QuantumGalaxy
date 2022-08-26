@@ -46,8 +46,9 @@ def get_query_list(mysql):
     return(result)
 
 
-def ths_query(result,day):
-    THS_iFinDLogin('lzxh0011','450503')
+def ths_query(result,end,start=None):
+    if not start:
+        start=end
 
     edb_list=[]
     for row in result:
@@ -57,15 +58,16 @@ def ths_query(result,day):
         edb_str+=s+';'
     edb_str=edb_str[:-1]
     
-    data=THS_EDB(edb_str,'',day,day)
-    #data=THS_EDB(edb_str,'','2022-06-01','2022-07-26')
-    THS_iFinDLogout()
+    data=THS_EDB(edb_str,'',start,end)
+    #data=THS_EDB(edb_str,'','2022-06-01','2022-08-12')
+    
     return data
 
 
 
 
 def job():
+    THS_iFinDLogin('lzxh0011','450503')
     time.sleep(5)
     logger=get_logger()
     host='localhost'
@@ -73,11 +75,14 @@ def job():
     password='QuantumGalaxy'
     database='qgdbs'
     mysql=MYSQL(host,user,password,database)
-    day=date.today()-timedelta(1)
-    day=day.strftime('%Y-%m-%d')
+    end=date.today()-timedelta(1)
+    start=end-timedelta(1)
+    start=start.strftime('%Y-%m-%d')
+    end=end.strftime('%Y-%m-%d')
     r0=get_query_list(mysql)
-    r=ths_query(r0,day)
+    r=ths_query(r0,end,start)
     assert r.errorcode==0
+    THS_iFinDLogout()
     r=r.data #r->edb_data
     if r.shape==(0,0):
         logger.info('no n_data for day:%s'%day)

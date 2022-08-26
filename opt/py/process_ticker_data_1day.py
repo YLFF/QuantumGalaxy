@@ -30,7 +30,7 @@ def query_code(mysql,today):
     #return result
     for t in group:
         #print(t)
-        if t[1].shape[0]>90:
+        if t[1].shape[0]>30:
             t[1]['date']=pd.to_datetime(t[1]['date'])
             df=t[1].set_index('date')
             df1=pd.DataFrame(data={df.iloc[1]['code']:df['close']},index=df.index)
