@@ -77,7 +77,7 @@
 	  });
 	  
 	  graph.nodes.forEach(function (node) {
-		node.category=node.labels
+		node.category=node.labels[0]
 		node.value=node.stock
 		if(node.name in parents){
 			node.itemStyle = {
@@ -136,14 +136,14 @@
 			enterable: true,
 			position: [20, 10],
 		},
-		//legend: [
-		//  {
-		//	// selectedMode: 'single',
-		//	data: graph.categories.map(function (a) {
-		//	  return a.name;
-		//	})
-		//}
-		//],
+		legend: [
+		  {
+			selectedMode: 'single',
+			data: graph.categories.map(function (a) {
+			  return a.name;
+			})
+		}
+		],
 		animationDuration: 1500,
 		animationEasingUpdate: 'quinticInOut',
 		series: [
@@ -156,7 +156,7 @@
 			autoCurveness: true,
 			data: graph.nodes,
 			links: graph.links,
-			//categories: graph.categories,
+			categories: graph.categories,
 			roam: true,
 			label: {
 			  position: 'right'
@@ -174,9 +174,9 @@
 				}
 			},
 			force: {
-			  repulsion: 500,
+			  repulsion: 0,
 			  edgeLength: [15, 110],
-			  gravity: 0.04,
+			  gravity: 0.01,
 
 			}
 		  }
