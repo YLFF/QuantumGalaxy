@@ -61,10 +61,10 @@
 		//if (node.name == "三峡能源"){
 		//	console.log(123)
 		//}
-		node.labels = {
-		  show: true, //node.symbolSize > 30
-		  position: node.symbolSize > 30?'inside':'right'
-		};
+		//node.labels = {
+		//  show: true, //node.symbolSize > 30
+		//  position: node.symbolSize > 30?'inside':'right'
+		//};
 		//if(node.isroot && node.category=="产品"){
 		//	node.itemStyle = {"borderColor":"red", "borderWidth":2}	
 		//}
@@ -77,6 +77,8 @@
 	  });
 	  
 	  graph.nodes.forEach(function (node) {
+		node.category=node.labels
+		node.value=node.stock
 		if(node.name in parents){
 			node.itemStyle = {
 				color:"rgba(255,255,255,0)",
@@ -120,6 +122,9 @@
 	  });
 
 	  graph_g = graph;
+
+
+	  //
 	  option = {
 		title: {
 		  text: '量子星河骨干研究Demo',
@@ -143,7 +148,7 @@
 		animationEasingUpdate: 'quinticInOut',
 		series: [
 		  {
-			name: '量子星河知识核心Demo',
+			name: '量子星河骨干Demo',
 			type: 'graph',
 			layout: 'force', 
 			legendHoverLink: false,
@@ -172,10 +177,14 @@
 			  repulsion: 500,
 			  edgeLength: [15, 110],
 			  gravity: 0.04,
+
 			}
 		  }
 		]
 	  };
+
+
+	  //
 	  myChart.setOption(option);
 	  myChart.dispatchAction({
 		type: 'legendUnSelect',
@@ -190,7 +199,7 @@
 	function march() {
 		offset = offset==0? 15: offset-1;
 	    myChart.setOption({series:{
-			name: '量子星河知识核心Demo',
+			name: '量子星河骨干Demo',
 			lineStyle:{
 				dashOffset: offset,
 			},
