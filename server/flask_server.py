@@ -387,8 +387,8 @@ def receive_message():
     except:
         sender=req['event']['sender']['sender_id']['open_id']
         content=req['event']['message']['content']
-        print(content)
-        res_content=assistant(content)
+        #print(content)
+        res_content=assistant(content,sender)
         print(res_content)
         
         feishu.send_msg(res_content,sender)

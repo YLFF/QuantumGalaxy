@@ -170,7 +170,7 @@ def metajob(region,today=None):
         if region=='US':
             today=date.today()-timedelta(1)
         else:
-            today=date.today()-timedelta()
+            today=date.today()-timedelta(0)
         
     test_sql='select * from ticker_data where date = "%s" limit 5'%today.__format__("%Y-%m-%d")
     result=mysql.read_query(test_sql)
