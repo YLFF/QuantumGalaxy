@@ -1,6 +1,8 @@
+#from crypt import methods
 import sys
 import logging
 from apps import assistant
+
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 from QGI.mysql import MYSQL
 from datetime import date
@@ -280,14 +282,17 @@ from jira import JIRA
 jira = JIRA('https://research.quantumgalaxy.cn/',
             basic_auth=('bot2', "jira_bot2"))
 logger = get_logger()
-from flask import request, render_template, redirect, abort
+from flask import request, render_template, redirect, abort, url_for,session
 import json
 from flask import Flask
+from datetime import datetime, timedelta
 
-ALLOWED_IPS = ['82.156.232', '127.0.0', '172.21.0', '123.58.10']
+ALLOWED_IPS = ['82.156', '127.0.0', '172.21.0', '123.58.10','36.112.76','221.216.208.84']
 app = Flask(__name__)
-
-
+app.config["JSON_AS_ASCII"] = False
+app.config["SECRET_KEY"] = "core-quantumgalaxy"
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=1)
+'''
 @app.before_request
 def limit_remote_addr():
 
@@ -301,11 +306,42 @@ def limit_remote_addr():
             break
     if not valid:
         abort(403)
+'''
+
+from feishu_auth.auth import fetch_auth_page
+
+
+@app.route('/login')
+def feishu_login():
+
+
+        url=fetch_auth_page()
+
+        return redirect(url)
+@app.route('/feishu_login')
+def auth():
+    print(request.args)
+    state=request.args.get('state',None)
+    print(state)
+    if state=='0':
+        session['login_status']=True
+        return redirect('/head')
+    else:
+        return redirect('/login')
+@app.route('/login_state')
+def check_login_state():
+    s=session.get('login_status')
+    if not s:
+        s='no'
+    else:
+        s='yes'
+    return s
+
 
 
 @app.route("/head")
 def hello_world():
-    return "<p>Hello, This is QG's jira2mysql assistant!</p>"
+    return "<p>Hello, This is QG's vaisual terminal!</p>"
 
 
 @app.route('/add_indicator', methods=['GET', 'POST'])
@@ -394,4 +430,57 @@ def receive_message():
         feishu.send_msg(res_content,sender)
     return json.dumps({'code': 200}, ensure_ascii=False)
 
-app.run(host='0.0.0.0', port=81)
+
+@app.route('/backbone',methods=['GET'])
+    
+def return_test_backbone():
+    return render_template('backbone.html')
+
+
+
+
+
+from ev_band.ev_band_app import ev_band_check,data_process
+@app.route('/ev_band/',methods=['GET'])
+def ev_band_fp():
+    if session.get('login_status'):
+        return(return_ev_band('688063.SH'))
+    else:
+        return redirect('/login')
+
+
+@app.route('/ev_band/example',methods=['GET'])
+def example():
+    if session.get('login_status'):
+        f=open(r'E:\wangzhilin\QuantumGalaxy\server\static\ev_band\example-li.o.json','r')
+        j=json.loads(f.read())
+        summary='理想汽车   LI.O'
+        return render_template('ev_band-example-li.o.html',summary=summary,json=json.dumps(j))
+    else:
+        return redirect('/login')
+
+
+
+@app.route('/ev_band/<code>',methods=['GET'])
+def return_ev_band(code):
+    if session.get('login_status'):
+        code=ev_band_check(code)
+        j,summary=data_process(code)
+        if not code or not j:
+            return render_template('ev_band1.html')
+            
+        else:
+            #html_editor(code)
+            
+            #f= open(r'E:\wangzhilin\QuantumGalaxy\server\static\ev_band\688063.SH1.json', 'r')
+            #content = f.read()
+            a = json.loads(j)
+            dataset=[a,]
+            #print(j)
+            #print(dataset)
+            return render_template('ev_band.html',summary=summary,json=json.dumps(dataset))
+    else:
+        return redirect('/login')
+
+
+app.run(host='0.0.0.0', port=82)

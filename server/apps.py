@@ -1,6 +1,7 @@
 # %%
 import re
 import sys
+from flask import render_template
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 from QGI.feishu import FeishuAPI
 feishu=FeishuAPI()
@@ -14,7 +15,6 @@ def assistant(content,sender):
         msg='无法从消息中解析到有效代码，请检查'
     return msg
 
-    
 
 
 

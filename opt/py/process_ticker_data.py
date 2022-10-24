@@ -7,7 +7,7 @@ from QGI.mysql import MYSQL
 from datetime import date
 import pandas as pd
 import numpy as np
-
+from datetime import datetime,timedelta
 
 def query_code(mysql,today):
     '''return a list of df for every ticker in spcific region, df[code,close] [today-370,today]'''
@@ -160,7 +160,7 @@ logger=get_logger()
 
 def metajob(region,today=None):
     logger.info('begin job for %s'%region)
-    THS_iFinDLogin('lzxh0011','450503')
+    #THS_iFinDLogin('lzxh0011','450503')
     host='localhost'
     user='Local_Editor'
     password='QuantumGalaxy'

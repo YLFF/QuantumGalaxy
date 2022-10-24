@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <!-- 引入 ECharts 文件 -->
+  
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+  </script>
+ </head>
+ <body>
+
+    
+  <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+  <div id="main" style="width: 100%;height:600px;">
+  </div>
+  <script type="text/javascript">
+   var code='{{code}}'
+   var url = "/static/ev_band/"+code+".json"
+            var request = new XMLHttpRequest();
+            request.open("get", url);/*设置请求方法与路径*/
+            request.send(null);/*不发送数据到服务器*/
+            request.onload = function () {/*XHR对象获取到返回信息后执行*/
+                if (request.status == 200) {/*返回状态为200，即为数据获取成功*/
+                    //var json = JSON.parse(request.responseText);
+                    var json=request.responseText
+                    
+                    //console.log(json);
+                }}
+
+   var stockname = "测试股票";
+
+        var stockcode = code;  
+        var evdata = [
+            [
+                "2021-02-15",
+                1092.55,
+                1092.55,
+                1036.19,
+                1067.07,
+                "1252527",
+                -1
+            ],
+            [
+                "2021-02-25",
+                1019.75,
+                1076.19,
+                1019.75,
+                1026.67,
+                "1135423",
+                1
+            ],
+            [
+                "2021-03-07",
+                1046.77,
+                1123.77,
+                1008.86,
+                1066.35,
+                "1259530",
+                1
+            ],
+            [
+                "2021-03-17",
+                1034,
+                1109.36,
+                1014.88,
+                1014.88,
+                "1431885",
+                -1
+            ],
+            [
+                "2021-03-27",
+                1000.09,
+                1085.66,
+                1000.09,
+                1038.52,
+                "1235865",
+                1
+            ],
+            [
+                "2021-04-06",
+                1070.49,
+                1081.84,
+                1039.55,
+                1039.93,
+                "1596224",
+                -1
+            ],
+            [
+                "2021-04-16",
+                1061.36,
+                997.9,
+                1006.19,
+                1006.19,
+                "1353002",
+                -1
+            ],
+            [
+                "2021-04-26",
+                1046.1,
+                1061.63,
+                1004.25,
+                1044.87,
+                "1362042",
+                -1
+            ],
+            [
+                "2021-05-06",
+                1097.18,
+                1097.18,
+                1046.32,
+                1064.07,
+                "1604534",
+                -1
+            ],
+            [
+                "2021-05-16",
+                1032.01,
+                1102.49,
+                1015.42,
+                1043.2,
+                "1449460",
+                1
+            ]
+        ]
+        
+        var predicts = [["2021-03-01", 1000, 80],["2022-03-01", 1300, 150],["2023-03-01", 2000, 600]];
+        var predictLine = interpline(predicts);
+        console.log(predictLine)
+        function interp1(dateStr, pred=predicts){
+            if(dateStr < pred[0][0]){
+                return [dateStr, pred[0][1], pred[0][2]];
+            }
+            var i = 0;
+            for(;i<pred.length-1;i++){
+                if(dateStr > pred[i+1][0]){
+                    continue;
+                }
+                var dateX = new Date(dateStr);
+                var dateX0 = new Date(pred[i][0]);
+                var dateX1 = new Date(pred[i+1][0]);
+                var Y0 = Math.log(pred[i][1]);
+                var Y1 = Math.log(pred[i+1][1]);
+                var Z0 = Math.log(pred[i][2]);
+                var Z1 = Math.log(pred[i+1][2]);
+
+                var Y = Y0 + (Y1-Y0) * (dateX-dateX0)/(dateX1-dateX0);
+                var Z = Z0 + (Z1-Z0) * (dateX-dateX0)/(dateX1-dateX0);
+                return [dateStr,  Math.exp(Y),  Math.exp(Z)];
+            }
+            return [dateStr, pred[i][1], pred[i][2]];
+
+        }
+
+        function interpline(pred, interval=10*24*60*60*1000){
+            dateFrame = [];
+            for(var d=pred[0][0]; d<pred[pred.length-1][0]; d=echarts.format.formatTime('yyyy-MM-dd', +new Date(d)+interval)){
+                dateFrame.push(d);
+            }
+            dateFrame.push(pred[pred.length-1][0]);
+
+            return dateFrame.map((d)=>{return interp1(d, pred)});
+        }
+
+        function calculateBottomLevel(pred){
+            var botlevel = pred.map(p=> {return [p[0], p[1]-2*p[2]]})
+            return botlevel;
+        }
+        function calculateLevel(pred,ratio=1){
+            var levelheight = pred.map(p=> {return [p[0], ratio*p[2]]})
+            return levelheight;
+        }
+
+        //获取数据
+        var color0 = "rgb(26,40,120)";
+        var color1 = "rgb(97,211,244)";
+        var color2 = "rgb(137,79,241)";
+  </script>
+  <script type="text/javascript">
+   // 基于准备好的dom，初始化echarts实例
+        
+        var myChart = echarts.init(document.getElementById('main'),null,{useCoarsePointer:true});
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '市值走廊预测图',
+                subtext: stockcode + " " + stockname,
+                left: "center",
+            },
+            tooltip: {
+                trigger: 'item',
+                showContent: false,
+                axisPointer: {
+                    type: 'cross'
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: false
+                    },
+                }
+            },
+            grid: [
+                {
+                    left: '10%',
+                    right: '10%',
+                    bottom: 100
+                }
+            ],
+            xAxis: [
+                {
+                    type: 'time',
+                    boundaryGap: false,
+                    // inverse: true,
+                    axisLine: {onZero: false},
+                    splitLine: {show: false},
+                        //splitNumber: 20,
+                    min: 'dataMin',
+                    max: 'dataMax'
+                }
+            ],
+            yAxis: [
+                {
+                    //type:"log",
+                    scale: true,
+                    splitArea: {
+                        show: false
+                    }
+                }
+            ],
+            dataZoom: [
+                {
+                    show: true,
+                    xAxisIndex: [0, 1],
+                    type: 'slider',
+                    bottom: 10,
+                    start: 0,
+                    end: 100
+                }
+            ],
+            series: [
+                {
+                    name: "历史市值",
+                    type: 'line',
+                    zlevel: 4,
+                    barMaxWidth:10,
+                    data: evdata,
+                    endLabel:{
+                        show:true,
+                        position: "right",
+                        formatter: function(params){
+                            var r = interp1(params.value[0], predicts);
+                            //console.log(Math.round((params.value[1]-r[1])/r[2]*100)/100);
+                            return "市值："+Math.round(params.value[1])+"\n"+Math.round((params.value[1]-r[1])/r[2]*100)/100;
+                        },
+                    }
+                },
+                {
+                    name: '预测中点',
+                    type: 'scatter',
+                    data: predicts.map((pl)=>{return [pl[0],pl[1]]}),
+                    zlevel: 2,
+                    symbolSize: 12,
+                    itemStyle:{color: color2},
+                    label:{
+                        show: true,
+                        position: "right",
+                        formatter: function(params){return Math.round(params.value[1])},
+                    },
+                },
+                {
+                    name: '预测下区间',
+                    type: 'scatter',
+                    data: predicts.map((pl)=>{return [pl[0],pl[1]-pl[2]]}),
+                    zlevel: 2,
+                    symbol: "triangle",
+                    symbolSize: 12,
+                    itemStyle:{color: color1},
+                    label:{
+                        show: true,
+                        position: "bottom",
+                        formatter: function(params){return Math.round(params.value[1])},
+                    },
+                },
+                {
+                    name: '预测上区间',
+                    type: 'scatter',
+                    data: predicts.map((pl)=>{return [pl[0],pl[1]+pl[2]]}),
+                    zlevel: 2,
+                    symbol: "triangle",
+                    symbolRotate: 180,
+                    symbolSize: 12,
+                    itemStyle:{color: color1},
+                    label:{
+                        show: true,
+                        position: "top",
+                        formatter: function(params){return Math.round(params.value[1])},
+                    },
+                },
+                {
+                    name: '预测底层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    data: calculateBottomLevel(predictLine),
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width:0
+                    },
+                    areaStyle:{color:color1}
+                },
+                {
+                    name: '预测下层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    data: calculateLevel(predictLine),
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width:0
+                    },
+                    areaStyle: {
+                        color: color1,
+                        opacity: 0.3,
+                    },
+                },
+                {
+                    name: '预测中下层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    data: calculateLevel(predictLine),
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        type: "dashed",
+                        color: color1,
+                    },
+                    areaStyle: {
+                        color: color1,
+                        opacity: 0.5,
+                    },
+                },,
+                {
+                    name: '预测中上层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    data: calculateLevel(predictLine),
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width:0
+                    },
+                    areaStyle: {
+                        color: color1,
+                        opacity: 0.7,
+                    },
+                },
+                {
+                    name: '预测上层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    data: calculateLevel(predictLine),
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width:0
+                    },
+                    areaStyle: {
+                        color: color1,
+                        opacity: 1,
+                    },
+                },
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+  </script>
+ </body>
+</html>

@@ -1,5 +1,5 @@
 import random
-import pylab
+#import pylab
 from matplotlib.pyplot import pause
 import networkx as nx
 import itertools
