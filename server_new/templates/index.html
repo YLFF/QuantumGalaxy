@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to QuantumGalaxy Visual Platform!</title>
+</head>
+<body>
+  
+
+  {% if name %}
+    <h1>Hello, {{ name }}!</h1>
+  {% else %}
+    <h1>Hello, Stranger!</h1>
+  {% endif %}
+  {% if avatar_url %}
+  
+
+  <img src={{ avatar_url }} alt={{ name }} /><br> 
+  {% endif %}
+
+
+
+  {% if name %}
+  <a href="{{url_for('backbone.return_test_backbone')}}">查看骨干网络</a>
+  <a href="{{url_for('ev_band.ev_band_fp')}}">查看市值走廊</a>
+  <a href="{{url_for('login.logout')}}">退出登录</a>
+  {% else %}
+  <a href="{{url_for('login.feishu_login')}}">用户登录</a>
+  {% endif %}
+</body>
+</html>

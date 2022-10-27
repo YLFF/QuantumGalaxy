@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <!-- 引入 ECharts 文件 -->
+  
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+  </script>
+ </head>
+ <body>
+    <button id="btn-flow" onclick="change()" style="position:fixed; z-index: 15;top:35px;left:5px">切换走廊</button>
+    
+  <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+  <div id="main" style="width: 100%;height:600px;">
+  </div>
+  <script type="text/javascript">
+   
+   var json={{json|tojson}}
+   dataset_p=eval("(" + json + ")")
+   
+   
+   var summary='{{summary}}'
+        
+       
+
+        //获取数据
+        var color0 = "rgb(26,40,120)";
+        var color1 = "rgb(97,211,244)";
+        var color2 = "rgb(137,79,241)";
+  </script>
+  <script type="text/javascript">
+   // 基于准备好的dom，初始化echarts实例
+        
+
+        var myChart = echarts.init(document.getElementById('main'),null,{useCoarsePointer:true});
+        console.log(dataset_p)
+        option = {
+            title: {
+                text: '市值走廊预测图',
+                subtext: summary,
+                left: "center",
+            },
+            
+            toolbox: {
+                feature: {
+                    dataZoom: {
+                        yAxisIndex: false
+                    },
+                }
+            },
+            grid: [
+                {
+                    left: '10%',
+                    right: '10%',
+                    bottom: 100
+                }
+            ],
+
+            legend: {
+    show:false,
+    left:'right',
+    top:30,
+    data: ['市值行情','预测底层','预测下层','预测中下层','预测中上层','预测上层']
+  },
+    tooltip: {
+        //formatter:'{a1},<br/> {b2},<br/>{c[1]},<br/>{c4},<br/>{c5},<br/>{c6},<br/>{c7}',
+    //show:false,
+        //formatter:function (param) {
+          //    param = param[0];
+            //  
+              //return [
+                //'Date: ' + param.data.date + '<hr size=1 style="margin: 3px 0">',
+                //'EV: ' + param.data.ev + '<br/>',
+                //'EV: ' + param.value[param.dimensionNames[param.encode.y[0]]] + '<br/>',
+                //'预测下边界: ' + param.data.level0 + '<br/>',
+                //'预测中下边界: ' + param.data.level1 + '<br/>',
+                //'预测中线: ' + param.data.level2 + '<br/>',
+                //'预测中上边界: ' + param.data.level3 + '<br/>',
+                //'预测上边界: ' + param.data.level4 + '<br/>',
+                //'Lowest: ' + param.data[2] + '<br/>',
+                //'Highest: ' + param.data[3] + '<br/>'
+              //].join('');
+            //},
+            showContent:false,
+    trigger: 'axis',
+    axisPointer: {
+
+      type: 'cross',
+      snap:true,
+      label: {
+        backgroundColor: '#6a7985',
+        precision:'auto',
+      }
+    }
+  },
+            dataset:dataset_p,
+            
+            
+            series:[
+            {       datasetIndex:0,
+                encode:{x:'date',y:'pred_point'},
+                    name: '预测中点',
+                    type: 'scatter',
+                    
+                    //zlevel: 2,
+                    symbolSize: 12,
+                    itemStyle:{color: color2},
+                    label:{
+                        show: true,
+                        position: "right",
+                        formatter: function(params){return params.value[params.dimensionNames[params.encode.y[0]]]},
+                    },
+                },
+                
+                {   
+                    datasetIndex:0,
+                encode:{x:'date',y:'down_pred_point'},
+                    name: '预测下区间',
+                    type: 'scatter',
+                    
+                    //zlevel: 2,
+                    symbol: "triangle",
+                    symbolSize: 12,
+                    itemStyle:{color: color1},
+                    label:{
+                        formatter: function(params){return params.value[params.dimensionNames[params.encode.y[0]]]},
+                        //precision:'2',
+                        show: true,
+                        position: "bottom",
+                        
+                    },
+                },
+                {   datasetIndex:0,
+                encode:{x:'date',y:'up_pred_point'},
+                    name: '预测上区间',
+                    type: 'scatter',
+                    
+                    //zlevel: 2,
+                    symbol: "triangle",
+                    symbolRotate: 180,
+                    symbolSize: 12,
+                    itemStyle:{color: color1},
+                    label:{
+                        //precision:'2',
+                        show: true,
+                        position: "top",
+                        formatter: function(params){return params.value[params.dimensionNames[params.value[1]]]},
+                    },
+                },
+                {datasetIndex:0,
+            name:"市值行情",
+            encode:{x:'date',y:'ev'},
+            type:'line',
+            symbol:'none',
+            connectNulls:true,
+            endlabel:{show:true,
+                        position: "right",
+                        formatter: '4'
+                    
+                    },
+                    
+
+        
+        },
+        {datasetIndex:0,
+                    name: '预测底层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    encode:{x:'date',y:'level0'},
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width:0
+                    },
+                    //areaStyle:{color:color1}
+                },
+                {datasetIndex:0,
+                    name: '预测下层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    encode:{x:'date',y:'level1'},
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width:0
+                    },
+                    areaStyle: {
+                        color: color1,
+                        opacity: 0.3,
+                    },
+                },
+                {datasetIndex:0,
+                    name: '预测中下层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    encode:{x:'date',y:'level2'},
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        type: "dashed",
+                        color: color1,
+                    },
+                    areaStyle: {
+                        color: color1,
+                        opacity: 0.6,
+                    },
+                },,
+                {datasetIndex:0,
+                    name: '预测中上层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    encode:{x:'date',y:'level3'},
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width:0
+                    },
+                    areaStyle: {
+                        color: color1,
+                        opacity: 0.6,
+                    },
+                },
+                {datasetIndex:0,
+                    name: '预测上层',
+                    type: 'line',
+                    stack: '预测堆叠',
+                    encode:{x:'date',y:'level4'},
+                    smooth: true,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                        width:0
+                    },
+                    areaStyle: {
+                        color: color1,
+                        opacity: 0.3,
+                    },
+                },
+                {       datasetIndex:0,
+                encode:{x:'date',y:'last_ev'},
+                    name: '最新行情',
+                    type: 'scatter',
+                    
+                    //zlevel: 2,
+                    symbolSize: 12,
+                    itemStyle:{color: color2},
+                    label:{
+                        show: true,
+                        position: "right",
+                        formatter: function(params){return params.value[params.dimensionNames[params.encode.y[0]]]},
+                        //formatter:'最新行情:'+Math.round('{c}',2)
+                    },
+                },
+    
+    
+    ],
+  
+  xAxis: 
+                {
+                    type: 'time',
+                    boundaryGap: false,
+                    // inverse: true,
+                    axisLine: {onZero: false},
+                    splitLine: {show: false},
+                        //splitNumber: 20,
+                    min: 'dataMin',
+                    max: 'dataMax',
+                    axisLabel:{
+                        show:true,
+                            }
+    
+                },
+                yAxis: [
+                {
+                    type:"value",
+                    scale: true,
+                    splitArea: {
+                        show: false
+                    }
+                }
+            ],
+            dataZoom: [
+                {   filterMode:'none',
+                    show: true,
+                    xAxisIndex: 0,
+                    type: 'slider',
+                    bottom: 10,
+
+                }
+            ],
+  
+};
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+
+
+
+        var pointer=0;
+        function change(){
+        console.log(pointer)
+        if (pointer==3){
+            myChart.setOption({
+
+series:[
+            {       datasetIndex:0,
+                
+                },
+                {   
+                    datasetIndex:0,
+                
+                },
+                {   datasetIndex:0,
+               
+                },
+                
+        {datasetIndex:0,
+                    
+                },
+                {datasetIndex:0,
+                    
+                },
+                {datasetIndex:0,
+                    
+                },
+                
+                {   datasetIndex:0,
+               
+            },
+            {   datasetIndex:0,
+               
+            },
+            {   datasetIndex:0,
+               
+            },
+            {   datasetIndex:0,
+               
+            },
+            ]
+
+            },{lazyUpdate: false});
+
+            pointer=0;
+
+
+        }
+        else {
+            pointer=pointer+1;
+            myChart.setOption({
+
+series:[
+            {       datasetIndex:pointer,
+                
+                },
+                {   
+                    datasetIndex:pointer,
+                
+                },
+                {   datasetIndex:pointer,
+               
+                },
+                {datasetIndex:pointer,
+            
+        
+        },
+        {datasetIndex:pointer,
+                    
+                },
+                {datasetIndex:pointer,
+                    
+                },
+                {datasetIndex:pointer,
+                    
+                },,
+                {datasetIndex:pointer,
+                   
+                },
+                {datasetIndex:pointer,
+                
+            },
+            {       datasetIndex:pointer,
+                
+            },
+
+            ]
+
+            },{lazyUpdate: false});
+
+            
+
+
+        }
+        
+    }
+  </script>
+ </body>
+</html>

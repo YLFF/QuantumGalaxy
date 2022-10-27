@@ -85,7 +85,7 @@ def job():
     THS_iFinDLogout()
     r=r.data #r->edb_data
     if r.shape==(0,0):
-        logger.info('no n_data for day:%s'%day)
+        logger.info('no n_data for day:%s'%start)
         return 'no data today'
     else:    
         logger.info('got  data shape: %s,%s'%r.shape)
