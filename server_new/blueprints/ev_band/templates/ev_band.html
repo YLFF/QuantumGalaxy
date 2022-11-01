@@ -8,17 +8,23 @@
   </script>
  </head>
  <body>
-    <!--button id="btn-flow" onclick="change()" style="position:fixed; z-index: 15;top:35px;left:5px">切换走廊</button>
+    <button id="btn-flow" onclick="change()" style="position:fixed; z-index: 15;top:35px;left:5px">切换走廊</button>
     
   <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
   <div id="main" style="width: 100%;height:600px;">
   </div>
   <script type="text/javascript">
-   
-   var json={{json|tojson}}
-   dataset_p=eval("(" + json + ")")
-   dataset_p=dataset_p[0]
-   
+   function toJson(str){
+ return JSON.parse(str);
+    }
+    var json=toJson({{json|tojson}})
+    var info=toJson({{info|tojson}})
+    console.log(info[0])
+   //var json={{json|tojson}}
+   //dataset_p=eval("(" + json + ")")
+   //dataset_p=dataset_p[0]
+   dataset_p=json
+   var num='{{num}}'
    var summary='{{summary}}'
         
        
@@ -31,13 +37,13 @@
   <script type="text/javascript">
    // 基于准备好的dom，初始化echarts实例
         
-
+        var pointer=0
         var myChart = echarts.init(document.getElementById('main'),null,{useCoarsePointer:true});
         console.log(dataset_p)
         option = {
             title: {
-                text: '市值走廊预测图',
-                subtext: summary,
+                text: summary+' 市值走廊',
+                subtext: info[pointer]['start_date']+' —— '+info[pointer]['target_date'] +'\n'+'P(xc='+info[pointer]['xc']+')='+info[pointer]['pc']+', P(xo='+info[pointer]['xo']+')='+info[pointer]['po'],
                 left: "center",
             },
             
@@ -150,6 +156,7 @@
             encode:{x:'date',y:'ev'},
             type:'line',
             symbol:'none',
+            //lineStyle:{color:'rgb(0,0,0,0)'},
             endlabel:{show:true,
                         position: "right",
                         formatter: '4'
@@ -298,46 +305,63 @@
 
         var pointer=0;
         function change(){
-        console.log(pointer)
-        if (pointer==0){
-            myChart.setOption({
 
+        if (num=1){}
+        else{
+        console.log(pointer)
+        if (pointer!=num-1){
+            myChart.setOption({
+                title: {
+                text: summary+' 市值走廊',
+                subtext: info[pointer+1]['start_date']+' —— '+info[pointer+1]['target_date'] +'\n'+'P(xc='+info[pointer+1]['xc']+')='+info[pointer+1]['pc']+', P(xo='+info[pointer+1]['xo']+')='+info[pointer+1]['po'],
+                left: "center",
+            },
 series:[
-            {       datasetIndex:1,
+            {       datasetIndex:pointer+1,
                 
                 },
                 {   
-                    datasetIndex:1,
+                    datasetIndex:pointer+1,
                 
                 },
-                {   datasetIndex:1,
+                {   datasetIndex:pointer+1,
                
                 },
                 
-        {datasetIndex:1,
+        {datasetIndex:pointer+1,
                     
                 },
-                {datasetIndex:1,
+                {datasetIndex:pointer+1,
                     
                 },
-                {datasetIndex:1,
+                {datasetIndex:pointer+1,
                     
                 },
                 
-                {   datasetIndex:1,
+                {   datasetIndex:pointer+1,
+               
+            },{   datasetIndex:pointer+1,
+               
+            },{   datasetIndex:pointer+1,
+               
+            },{   datasetIndex:pointer+1,
                
             },
             ]
 
-            },{lazyUpdate: true});
+            },{lazyUpdate: false});
 
-            pointer=1;
+            pointer=pointer+1;
 
 
         }
         else{
             myChart.setOption({
-
+                title: {
+                text: summary+' 市值走廊',
+                subtext: info[0]['start_date']+' —— '+info[0]['target_date'] +'\n'+'P(xc='+info[0]['xc']+')='+info[0]['pc']+', P(xo='+info[0]['xo']+')='+info[0]['po'],
+                left: "center",
+            },
 series:[
             {       datasetIndex:0,
                 
@@ -368,15 +392,18 @@ series:[
                 {datasetIndex:0,
                     
                 },
+                {   datasetIndex:pointer+1,
+               
+            },
 
             ]
 
-            },{lazyUpdate: true});
+            },{lazyUpdate: false});
 
             pointer=0;
 
 
-        }
+        }}
     }
   </script>
  </body>

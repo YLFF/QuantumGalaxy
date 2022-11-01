@@ -22,7 +22,7 @@ def feishu_login():
         return redirect(url)
 @login.route('/feishu_login')
 def auth():
-    print(request.args)
+    #print(request.args)
     state=request.args.get('state',None)
     #print(state)
     if state=='0':

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome to QuantumGalaxy Visual Platform!</title>
+    <title>QuantumGalaxy EV Band</title>
 </head>
 <body>
     <form action="" method='put'>
@@ -10,6 +10,12 @@
         
         <input type="submit" value="提交">
         </form>
-    
+        
+        {% for (code,summary) in info %}
+        
+        <a href="{{url_for('ev_band.return_ev_band',code=code)}}" target="_blank">{{summary}}</a><br>
+        {% endfor %}
+
+        
 </body>
 </html>

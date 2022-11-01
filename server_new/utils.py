@@ -1,7 +1,16 @@
 import re
 from jira import JIRA
 import logging
-def get_logger(name):
+import sys     
+sys.path.append('E:\wangzhilin\QuantumGalaxy')
+import re
+
+import numpy as np
+import pandas as pd
+from jira import JIRA
+from QGI.feishu import *
+from QGI.mysql import MYSQL
+def get_logger(name,chlevel=logging.ERROR):
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
     #fh = logging.FileHandler(
@@ -10,7 +19,7 @@ def get_logger(name):
     #    encoding='utf-8')
     #fh.setLevel(logging.INFO)
     ch = logging.StreamHandler()
-    ch.setLevel(logging.ERROR)
+    ch.setLevel(chlevel)
     formatter = logging.Formatter(
         fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
         datefmt='%m-%d %H:%M')
@@ -20,3 +29,11 @@ def get_logger(name):
     #logger.addHandler(fh)
     return logger
 
+def get_mysql(database='qgdbs'):
+
+    host='localhost'
+    user='Local_Editor'
+    password='QuantumGalaxy'
+    #database='qgdbs'
+    mysql=MYSQL(host,user,password,database)
+    return mysql

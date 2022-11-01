@@ -11,7 +11,7 @@ from blueprints.backbone import backbone
 from blueprints.login import login
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 import re
-
+from flask_apscheduler import APScheduler
 import numpy as np
 import pandas as pd
 from jira import JIRA
@@ -32,8 +32,10 @@ feishu=FeishuAPI()
 ALLOWED_IPS = ['82.156', '127.0.0', '172.21.0', '123.58.10','36.112.76','221.216.208.84','61.149.70']
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
+app.config['SCHEDULER_API_ENABLED'] = True
 app.config["SECRET_KEY"] = "core-quantumgalaxy"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=24)
+
 '''
 @app.before_request
 def limit_remote_addr():
@@ -89,5 +91,13 @@ def index():
     return render_template('index.html',name=name,avatar_url=avatar_url)
 
 
-app.config["EXPLAIN_TEMPLATE_LOADING"] = True
+#app.config["EXPLAIN_TEMPLATE_LOADING"] = True
+from aps import scheduler
+
+scheduler.init_app(app)
+
+scheduler.start()
+
+
+
 app.run(host='0.0.0.0', port=82)

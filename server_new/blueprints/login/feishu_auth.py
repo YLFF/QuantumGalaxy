@@ -52,5 +52,5 @@ def fetch_user_info(token):
     url='https://passport.feishu.cn/suite/passport/oauth/userinfo'
     headers={'Authorization':	'Bearer  %s'%token}
     r=base_fetch_func(url,headers,method='get')
-    print(r)
+    #print(r)
     return r
