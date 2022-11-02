@@ -20,7 +20,7 @@ def job1():
     print(now)
 
 
-@scheduler.task('cron',id='ev_band_routine',hour=0,minute=50,second=0)
+@scheduler.task('cron',id='ev_band_routine',hour=4,minute=4,second=0)
 def job0():
     ev_band_routine()
 

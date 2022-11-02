@@ -188,8 +188,33 @@
 		  textAlign: "right",
 		},
 		tooltip: {
+			trigger:'item',
+			position: function (pos, params, dom, rect, size) {
+    const tooltipWidth = window.getComputedStyle(dom).width.replace('px', '')
+    if (pos[0] < size.viewSize[0] / 2) {
+      return [pos[0], pos[1] - 20]
+    } else {
+      return [pos[0] - tooltipWidth, pos[1] - 20]
+    }
+  },
 			enterable: true,
-			formatter:'{b},{c}'
+			//formatter:'{b}',
+			formatter: function(params, ticket, callback) {
+                //str中的圆括号替换为尖括号
+				if (params.dataType=='edge'){
+					var str ='relationship:'+params.data.relationship+'<br>'+'供需差:'+params.data.velocity}
+				else {
+					//console.log(params.data.category.search('Company'))
+					if (params.data.category.search('Company')==0){
+					code=params.data['n.code']
+					
+                	var str =  '<a href="/ev_band/'+code+'" target="_blank">'+params.data.name+'  走廊</a>'}
+					else{str=params.data.name}
+
+				}
+			
+             return str;
+            },
 			//position: [20, 10],
 		},
 		legend: [

@@ -10,7 +10,9 @@ import json
 
 
 
-
+@ev_band.route('/',methods=['GET'])
+def redi_index():
+        return redirect(url_for('ev_band.ev_band_fp'))
 @ev_band.route('/index',methods=['GET'])
 def ev_band_fp():
         code=request.args.get('code',None)

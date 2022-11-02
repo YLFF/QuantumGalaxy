@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuantumGalaxy EV Band</title>
+</head>
+<body>
+    <form action="" method='put'>
+        骨干名称: <input type="text" name="name" <br>
+        
+        <input type="submit" value="提交">
+        </form>
+        
+        {% for name in names %}
+        
+        <a href="{{url_for('backbone.return_backbone',name=name)}}" target="_blank">{{name}}</a><br>
+        {% endfor %}
+
+        
+</body>
+</html>

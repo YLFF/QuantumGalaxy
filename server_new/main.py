@@ -79,9 +79,12 @@ app.register_blueprint(backbone)
 app.register_blueprint(ev_band)
 
 
-
-
-
+'''
+from flask import current_app
+@app.route('/favicon.ico')
+def get_fav():
+    print(__name__)
+    return current_app.send_static_file('favicon.ico')'''
 
 @app.route('/')
 def index():

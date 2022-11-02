@@ -1,7 +1,7 @@
 from datetime import datetime,timedelta
 import sys
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
-from QGI import mysql
+
 
 from QGI.mysql import MYSQL
 import numpy as np
@@ -197,8 +197,20 @@ class Code2JS():
             username='wangzhilin',
             password='wangzhilin')
         self.issue=jira.jql(f'project = POSITION AND cf[10201] ~  {self.code}')
-
+       
+        model=self.issue['issues'][0]['fields']['customfield_11206']
+        if model:
+            if model['id']=='10801':
+                m='x'
+            elif model['id']=='10800':
+                m='xn'
+            else:
+                m=None
+        else:
+            m=None
+        self.m=m
         key=self.issue['issues'][0]['key']
+
         self.code=self.issue['issues'][0]['fields']['customfield_10201']
         log=jira.get_issue_changelog(key)['histories']
         return log
@@ -291,21 +303,24 @@ class Code2JS():
                 h=[]
                 for r in res:
                     h.append(dict(zip(('start_date','target_date','pc','xc','xo','po'),r)))
-                print('get history results from mysql:%s'%self.server_mysql)
+                print('get history results from mysql:%s'%mysql)
+
                 #print(h)
                 return h
         except Exception as e:
             logger.error('had error where fetch history from mysql:%s'%e)
-            return False
+            return 0
     def work(self):
         try:
             results=self.history_from_mysql()
+
             if results:
-                
+
                 pass
             else:
                 history=self.split_ev_band(self.clean_data(self.find_issue()))
                 results=self.split_ev_band(history)
+                print('using jira api for history data')
             js=[]
             for r in results:
                 one=self.one_work(r)
@@ -320,11 +335,11 @@ class Code2JS():
         except Exception as e:
             logger.error(e)
             return (False,False)
-    def one_work(self,data):
-        mysql=self.mysql
+    def gen_dataset(self,data,model='xn'):
         code=self.code
-        
-        try:
+        mysql=self.mysql
+        if model=='xn' or model ==None:
+
             target_date=data['target_date']
             start_date=data['start_date']
 
@@ -439,7 +454,131 @@ class Code2JS():
                 row=r.to_list()
                 dataset['source'].append(row)
             #j=json.dumps(dataset)
+        
+        elif model=='x' :
+
+            target_date=data['target_date']
+            start_date=data['start_date']
+
+            xo,xc,po,pc=float(data['xo']),float(data['xc']),float(data['po']),float(data['pc'])
             
+            stock_start_date=start_date-timedelta(183)
+            stock_start_date=stock_start_date.strftime('%Y-%m-%d')
+
+            #print(xo,xc,po,pc,target_date,start_date)
+            ev_data=mysql.read_query('select date,close_price  from ticker_data where code="%s" and date<=now() and date>="%s"'%(code,stock_start_date))
+            ev_data=[ev for ev in ev_data]
+            stock_end_date=ev_data[-1][0]
+
+            import math
+
+
+            ppf = [-1.282, -0.842, -0.524, -0.253, 0, 0.253, 0.524, 0.842, 1.282]
+
+
+            s,mu=calcu_norm(xc,pc,xo,po,ppf)
+            #print(s,mu)
+            df=pd.DataFrame(data=ev_data,columns=['date','ev'])
+            df.set_index('date',inplace=True)
+            df=df.astype({'ev':'float64'})
+
+            stock_data=mysql.read_query(f'select date,close_price from ticker_data where code="{code}" and date<="{start_date}" order by date desc limit 60')
+            vol=mysql.read_query(f'select vol from processed_data where code="{code}" and date<="{start_date}" order by date desc limit 1')
+            vol=vol[0][0]
+
+            stock_data=[float(p) for (d,p) in stock_data]
+            stock_data=geo_mean(stock_data)
+            #print(stock_data)
+
+            factor=[(1-vol)**10,(1-vol)**5,1,(1+vol)**5,(1+vol)**10,]
+            start=np.outer(stock_data,factor)[0]
+            #print(start)
+            #n=mysql.read_query('select value from customized_data where code="C00002.QG" order by date desc limit 1')[0][0]
+            end=np.exp([mu-0.842*s,mu-0.5*s,mu,mu+0.5*s,mu+0.842*s])
+            
+            #print(start_date)
+            #start_date=datetime.strptime(start_date,'%Y-%m-%d')
+            #target_date=datetime.strptime(target_date,'%Y-%m-%d')
+            days=(target_date-start_date).days
+            interp_num=days-1
+            day_list=[start_date+timedelta(i) for i in range(days+1)]
+            day_list=[datetime.date(d) for d in day_list]
+            level0=log_inter1(interp_num,start[0],end[0])
+
+            level1=log_inter1(interp_num,start[1],end[1])
+
+            level2=log_inter1(interp_num,start[2],end[2])
+
+            level3=log_inter1(interp_num,start[3],end[3])
+
+            level4=log_inter1(interp_num,start[4],end[4])
+            level4=[level4[i]-level3[i] for i in range(len(level4))]
+            level3=[level3[i]-level2[i] for i in range(len(level4))]
+            level2=[level2[i]-level1[i] for i in range(len(level4))]
+            level1=[level1[i]-level0[i] for i in range(len(level4))]
+            level0=tuple(dict(zip(day_list,level0)).items())
+            level1=tuple(dict(zip(day_list,level1)).items())
+            level2=tuple(dict(zip(day_list,level2)).items())
+            level3=tuple(dict(zip(day_list,level3)).items())
+            level4=tuple(dict(zip(day_list,level4)).items())
+            down_pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1])
+            pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1]+level2[-1][1])
+            up_pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1]+level2[-1][1]+level3[-1][1])
+            down_pred_point=np.round(down_pred_point[1],2)
+            pred_point=np.round(pred_point[1],2)
+
+            up_pred_point=np.round(up_pred_point[1],2)
+            df['last_ev']=None
+            df.loc[df.index[-1],'last_ev']=df['ev'][-1]
+            #df['last_ev'][-1]=df['ev'][-1]
+            df1=pd.DataFrame(level0,columns=['date','level0'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df1=pd.DataFrame(level1,columns=['date','level1'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df1=pd.DataFrame(level2,columns=['date','level2'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df1=pd.DataFrame(level3,columns=['date','level3'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df1=pd.DataFrame(level4,columns=['date','level4'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df['down_pred_point']=None
+            df['pred_point']=None
+            df['up_pred_point']=None
+            down_pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1])
+            pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1]+level2[-1][1])
+            up_pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1]+level2[-1][1]+level3[-1][1])
+            down_pred_point=np.round(down_pred_point[1],2)
+            pred_point=np.round(pred_point[1],2)
+
+            up_pred_point=np.round(up_pred_point[1],2)
+            
+            df.index=df.index.astype('str',)
+            df=df.reset_index()
+            df.loc[df.shape[0]-1,'down_pred_point']=down_pred_point
+            df.loc[df.shape[0]-1,'up_pred_point']=up_pred_point
+            df.loc[df.shape[0]-1,'pred_point']=pred_point
+            df = df.astype(object).replace(np.nan, 'None')
+            dataset={}
+            dataset['source']=[df.columns.to_list()]
+            dataset['source']
+            for i,r in df.iterrows():
+
+                row=r.to_list()
+                dataset['source'].append(row)
+            #j=json.dumps(dataset)
+        return dataset
+    def one_work(self,data):
+        mysql=self.mysql
+        code=self.code
+        
+        try:
+            dataset=self.gen_dataset(data,self.m)
+            #print(dataset)
             return dataset
         except Exception as e:
 
@@ -448,6 +587,19 @@ class Code2JS():
             return False
     
 def fetch_all_position():
+    try:
+        host='localhost'
+        user='Local_Editor'
+        password='QuantumGalaxy'
+        mysql=MYSQL(host,user,password,'web_server')
+        issues=mysql.read_query('select name,code from ev_band_info where status=1')
+        r=[]
+        for issue in issues:
+            code=issue[1]
+            summary=issue[0]
+            r.append((code,summary))
+        return r
+    except:
         from atlassian import Jira
         #print(self.code)
         jira = Jira(
@@ -462,5 +614,6 @@ def fetch_all_position():
             code=issue['fields']['customfield_10201']
             summary=issue['fields']['summary']
             r.append((code,summary))
-        return r
+        print('get ev_band index from jira')
+    return r
         

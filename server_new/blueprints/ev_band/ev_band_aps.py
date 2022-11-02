@@ -25,10 +25,21 @@ def reset_mysql():
     for issue in issues:
         #print(issue)
         code=issue['fields']['customfield_10201']
+        model=issue['fields']['customfield_11206']
+        if model:
+            if model['id']=='10801':
+                m='x'
+            elif model['id']=='10800':
+                m='xn'
+            else:
+                m=None
+        else:
+            m=None
+        
         summary=issue['fields']['summary']
-        r.append((code,summary))
+        r.append((code,summary,m))
     mysql.write_query('update ev_band_info set status=0')
-    mysql.write_many_query(sql='insert into ev_band_info (code,name,status) values (%s,%s,1) ON DUPLICATE KEY UPDATE status=1',val=r)
+    mysql.write_many_query(sql='insert into ev_band_info (code,name,status,model) values (%s,%s,1,%s) ON DUPLICATE KEY UPDATE status=1',val=r)
 
 def fetch_data():
     mysql=get_mysql(database='web_server')
