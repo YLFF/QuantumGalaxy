@@ -21,9 +21,11 @@
 
 
   {% if name %}
-  <a href="{{url_for('backbone.return_test_backbone')}}">查看骨干网络</a>
+  <a href="{{url_for('backbone.backbone_fp')}}">查看骨干网络</a>
   <a href="{{url_for('ev_band.ev_band_fp')}}">查看市值走廊</a>
+  <a href="{{url_for('map.get_map')}}">map</a>
   <a href="{{url_for('login.logout')}}">退出登录</a>
+  
   {% else %}
   <a href="{{url_for('login.feishu_login')}}">用户登录</a>
   {% endif %}

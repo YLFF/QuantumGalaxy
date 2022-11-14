@@ -16,7 +16,7 @@
       <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
     <![endif]-->
-	<script src="static/full_data.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.0/dist/echarts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 
@@ -46,11 +46,11 @@
     </script>
 	<script type="text/javascript">
 	// 基于准备好的dom，初始化echarts实例
-	var graph_g={
-		categories: [],
-		links: [],
-		nodes: [],
-	}
+	function toJson(str){
+ return JSON.parse(str);
+    }
+    var graph=toJson({{json|tojson}})
+    var name=toJson({{name|tojson}})
 	var parents={};
 	
 	myChart.showLoading();
@@ -174,7 +174,7 @@
 		}
 	  });
 	  }
-	  graph_g = graph;
+	  
 	  console.log(graph)
 	  var animating=false;
 	  var dashing=false;
@@ -182,7 +182,7 @@
 	  //
 	  option = {
 		title: {
-		  text: '量子星河骨干研究Demo',
+		  text: '量子星河骨干研究'+name,
 		  subtext: '第0天',
 		  right: "2%",
 		  textAlign: "right",
@@ -351,12 +351,13 @@
 			console.log('第' +i +'帧的第'+offset+'offset')
 			//console.log(new_links)
 			new_links.forEach(function (link){
+					if (link.lineStyle){
 					if (link.lineStyle.type=='dashed'){
 						//link.velocity=offset*link.velocity
 						//link.value=2*link.value
 						link.lineStyle.dashOffset=link.lineStyle.dashOffset-offset*0.02
 						//console.log(link.lineStyle)
-					}
+					}}
 //
 				})
 			//console.log(new_links)

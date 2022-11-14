@@ -6,12 +6,12 @@ from .models import *
 from flask import render_template,redirect,abort,url_for,request
 import json 
 
-@backbone.route('/',methods=['GET'])
+@backbone.route('/example',methods=['GET'])
     
 def return_test_backbone():
-    return render_template('backbone.html')
+    return render_template('backbone1.html')
 
-
+@backbone.route('/')
 @backbone.route('/index')
 def backbone_fp():
         name=request.args.get('name',None)
@@ -25,4 +25,13 @@ def backbone_fp():
 
 @backbone.route('/<name>',methods=['GET'])
 def return_backbone(name):
-    return render_template('backbone.html')
+        try:
+                b=Backbone2JS(name)
+
+                b._get_backbone_from_neo()
+                js=b.gen_js()
+                name=json.dumps(name)
+                js=json.dumps(js)
+        except:
+                return('查询出错')
+        return render_template('backbone.html',json=js,name=name)

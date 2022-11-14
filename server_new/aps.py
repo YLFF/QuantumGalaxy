@@ -7,7 +7,7 @@ import datetime
 from flask import session
 from flask_apscheduler.auth import HTTPBasicAuth
 from blueprints.ev_band.ev_band_aps import ev_band_routine
-
+from blueprints.backbone.backbone_aps import reset_mysql
  
 # interval examples
 scheduler = APScheduler()
@@ -23,6 +23,12 @@ def job1():
 @scheduler.task('cron',id='ev_band_routine',hour=4,minute=4,second=0)
 def job0():
     ev_band_routine()
+
+
+@scheduler.task('cron',id='backbone_routine',hour=17,minute=17,second=0)
+def job1():
+    #reset_mysql()
+    pass
 
 
  

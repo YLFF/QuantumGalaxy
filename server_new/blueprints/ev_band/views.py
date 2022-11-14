@@ -1,6 +1,6 @@
 
 from . import ev_band
-from .models import ev_band_check,data_process,Code2JS,fetch_all_position
+from .models import ev_band_check,Code2JS,fetch_all_position
 
 
 
@@ -43,7 +43,7 @@ def return_ev_band(code):
         code=ev_band_check(code)
         worker=Code2JS(code)
         summary=worker.fetch_summary()
-        band_info,js=worker.work() 
+        band_info,js,model=worker.work() 
         #j -> list
         #j,summary=data_process(code)
         if  not js:
@@ -51,11 +51,16 @@ def return_ev_band(code):
             
         else:
             #html_editor(code)
+            if model=='xn':
+                    model='M=Xn+A模式'
+            else:
+                    model='M=X模式'
             num=len(js)
             #f= open(r'E:\wangzhilin\QuantumGalaxy\server\static\ev_band\688063.SH1.json', 'r')
             #content = f.read()
             js = json.dumps(js)
             band_info=json.dumps(band_info)
+            model=json.dumps(model)
             #print(j)
             #print(dataset)
-            return render_template('ev_band.html',summary=summary,json=js,num=num,info=band_info)
+            return render_template('ev_band.html',summary=summary,json=js,num=num,info=band_info,model=model)

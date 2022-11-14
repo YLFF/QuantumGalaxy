@@ -19,6 +19,7 @@
     }
     var json=toJson({{json|tojson}})
     var info=toJson({{info|tojson}})
+    var model=toJson({{model|tojson}})
     console.log(info[0])
    //var json={{json|tojson}}
    //dataset_p=eval("(" + json + ")")
@@ -43,12 +44,21 @@
         option = {
             title: {
                 text: summary+' 市值走廊',
-                subtext: info[pointer]['start_date']+' —— '+info[pointer]['target_date'] +'\n'+'P(xc='+info[pointer]['xc']+')='+info[pointer]['pc']+', P(xo='+info[pointer]['xo']+')='+info[pointer]['po'],
+                textStyle:{fontSize:22},
+                subtext:'第'+(pointer+1)+'个走廊'+ ' 起始日：'+info[pointer]['start_date']+'  '+'目标日：'+info[pointer]['target_date'] +'  '+'保守预测：X='+info[pointer]['xc']+'的概率为'+info[pointer]['pc']+', 乐观预测：X='+info[pointer]['xo']+'的概率为'+info[pointer]['po']+ '  计算模式：'+model,
                 left: "center",
+                subtextStyle:{fontSize:15,
+                    left:'right'
+                }
             },
             
             toolbox: {
                 feature: {
+                    saveAsImage:{type:'png',
+                name:summary+' 市值走廊'+(pointer+1),
+                show:true,},
+                
+
                     dataZoom: {
                         yAxisIndex: false
                     },
@@ -153,6 +163,8 @@
                 },
                 {datasetIndex:0,
             name:"市值行情",
+            connectNulls:true,
+            z:3,
             encode:{x:'date',y:'ev'},
             type:'line',
             symbol:'none',
@@ -200,18 +212,21 @@
                     type: 'line',
                     stack: '预测堆叠',
                     encode:{x:'date',y:'level2'},
-                    smooth: true,
-                    silent: true,
+                    //smooth: true,
+                    //silent: true,
                     symbol: "none",
+                    color:color1,
+                    z:1,
                     lineStyle: {
-                        type: "dashed",
-                        color: color1,
+                       type:[5,5],
+                        z:1,
+                        width:1
                     },
                     areaStyle: {
                         color: color1,
                         opacity: 0.6,
                     },
-                },,
+                },
                 {datasetIndex:0,
                     name: '预测中上层',
                     type: 'line',
@@ -250,6 +265,7 @@
                     type: 'scatter',
                     
                     //zlevel: 2,
+                    z:3,
                     symbolSize: 12,
                     itemStyle:{color: color2},
                     label:{
@@ -310,58 +326,70 @@
         else{
         console.log(pointer)
         if (pointer!=num-1){
+            pointer=pointer+1;
             myChart.setOption({
                 title: {
                 text: summary+' 市值走廊',
-                subtext: info[pointer+1]['start_date']+' —— '+info[pointer+1]['target_date'] +'\n'+'P(xc='+info[pointer+1]['xc']+')='+info[pointer+1]['pc']+', P(xo='+info[pointer+1]['xo']+')='+info[pointer+1]['po'],
+                subtext: '第'+(pointer+1)+'个走廊'+ ' 起始日：'+info[pointer]['start_date']+'  '+'目标日：'+info[pointer]['target_date'] +'  '+'保守预测：X='+info[pointer]['xc']+'的概率为'+info[pointer]['pc']+', 乐观预测：X='+info[pointer]['xo']+'的概率为'+info[pointer]['po']+ '  计算模式：'+model,
                 left: "center",
             },
-series:[
-            {       datasetIndex:pointer+1,
+            toolbox: {
+                feature: {
+                    saveAsImage:{type:'png',
+                name:summary+' 市值走廊'+(pointer+1),
+                show:true,}}},
+            series:[
+            {       datasetIndex:pointer,
                 
                 },
                 {   
-                    datasetIndex:pointer+1,
+                    datasetIndex:pointer,
                 
                 },
-                {   datasetIndex:pointer+1,
+                {   datasetIndex:pointer,
                
                 },
                 
-        {datasetIndex:pointer+1,
+        {datasetIndex:pointer,
                     
                 },
-                {datasetIndex:pointer+1,
+                {datasetIndex:pointer,
                     
                 },
-                {datasetIndex:pointer+1,
+                {datasetIndex:pointer,
                     
                 },
                 
-                {   datasetIndex:pointer+1,
+                {   datasetIndex:pointer,
                
-            },{   datasetIndex:pointer+1,
+            },{   datasetIndex:pointer,
                
-            },{   datasetIndex:pointer+1,
+            },{   datasetIndex:pointer,
                
-            },{   datasetIndex:pointer+1,
+            },{   datasetIndex:pointer,
                
             },
             ]
 
             },{lazyUpdate: false});
 
-            pointer=pointer+1;
+            
 
 
         }
         else{
+            pointer=0
             myChart.setOption({
+
                 title: {
                 text: summary+' 市值走廊',
-                subtext: info[0]['start_date']+' —— '+info[0]['target_date'] +'\n'+'P(xc='+info[0]['xc']+')='+info[0]['pc']+', P(xo='+info[0]['xo']+')='+info[0]['po'],
-                left: "center",
+                subtext:  '第'+(pointer+1)+'个走廊'+ ' 起始日：'+info[pointer]['start_date']+'  '+'目标日：'+info[pointer]['target_date'] +'  '+'保守预测：X='+info[pointer]['xc']+'的概率为'+info[pointer]['pc']+', 乐观预测：X='+info[pointer]['xo']+'的概率为'+info[pointer]['po']+ '  计算模式：'+model,
             },
+toolbox: {
+                feature: {
+                    saveAsImage:{type:'png',
+                name:summary+' 市值走廊'+(pointer+1),
+                show:true,}}},
 series:[
             {       datasetIndex:0,
                 
@@ -392,7 +420,7 @@ series:[
                 {datasetIndex:0,
                     
                 },
-                {   datasetIndex:pointer+1,
+                {   datasetIndex:0,
                
             },
 

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <!-- 引入 ECharts 文件 -->
+    <!-- 百度 -->
+    <script src="https://api.map.baidu.com/api?v=3.0&ak=87RFNlQuSwIQ2rHcsQoZfgi4vWLWUjKB"></script>
+    <!-- echarts -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <!-- 扩展地图插件 -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/extension/bmap.min.js"></script>
+
+  <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+ 
+<script type="module">      
+//var echarts = require('echarts');
+    // 请确保在引入百度地图扩展之前已经引入百度地图 JS API 脚本并成功加载
+    // https://api.map.baidu.com/api?v=3.0&ak=你申请的AK
+    //require('echarts/extension/bmap/bmap');</script>
+ </head>
+ <body>
+  <button id="btn-flow" onclick="play()" style="position:fixed; z-index: 15;top:5px;left:5px">播放/暂停</button>
+  <button id="btn-flow" onclick="lastyear()" style="position:fixed; z-index: 15;top:35px;left:5px">上一年</button>
+  <button id="btn-flow" onclick="nextyear()" style="position:fixed; z-index: 15;top:65px;left:5px">下一年</button>
+  <button id="btn-flow" onclick="firstyear()" style="position:fixed; z-index: 15;top:95px;left:5px">回首年</button>
+  <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+  <div id="main" style="width: 100%;height: 800px;;">
+  </div>
+
+
+<script type="text/javascript">
+
+
+      //console.log(echarts)
+//var echarts = require('echarts');
+// 请确保在引入百度地图扩展之前已经引入百度地图 JS API 脚本并成功加载
+// https://api.map.baidu.com/api?v=3.0&ak=你申请的AK
+
+
+var chartDom = document.getElementById('main');
+var myChart = echarts.init(chartDom);
+var option;
+
+function toJson(str){
+ return JSON.parse(str);
+    }
+  var dataset_p=toJson({{dataset_p|tojson}})
+  var name2pinyin=toJson({{name2pinyin|tojson}})
+  var image_dict=toJson({{image_dict|tojson}})
+
+
+
+var city_label=[]
+var pointer=0
+var start_year=dataset_p[0].source[0][5]
+year=start_year
+
+const convertData = function (data) {
+  var res = [];
+  for (var i = 0; i < data.length; i++) {
+    
+     
+      res.push({
+        name: data[i].name,
+        value: geoCoord.concat(data[i].value)
+      });
+    
+  }
+  return res;}
+function renderItem(params, api) {
+  var coords = [
+    [116.7, 39.53],
+    [103.73, 36.03],
+    [112.91, 27.87],
+    [120.65, 28.01],
+    [119.57, 39.95]
+  ];
+  var points = [];
+  for (var i = 0; i < coords.length; i++) {
+    points.push(api.coord(coords[i]));
+  }
+  var color = api.visual('color');
+  return {
+    type: 'polygon',
+    shape: {
+      points: echarts.graphic.clipPointsByRect(points, {
+        x: params.coordSys.x,
+        y: params.coordSys.y,
+        width: params.coordSys.width,
+        height: params.coordSys.height
+      })
+    },
+    style: api.style({
+      fill: color,
+      stroke: echarts.color.lift(color)
+    })
+  };
+}
+
+option = {
+  legend:{
+show:true,
+left:'right',
+top:45,
+z:3,
+zlevel:2,
+backgroundColor:'rgba(199, 237, 204,0.7)' 
+
+  },
+  animationDuration: animetime,
+    animationEasing : 'cubicIn',
+  dataset:dataset_p,
+  backgroundColor: 'transparent',
+  title: {
+    text: '地图编年史',
+    subtext: 'data in '+year+'\n本数据信息全部来自于人民网（http://cpc.people.com.cn/）',
+    subtextStyle:{fontSize:16},
+    //sublink: 'http://www.pm25.in',
+    left: 'center',
+    textStyle: {
+      color: '#fff',
+      fontSize:18
+    }
+  },
+  tooltip: {
+    trigger: 'item',
+    show:true,
+    
+    formatter:function(params, ticket, callback) {
+                //str中的圆括号替换为尖括号
+                //console.log(params)
+                //console.log(dataset_p[pointer])
+                city=params.data[3]
+                year=params.data[5]
+                dataset=dataset_p[pointer].source
+                 //str=params.data.value[4]+': '+params.data.value[3]+' '+params.data.value[2]+'<br>'
+                 str=city+'  '+year+'<br><br>'
+        		dataset.forEach(one => {
+                      
+                    if (one[3]==city){
+                      
+                        str+=one[2]+': '+' '+one[4]+'    '+'始于'+one[6]+'<br>'
+                        
+            }
+                    //str+='</br>'
+                }),
+                
+                
+                str+='<br>'
+			
+                return str
+            },
+        },
+  bmap: {
+    center: [104.114129, 37.550339],
+    zoom: 5,
+    roam: true,
+    mapStyle: {
+      styleJson: [
+        {
+          featureType: 'water',
+          elementType: 'all',
+          stylers: {
+            color: '#044161'
+          }
+        },
+        {
+          featureType: 'land',
+          elementType: 'all',
+          stylers: {
+            color: '#004981'
+          }
+        },
+        {
+          featureType: 'boundary',
+          elementType: 'geometry',
+          stylers: {
+            color: '#064f85'
+          }
+        },
+        {
+          featureType: 'railway',
+          elementType: 'all',
+          stylers: {
+            visibility: 'off'
+          }
+        },
+        {
+          featureType: 'highway',
+          elementType: 'geometry',
+          stylers: {
+            color: '#004981'
+          }
+        },
+        {
+          featureType: 'highway',
+          elementType: 'geometry.fill',
+          stylers: {
+            color: '#005b96',
+            lightness: 1
+          }
+        },
+        {
+          featureType: 'highway',
+          elementType: 'labels',
+          stylers: {
+            visibility: 'off'
+          }
+        },
+        {
+          featureType: 'arterial',
+          elementType: 'geometry',
+          stylers: {
+            color: '#004981'
+          }
+        },
+        {
+          featureType: 'arterial',
+          elementType: 'geometry.fill',
+          stylers: {
+            color: '#00508b'
+          }
+        },
+        {
+          featureType: 'poi',
+          elementType: 'all',
+          stylers: {
+            visibility: 'off'
+          }
+        },
+        {
+          featureType: 'green',
+          elementType: 'all',
+          stylers: {
+            color: '#056197',
+            visibility: 'off'
+          }
+        },
+        {
+          featureType: 'subway',
+          elementType: 'all',
+          stylers: {
+            visibility: 'off'
+          }
+        },
+        {
+          featureType: 'manmade',
+          elementType: 'all',
+          stylers: {
+            visibility: 'off'
+          }
+        },
+        {
+          featureType: 'local',
+          elementType: 'all',
+          stylers: {
+            visibility: 'off'
+          }
+        },
+        {
+          featureType: 'arterial',
+          elementType: 'labels',
+          stylers: {
+            visibility: 'off'
+          }
+        },
+        {
+          featureType: 'boundary',
+          elementType: 'geometry.fill',
+          stylers: {
+            color: '#029fd4'
+          }
+        },
+        {
+          featureType: 'building',
+          elementType: 'all',
+          stylers: {
+            color: '#1a5787'
+          }
+        },
+        {
+          featureType: 'label',
+          elementType: 'all',
+          stylers: {
+            visibility: 'off'
+          }
+        }
+      ]
+    }
+  },
+  
+  series: [
+    { 
+      
+      
+      universalTransition:{ enabled:true,
+        divideShape:'split'
+      
+      },
+      datasetIndex:pointer,
+      name: 'committee',
+      type: 'scatter',
+      coordinateSystem: 'bmap',
+      
+      encode: {
+        //value: 2,
+        person:2,
+        city:3,
+        story:4,
+        year:5
+      },
+      symbolSize: function (val) {
+        return 10;
+      },
+      label: {
+        backgroundColor: 'rgba(199, 237, 204,0.6)',
+          borderColor: '#555',
+          borderWidth: 1,
+          borderRadius: 5,
+          color: '#000',
+          fontSize: 14,
+          show:true,
+        formatter: function(params, ticket, callback){
+          city=params.data[3]
+          str='{head|}\n'
+          
+          dataset=dataset_p[pointer].source
+          if (1){
+             dataset.forEach(one =>{ 
+               if (one[3]==city){
+                  str+=' {'+ name2pinyin[one[2]]+'|} '
+                  
+               }
+             })
+             city_label.push(city)
+          }
+          str+='\n{tc|'+city+'}{titleBg|}'
+          return str
+          //这里的return能否后处理得到？还是从后端传另一个对象
+        },
+        rich:{   
+          head:{height:5},
+          tc: {
+            fontWeight:'bold',
+            padding:[1,0],
+            //fontSize:16,
+              align: 'center',
+              color: '#000'
+            },
+           titleBg: {
+        
+        borderWidth:1,
+        borderType:'solid',
+        
+        borderRadius: [10, 10, 0, 0],
+        padding: [0, 00, 0, 00],
+        
+        color: '#929'},
+          xijinping: {
+            backgroundColor: {
+                image: image_dict['习近平']
+            },
+            height: 80},
+
+            liqiang: {
+            backgroundColor: {
+                image: image_dict['李强']
+            },
+            height: 80},
+            zhaoleji: {
+            backgroundColor: {
+                image: image_dict['赵乐际']
+            },
+            height: 80},
+            wanghuning: {
+            backgroundColor: {
+                image: image_dict['王沪宁']
+            },
+            height: 80},
+            caiqi: {
+            backgroundColor: {
+                image: image_dict['蔡奇']
+            },
+            height: 80},
+            dingxuexiang: {
+            backgroundColor: {
+                image: image_dict['丁薛祥']
+            },
+            height: 80},
+            lixi: {
+            backgroundColor: {
+                image: image_dict['李希']
+            },
+            height: 80},},
+        position: 'top'
+      },
+      itemStyle: {
+        color: '#ddb926'
+      },
+      emphasis: {
+        focus:'self',
+        label: {
+          show: true
+        }
+      }
+    },
+    
+    ,
+  ],
+};
+
+myChart.setOption(option);
+
+var bmap=myChart.getModel().getComponent('bmap').getBMap()
+
+bmap.addControl(new BMap.ScaleControl());                    // 添加比例尺控件
+bmap.enableContinuousZoom();                              //启用地图惯性拖拽，默认禁用
+
+bmap.addControl(new BMap.MapTypeControl()); 
+var animetime=475
+function frame_one(){
+  option={
+    
+  dataset:dataset_p,
+  backgroundColor: 'transparent',
+  title: {
+    text: '地图编年史',
+    subtext: 'data in '+year+'\n本数据信息全部来自于人民网（http://cpc.people.com.cn/）',
+    //sublink: 'http://www.pm25.in',
+    left: 'center',
+    textStyle: {
+      color: '#fff'
+    }
+  },
+  
+  
+  series: [
+    { 
+      
+      
+      universalTransition:{ enabled:true,
+        divideShape:'split'
+      
+      },
+      datasetIndex:pointer,
+      name: 'committee',
+      type: 'scatter',
+      coordinateSystem: 'bmap',
+      
+      encode: {
+        //value: 2,
+        person:2,
+        city:3,
+        story:4,
+        year:5,
+
+      },
+      symbolSize: function (val) {
+        return 10;
+      },
+      label: {
+          show:true,
+        formatter: function(params, ticket, callback){
+          city=params.data[3]
+          thisname=params.data[2]
+          str='{head|}\n'
+          dataset=dataset_p[pointer].source
+          str+=' {'+ name2pinyin[thisname]+'|} '
+          
+          str+='\n{tc|'+''+'}{titleBg|}'
+          return str
+          //这里的return能否后处理得到？还是从后端传另一个对象
+        },
+        
+        position: 'top'
+      },
+      itemStyle: {
+        color: '#ddb926'
+      },
+      
+    },
+    
+    ,
+  ],
+};
+return option
+}
+function frame_two(){
+  option={series:[{label:{
+    
+    formatter:function(params, ticket, callback){
+          city=params.data[3]
+          str='{head|}\n'
+          
+          dataset=dataset_p[pointer].source
+          if (1){
+             dataset.forEach(one =>{ 
+               if (one[3]==city){
+                  str+=' {'+ name2pinyin[one[2]]+'|} '
+                  
+               }
+             })
+             city_label.push(city)
+          }
+          str+='\n{tc|'+city+'}{titleBg|}'
+          return str
+          //这里的return能否后处理得到？还是从后端传另一个对象
+        },}}]}
+        return option
+}
+function lastyear(){
+if (pointer>0){
+  pointer-=1
+  year=start_year+pointer
+    
+    option=frame_one()
+    myChart.setOption(option)
+    setTimeout(() => {
+      option=frame_two()
+    myChart.setOption(option)
+}, animetime);
+}
+  else{
+    pointer=dataset_p.length-1
+    year=start_year+pointer
+    option=frame_one()
+    myChart.setOption(option)
+    setTimeout(() => {
+      option=frame_two()
+    myChart.setOption(option)
+}, animetime);
+  }
+}
+function nextyear(){
+  if (pointer+1<dataset_p.length){
+    pointer++
+    year=start_year+pointer
+    
+    option=frame_one()
+    myChart.setOption(option)
+    setTimeout(() => {
+      option=frame_two()
+    myChart.setOption(option)
+}, animetime);
+    
+    
+  }
+  else {
+    pointer=0
+    year=start_year
+    option=frame_one()
+    myChart.setOption(option)
+    setTimeout(() => {
+      option=frame_two()
+    myChart.setOption(option)
+}, animetime);
+  }
+}
+function firstyear(){
+
+    
+    
+  
+
+    pointer=0
+    year=start_year
+    option=frame_one()
+    myChart.setOption(option)
+    setTimeout(() => {
+      option=frame_two()
+    myChart.setOption(option)
+}, animetime);
+  
+}
+var playing=false
+function play(){
+if (playing){
+  playing=false
+  clearInterval(interval)
+}
+else{
+  playing=true
+  var interval=setInterval(()=>{
+    if(playing){nextyear()}
+    else{clearInterval(interval)}
+
+  }, 1000);}
+  
+}
+
+  </script>
+ </body>
+</html>

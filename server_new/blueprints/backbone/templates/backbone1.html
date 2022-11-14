@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>量子星河骨干展示Demo</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+	<link rel="icon" href="/favicon.ico">
+    <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
+    <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+	<script src="static/full_data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.0/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
+  </head>
+  
+  <body style="background: linear-gradient(rgba(255,255,255,0.94),rgba(255,255,255,0.94));background-size:450px;">
+	<button id="btn-flow" onclick="play_days_animate()" style="position:fixed;top: 5px;left: 5px;;z-index: 15;">日期动画</button>
+	<button id="btn-flow" onclick="dashoffset()" style="position:fixed; z-index: 15;top:35px;left:5px">流动动画</button>
+    <div id="main" style="width: 100%;height:1000px; z-index:5"></div>
+	
+
+	
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+		var chartDom = document.getElementById('main');
+		var myChart = echarts.init(chartDom);
+		var option;
+			
+        // 指定图表的配置项和数据
+		
+        var option = {
+			
+		};
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+	<script type="text/javascript">
+	// 基于准备好的dom，初始化echarts实例
+	var graph_g={
+		categories: [],
+		links: [],
+		nodes: [],
+	}
+	var parents={};
+	
+	myChart.showLoading();
+	  console.log('logging')
+	  myChart.hideLoading();
+	  //graph = data;
+
+	  //对图中每帧数据都进行预处理，开启动画后替换nodes和links的第n帧
+	  for (var i=0; i<graph.nodes.length;i++)
+	  {	
+	  graph.nodes[i].forEach(function (node) {
+	    //node.symbolSize = node.category=="产品"?35:14
+		//if (node.name == "三峡能源"){
+		//	console.log(123)
+		//}
+		//node.labels = {
+		//  show: true, //node.symbolSize > 30
+		//  position: node.symbolSize > 30?'inside':'right'
+		//};
+		//if(node.isroot && node.category=="产品"){
+		//	node.itemStyle = {"borderColor":"red", "borderWidth":2}	
+		//}
+		//if(node.parents){
+		//	node.parents.forEach(function (parent) {
+		//		graph.links.push({"name":node.name+"_继承_"+parent,"source":node.name,"target":parent,"category":"继承"});
+		//		parents[parent]=node.symbolSize+5;
+		//	});			
+		//}
+	  });
+	  
+	  graph.nodes[i].forEach(function (node) {
+		node.category=node.labels[0]
+		node.value=node.stock
+		node.itemStyle={color:node.color}
+		//node.itemStyle={color:"rgb(122,122,122)"}
+		if(node.category=='Product'){
+			node.symbolSize=30,
+			node.itemStyle={color:'rgb(87,199,227)',
+			
+		}
+		}else if(node.category=='Indicator'){
+			node.itemStyle={color:'rgb(217,200,174)'}
+		}else if(node.category=='Technique'){
+			node.itemStyle={color:'rgb(217,217,217)'}
+		}else if(node.category=='Company'){
+			node.itemStyle={color:'rgb(217,200,174)'}
+		}
+		//node.fixed=true
+		//if(node.name in parents){
+		//	node.itemStyle = {
+		//		color:"rgba(255,255,255,0)",
+		//		borderColor:'#000',
+		//		borderType:'dashed',
+		//	};
+		//	node.labels = {
+		//		show: true,
+		//		color:"#7294B5",
+		  //		position: node.symbolSize > 30?'inside':'right',
+			//	fontSize: 15,
+			//	textBorderColor: "#fff",
+			//	textBorderWidth: 2,
+			//};
+			//node.symbolSize = parents[node.name];
+		//}
+	  });
+	  
+	  
+	  
+	  graph.links[i].forEach(function (link) {
+		link.value = link.velocity
+		//link.label=link.relationship
+	    if(link.relationship=="compose"){
+		  link.show=true
+		  link.lineStyle = {
+			  color:'rgb(132,132,132)',
+			  width: 3,
+			  type: 'solid',
+			  curveness:0
+			}
+		}else if(link.relationship=="peer"){
+	      //link.value = 25
+		  link.show = true
+		  link.symbol=["", ""]	
+		  link.ignoreForceLayout=false
+		}else if(link.relationship=="carry"){
+	      //link.value = 25
+		  link.show = true
+		  link.symbol=["", ""]	
+		  link.ignoreForceLayout=false
+		  link.lineStyle={
+			  color:'rgb(217,140,0)',
+			  type: 'solid',
+		  }
+		}else if(link.relationship=="produce"){
+	      	      //link.value = 25
+		  link.show = true
+		  link.symbol=["", ""]	
+		  link.ignoreForceLayout=false
+		  link.lineStyle = {
+			  color:link.color,type:'dashed',
+			  dashOffset:0,
+			width:3}
+		}else if(link.relationship=="measure"){
+	      	      //link.value = 25
+		  link.show = true
+		  link.symbol=["", ""]	
+		  link.ignoreForceLayout=false
+		  link.lineStyle = {
+			  color:link.color,
+			  type:'dashed',
+			  dashOffset:0,
+			  width:3}
+		}else if (link.relationship=='parent'){
+	      	      //link.value = 25
+		  link.show = true
+		  link.symbol=["", ""]	
+		  link.ignoreForceLayout=false
+		  link.lineStyle={
+			  color:'rgb(201,144,192)'
+		  }
+		}
+	  });
+	  }
+	  graph_g = graph;
+	  console.log(graph)
+	  var animating=false;
+	  var dashing=false;
+	  //console.log(animating)
+	  //
+	  option = {
+		title: {
+		  text: '量子星河骨干研究Demo',
+		  subtext: '第0天',
+		  right: "2%",
+		  textAlign: "right",
+		},
+		tooltip: {
+			trigger:'item',
+			position: function (pos, params, dom, rect, size) {
+    const tooltipWidth = window.getComputedStyle(dom).width.replace('px', '')
+    if (pos[0] < size.viewSize[0] / 2) {
+      return [pos[0], pos[1] - 20]
+    } else {
+      return [pos[0] - tooltipWidth, pos[1] - 20]
+    }
+  },
+			enterable: true,
+			//formatter:'{b}',
+			formatter: function(params, ticket, callback) {
+                //str中的圆括号替换为尖括号
+				if (params.dataType=='edge'){
+					var str ='relationship:'+params.data.relationship+'<br>'+'供需差:'+params.data.velocity}
+				else {
+					//console.log(params.data.category.search('Company'))
+					if (params.data.category.search('Company')==0){
+					code=params.data['n.code']
+					
+                	var str =  '<a href="/ev_band/'+code+'" target="_blank">'+params.data.name+'  走廊</a>'}
+					else{str=params.data.name}
+
+				}
+			
+             return str;
+            },
+			//position: [20, 10],
+		},
+		legend: [
+		  {
+			//selectedMode: 'single',
+			data: [{
+    name: 'Product',
+
+    itemStyle: {
+        color: 'rgb(87,199,227)'
+    }
+},{name: 'Technique',
+    
+    itemStyle: {
+        color: 'rgb(217,217,217)'
+    }},{name: 'Indicator',
+    
+    itemStyle: {
+        color: 'rgb(217,200,174)'
+    }},{name: 'Company',
+    
+    itemStyle: {
+        color: 'rgb(217,200,174)'
+    }}],
+				
+		}
+		],
+		//animationDuration: 1500,
+		//animationDelay:2000,
+		//animationEasingUpdate: 'quinticInOut',
+		
+		series: [
+		  {
+			name: '测试数据集',
+			type: 'graph',
+			layout: 'force', 
+			legendHoverLink: false,
+			draggable: true,
+			autoCurveness: true,
+			itemStyle:{
+				borderColor:'#000',
+				textBorderWidth:3
+			},
+			data: graph.nodes[0],
+			links: graph.links[0],
+			categories: graph.categories,
+			roam: true,
+			symbolSize:20,
+			label: {
+			  position: 'inside',
+			  show:true
+
+			},
+			edgeLabel: {},
+		    edgeSymbol: ['none', 'arrow'],
+			selectedMode: 'multiple',
+			labelLayout: {
+				hideOverlap: true,
+			},
+			emphasis: {
+				//focus: 'adjacency',
+				focus:'none',
+				lineStyle: {
+					width: 6
+				}
+			},
+			force: {
+			  repulsion: 100,
+			  initLayout:'circular',
+			  //edgeLength: [450, 900],
+			  edgeLength:100,
+			  gravity: 0.1,
+			  layoutAnimation : false
+			}
+		  }
+		]
+	  };
+
+
+	  //
+	myChart.setOption(option);
+
+	  //myChart.dispatchAction({
+		//type: 'legendUnSelect',
+		// 图例名称
+		//name: "公司"
+	  //})
+	  
+	//option && myChart.setOption(option);
+	
+	var offset = 0;
+	timerMarch = 0;
+	var i=0
+	function return_frame_nodes(f){
+		//console.log(graph.nodes[i])
+		return graph.nodes[i]
+	}
+	function return_frame_links(f){
+		//console.log(graph.links[i])
+		return graph.links[i]
+	}
+	
+	
+
+	function march() {
+		offset = offset==0? 15: offset-1;
+	    myChart.setOption({title:{
+			
+		},
+			series:{
+			name: '量子星河骨干Demo',
+
+
+
+			lineStyle:{
+				dashOffset: offset,
+			},
+		}},{lazyUpdate: true});
+		timerMarch = setTimeout(march, 25);
+	}
+	function dashoffset(){
+		if(dashing){
+			dashing=false
+			clearInterval(offsetinterval)
+		}else{
+			dashing=true
+			var offsetinterval= setInterval(()=>{
+			if(dashing){
+			offset++
+			
+			if (offset>1000){offset=1
+			graph=graph_g}
+			new_links=graph.links[i]
+			console.log('第' +i +'帧的第'+offset+'offset')
+			//console.log(new_links)
+			new_links.forEach(function (link){
+					if (link.lineStyle){
+					if (link.lineStyle.type=='dashed'){
+						//link.velocity=offset*link.velocity
+						//link.value=2*link.value
+						link.lineStyle.dashOffset=link.lineStyle.dashOffset-offset*0.02
+						//console.log(link.lineStyle)
+					}}
+//
+				})
+			//console.log(new_links)
+			myChart.setOption({
+				series:[{links:new_links,
+				data:graph.nodes[i]}]
+			})
+		}},100)
+		}
+		
+	}
+	function play_days_animate(){
+		
+		if (animating){
+			//myChart.setOption()
+			animating=false
+			//console.log(animating)
+			clearInterval(interval)
+			console.log('cleared')
+		}else{
+			
+
+			animating=true
+			//console.log(animating)
+			var interval=setInterval(() => {
+			//console.log(animating)
+			if (animating){
+			console.log(i)
+			myChart.setOption({
+			title:{
+				text: '量子星河骨干研究Demo',
+		  subtext: graph.dates[i],
+		  right: "2%",
+		  textAlign: "right",
+			}
+			,
+			series: [{
+			
+			data: graph.nodes[i],
+			links: graph.links[i],
+			
+			}]
+			},
+			);
+			i++
+
+			if(i === graph.nodes.length){
+			i=0;
+			}}
+			else{
+				clearInterval(interval)
+			}
+		//console.log(graph)
+		}, 333);
+			}
+		}
+	
+    </script>
+	
+  </body>
+</html>

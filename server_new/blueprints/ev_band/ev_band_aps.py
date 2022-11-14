@@ -7,7 +7,7 @@ import datetime
 
 from utils import get_mysql,get_logger
 import logging
-logger=get_logger('ev_band.aps',chlevel=logging.INFO)
+logger=get_logger('scheduler',chlevel=logging.INFO)
 from .models import Code2JS
 from atlassian import Jira
 

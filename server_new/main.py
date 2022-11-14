@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 
 from flask import (Flask, abort, redirect, render_template, request, session,
                    url_for)
-
+from blueprints.map import map
 from blueprints.ev_band import ev_band
 from blueprints.backbone import backbone
 from blueprints.login import login
@@ -19,13 +19,17 @@ from QGI.feishu import *
 from QGI.mysql import MYSQL
 from utils import get_logger
 logger = get_logger(__name__)
+'''
 jira = JIRA('https://research.quantumgalaxy.cn/',
             basic_auth=('bot2', "jira_bot2"))#指标机器人
-
+'''
 
 feishu=FeishuAPI()
 
+'''flask logger'''
 
+from flask import has_request_context, request
+from flask.logging import default_handler
 
 
 
@@ -35,6 +39,16 @@ app.config["JSON_AS_ASCII"] = False
 app.config['SCHEDULER_API_ENABLED'] = True
 app.config["SECRET_KEY"] = "core-quantumgalaxy"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=24)
+
+
+#app.logger.removeHandler(default_handler)
+
+userlogger=get_logger('user log')
+@app.before_request
+def user_logger():
+        name=session.get('name',None)
+        if name:
+                userlogger.info(name)
 
 '''
 @app.before_request
@@ -52,7 +66,16 @@ def limit_remote_addr():
         abort(403)
 '''
 
+@map.before_request
+def check_auth():
+        if session.get('login_status',None):
 
+                name=session.get('name',None)
+                #print('status:%s'%session.get('login_status',None))
+                #print('code:%s'%code)
+            
+        else:
+                return redirect(url_for('login.feishu_login'))
 
 @ev_band.before_request
 def check_auth():
@@ -77,7 +100,10 @@ def check_auth():
 app.register_blueprint(login)
 app.register_blueprint(backbone)
 app.register_blueprint(ev_band)
+app.register_blueprint(map)
+from log import Logger
 
+logger = Logger()
 
 '''
 from flask import current_app
@@ -95,12 +121,14 @@ def index():
 
 
 #app.config["EXPLAIN_TEMPLATE_LOADING"] = True
+
 from aps import scheduler
 
 scheduler.init_app(app)
 
 scheduler.start()
 
-
+logger.init_app(app)
 
 app.run(host='0.0.0.0', port=82)
+

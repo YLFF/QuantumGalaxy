@@ -7,7 +7,9 @@ from . import login
 from flask import render_template,redirect,abort,request,session,url_for
 import json 
 
-
+import logging
+from utils import get_logger
+logger=get_logger('login logger',)
 
 
 @login.route('/')
@@ -31,6 +33,8 @@ def auth():
         user_info=fetch_user_info(token)
         session['name']=user_info['name']
         session['avatar_url']=user_info['avatar_url']
+        #login.logger.info('login as a')
+        logger.info('login as %s'%session['name'])
         #session['code']=code
         session['login_status']=True
         return redirect(url_for('index'))

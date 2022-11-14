@@ -14,7 +14,7 @@ import pandas as pd
 import time
 
 def get_logger():
-    logger=logging.getLogger('logger')
+    logger=logging.getLogger('ths_edb')
     logger.setLevel(logging.INFO)
     fh=logging.FileHandler("E:/wangzhilin/QuantumGalaxy/logs/ths_log.log",'a')
     fh.setLevel(logging.INFO)
@@ -66,16 +66,16 @@ def ths_query(result,end,start=None):
 
 
 
-def job():
+def job(logger,end=date.today()-timedelta(1)):
     THS_iFinDLogin('lzxh0011','450503')
     time.sleep(5)
-    logger=get_logger()
+    
     host='localhost'
     user='Local_Editor'
     password='QuantumGalaxy'
     database='qgdbs'
     mysql=MYSQL(host,user,password,database)
-    end=date.today()-timedelta(1)
+    
     start=end-timedelta(1)
     start=start.strftime('%Y-%m-%d')
     end=end.strftime('%Y-%m-%d')
@@ -109,5 +109,9 @@ def job():
 
 
 if __name__=='__main__':
-    job()
+    logger=get_logger()
+    for i in range(1,2):
+        
+        end=date.today()-timedelta(i)
+        job(logger,end)
 
