@@ -20,14 +20,13 @@ def log_inter1(num:int,y0,y1):
     res.insert(0,y0)
     res.append(y1)
     return res
-def geo_mean(data,factor=10):
-    raw=math.pow(np.prod(data),1.0/len(data))
-    #data0=data[0]
-    #data1=data[-1]
-    data=data+[data[0]]*factor
+def geo_mean(data,w=0.98):
+    weight=[w**i for i in range(len(data))]
+
+    
     #data=[data[-1]]
-    '''增加factor，使走廊起点离当天市值更近'''
-    mean=math.pow(np.prod(data),1.0/len(data))
+    '''加快衰减，使走廊起点离当天市值更近'''
+    mean=sum(np.array(weight)*np.array(data)) / sum(weight)
     #print(raw,mean,data1,data0)
     return mean
 def calcu_norm(xc,pc,xo,po,ppf) :
