@@ -2,6 +2,12 @@
 .vscode
 .DS_Store
 *.xlsx
-cookies
-__pycache__
+*/cookies
+*/__pycache__
 世界线管理表_公司管理表_公司管理表.csv
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
