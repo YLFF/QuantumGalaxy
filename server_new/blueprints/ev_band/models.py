@@ -49,6 +49,7 @@ def ev_band_check(code):
     return code
 
 
+
 class Code2JS():
     '''对issue changelog分析并拆解为多个走廊（一个走廊初始数据为6个数）'''
     def __init__(self,code):
@@ -248,7 +249,10 @@ class Code2JS():
             factor=[(1-vol)**10,(1-vol)**5,1,(1+vol)**5,(1+vol)**10,]
             start=np.outer(stock_data,factor)[0]
             #print(start)
-            n=mysql.read_query('select value from customized_data where code="C00002.QG" order by date desc limit 1')[0][0]
+            if code.split('.')[1].upper()  in ['HK','SH','BJ','SZ']:
+                n=mysql.read_query('select value from customized_data where code="C00002.QG" order by date desc limit 1')[0][0]
+            else:
+                n=mysql.read_query('select value from customized_data where code="C00004.QG" order by date desc limit 1')[0][0]
             end=np.exp([mu-0.842*s,mu-0.5*s,mu,mu+0.5*s,mu+0.842*s])*n
             
             #print(start_date)
@@ -466,6 +470,26 @@ class Code2JS():
             logger.error('had exception during process data: %s'%e)
             return False
     
+
+class New_band(Code2JS):
+
+    def __init__(self,code,data):
+        super(New_band, self).__init__(code)
+        
+        self.data=data
+    def work(self,):
+            results=self.data
+            js=[]
+            for r in results:
+                one=self.one_work(r)
+                
+                if not one:
+                    return False,False
+                js.append(one)
+                r['start_date']=r['start_date'].strftime("%Y-%m-%d")
+                r['target_date']=r['target_date'].strftime("%Y-%m-%d")
+            return results,js,self.m
+
 def fetch_all_position():
     try:
         host='localhost'

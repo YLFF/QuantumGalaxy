@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>量子星河-星图探索</title>
+    <link rel="shortcut icon" href="static/favicon.ico" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+        }
+
+        .form-signin .form-floating:focus-within {
+            z-index: 2;
+        }
+
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .b-example-divider {
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+
+<body class="text-center position-relative">
+    <main class="form-signin w-100 m-auto d-flex flex-column">
+        <form action="/login/my_login" method="post" class="mb-5">
+
+
+            <h1 class="h3 mt-3 mb-3 fw-normal">欢迎来到 星图系统</h1>
+
+            <div class="form-floating mb-2">
+                <input type="text" name='userinfo' class="form-control" id="floatingInput" placeholder="name@example.com">
+                <label for="floatingInput">手机号码/邮箱</label>
+            </div>
+            <!---
+            <div class="form-floating">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Password" disabled>
+                <label for="floatingPassword">Password</label>
+            </div>
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+          <a class="nav-link" >退出登录</a>
+                <a class="form-floating w-50 btn btn-lg btn-outline-secondary mb-3" onclick="console.log(1)">看日报</a>
+            --->
+            <button class="w-100 btn btn-lg btn-primary mt-3 mb-5" type="submit">登陆星图</button>
+
+            <img class="mb-3" src="static/033.png" alt="" width="100%">
+
+        </form>
+    </main>
+
+    <p class=" position-absolute bottom-0 start-50 translate-middle-x"><a class="nav-link"
+            href="https://beian.miit.gov.cn/#/Integrated/index">京ICP备2022004209号-1</a></p>
+
+
+    <!---
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-4">
+                <form action="/login/my_login" method="post">
+                    <div class="loginBox">
+                        <div class="loginBoxCenter">
+                            <p><label for="username">用户名：</label></p>
+                            <p><input type="text" id="userinfo" name="userinfo" class="loginInput" autofocus="autofocus"
+                                    required="required" autocomplete="off" placeholder="请输入邮箱/手机号" value=""></p>
+                        </div>
+                        <div class="loginBoxButtons">
+                            <button class="loginBtn">登录</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+    --->
+    <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        //页面初始化，非echarts 部分
+        //初始化
+        function goDaily() {
+
+
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

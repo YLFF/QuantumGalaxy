@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>粗骨干校验与录入</title>
+</head>
+<body>
+  <h1>录入骨干结果：{{name}}</h1>
+  <p>
+    
+    {{result|safe}}
+</p>
+<form action="{{url_for('live_editor.live_editor_index')}}" method='put'>
+    
+    
+    <input type="submit" value="打开星图编辑器">
+    </form>
+    <form action="{{url_for('backbone_check.download_node_csv')}}" method='get' target="_blank">
+    
+    
+        <input type="submit" value="下载节点表格文件">
+        </form>
+    <form action="{{url_for('backbone_check.download_link_csv')}}" method='get' target="_blank">
+
+
+        <input type="submit" value="下载边表格文件">
+        </form>
+    <form action="{{url_for('backbone_check.download_indicator_csv')}}" method='get' target="_blank">
+
+
+            <input type="submit" value="下载指标表格文件">
+            </form>
+            <form action="{{url_for('backbone_check.scout_doc')}}" method='get' target="_blank">
+
+
+                <input type="submit" value="侦察报告">
+                </form>
+            
+</form>
+</body>
+</html>

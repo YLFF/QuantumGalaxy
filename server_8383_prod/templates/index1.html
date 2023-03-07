@@ -1,0 +1,357 @@
+﻿<!doctype html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>量子星河-星图探索</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+
+    <!-- 画布 -->
+    <div id="main" style="height:95vh;"></div>
+    <!-- 搜索组 -->
+    <div class="sticky-top position-absolute mt-4">
+      <form class="input-group rounded" role="search" onsubmit="goSearch(event); return false">
+        <input class="form-control px-4 py-3 qgi-front-module" type="search" placeholder="名称检索" aria-label="Search"
+          id="kw" style="min-width:200px; width: 100px;">
+      </form>
+    </div>
+
+
+    <!-- 多功能搜索组
+    <div class="input-group mb-3">
+      <button id="search_btn" class="btn btn-outline-success" onclick="goSearch(event)" hidden=true>Search</button>
+      <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">每日市场动态</a></li>
+        <li><a class="dropdown-item" href="#">每日市场动态</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#">Separated link</a></li>
+      </ul>
+      <input type="text" class="form-control" aria-label="Text input with dropdown button">
+    </div>
+    -->
+
+
+    <!-- 评论按钮 -->
+    <button class="btn btn-outline-dark sticky-bottom float-end position-absolute mb-4 qgi-front-module" type="button"
+      data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom"><svg
+        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-text"
+        viewBox="0 0 16 16">
+        <path
+          d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+        <path
+          d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z" />
+      </svg></button>
+
+    <!-- 返回评论成功消息框 -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">星图收到！</strong>
+          <small>刚刚</small>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toast-content">
+          评论已提交，感谢您的建议！
+        </div>
+      </div>
+
+    <!-- 评论过段提示消息框 -->
+      <div id="liveToast-warning" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            您的评论内容需要长于10字。
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 下方评论区 -->
+  <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel"
+    style="height:auto;">
+    <div class="container">
+      <div class="offcanvas-header pb-1">
+        <h5 class="offcanvas-title" id="offcanvasBottomLabel">感谢您提供的修订意见</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+      <div class="offcanvas-body small py-1">
+        <div class="form-floating">
+          <textarea class="form-control" placeholder="Leave a comment here" id="commentTextarea1"
+            style="height:150px;"></textarea>
+          <label for="commentTextarea1">意见会关联到选中的点或边：<span id="cmt-content"></span></label>
+        </div>
+        <button id="comment_btn" class="btn btn-outline-success my-2" onclick="goComment(event)">提交</button>
+      </div>
+    </div>
+  </div>
+  <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+
+  
+  <script type="text/javascript">
+    // go Comment
+    const toastLive = document.getElementById('liveToast')
+    const toastLiveWarning = document.getElementById('liveToast-warning')
+
+    
+    function goComment(event) {
+      var comment = $("#commentTextarea1").val();
+      if(comment.length<10){
+        const toast2 = new bootstrap.Toast(toastLiveWarning);
+        toast2.show();
+        return 
+      }
+      console.log(event);
+      console.log(comment);
+      //$.post("http://82.156.248.152:82/summit_comment",
+      //  { comment: comment },
+      //  
+      //)
+      const toast = new bootstrap.Toast(toastLive);
+      toast.show();
+      const offcanvas = bootstrap.Offcanvas.getInstance('#offcanvasBottom');
+      offcanvas.hide();
+    }
+  </script>
+
+
+  <script type="text/javascript">
+    all_nodes_map = {};
+    all_links_map = {};
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));// 指定图表的配置项和数据
+
+    var option0 = {
+      tooltip: { show: false },
+      animationDurationUpdate: 1500,
+      animationEasingUpdate: 'quinticInOut',
+      series: [
+        {
+          name: 'atlas',
+          type: 'graph',
+          layout: 'force',
+          symbolSize: 50,
+          roam: true,
+          draggable: true,
+          label: {
+            show: true
+          },
+          categories: [
+            {
+              name: "产品",
+              itemStyle: { color: "#0362A1", borderColor: "purple" }
+            },
+            {
+              name: "公司",
+              itemStyle: { color: "#FFF", borderColor: "#00AB0B", borderWidth: 3 }
+            },
+            {
+              name: "工艺",
+              itemStyle: { color: "#999999", borderColor: "purple" }
+            },
+            {
+              name: "需求",
+              itemStyle: { color: "#CC0000", borderColor: "purple" }
+            },
+            {
+              name: "指标",
+              itemStyle: { color: "#FFFFCC", borderColor: "purple" }
+            }
+          ],
+          edgeSymbol: ['circle', 'arrow'],
+          edgeSymbolSize: [4, 10],
+          edgeLabel: {
+            fontSize: 14
+          },
+          selectedMode: "multiple",
+          select:{
+            itemStyle:{borderColor: "purple", borderWidth:6},
+            lineStyle:{width:6},
+            edgeLabel:{show:false},
+          },
+          lineStyle: {
+            opacity: 0.9,
+            width: 2,
+            curveness: 0
+          },
+          force: {
+            repulsion: 1000,
+            gravity: 0.1,
+            edgeLength: 200,
+            fraction: 0.2
+          }
+        }
+      ]
+    };
+
+    //myChart.on('finished', function () {
+    //  $("#search_btn").text("Search");
+    //});
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option0);
+
+
+  </script>
+
+
+  <script>
+    function render(res) {
+      console.log(res);
+      let option = JSON.parse(JSON.stringify(option0));
+      //res = { data: { nodes: [], links: [] } }
+      var nodes = [
+        {
+          name: 'Node 1',
+          category: ["Product"],
+        },
+        {
+          name: 'Node 2',
+          category: "Company",
+        },
+        {
+          name: 'Node 3',
+          category: "Product",
+        },
+        {
+          name: 'Node 4',
+          category: "Product",
+        }
+      ];
+      var nodes = res.nodes;
+      nodemap_neoid_name = {};
+      var i = 0
+      nodes.forEach(function (node) {
+        if (Array.isArray(node.category)) {
+          node.category = node.category[0]
+        }
+        nodemap_neoid_name[node.neoid] = node.name;
+        //delete node.id
+        if(!(node.neoid in all_nodes_map)){
+          node.show = true;
+          all_nodes_map[node.neoid] = node;
+
+        }
+      });
+
+
+      var links = [
+        {
+          source: 0,
+          target: 1,
+          label: {
+            show: true
+          }
+        },
+        {
+          source: 'Node 1',
+          target: 'Node 3'
+        },
+        {
+          source: 'Node 2',
+          target: 'Node 3'
+        },
+        {
+          source: 'Node 2',
+          target: 'Node 4',
+          category: "储运"
+        },
+        {
+          source: 'Node 1',
+          target: 'Node 4',
+          category: "父节点"
+        }
+      ];
+      var links = res.links;
+      links.forEach(function (link) {
+        let a = link.category || "原材料";
+        link.source = nodemap_neoid_name[link.source];
+        link.target = nodemap_neoid_name[link.target];
+        link.label = { show: true, formatter: a };
+        link.category = a;
+        if (link.category == "父节点") {
+          link.lineStyle = 5;
+          link.lineStyle = { color: "#9933FF", width: 2 };
+        } else if (link.category == "储运") {
+          link.lineStyle = 5;
+          link.lineStyle = { color: "#FFB366", width: 2 };
+        }
+
+        
+        if(!(link.neoid in all_links_map)){
+          link.show = true;
+          all_links_map[link.neoid] = link;
+        }
+      });
+
+      var toShowNodes = []
+      for(var neoid in all_nodes_map){
+        node = all_nodes_map[neoid]
+        if (node.name == keyword) {
+          node.fixed = true;
+          node.x = myChart.getWidth() / 2;
+          node.y = myChart.getHeight() / 2;
+          node.symbolSize = 75;
+        }else{
+          node.fixed = false;
+          delete node.symbolSize;
+        }
+        toShowNodes.push(all_nodes_map[neoid])
+      }
+      var toShowLinks = []
+      for(var neoid in all_links_map){
+        toShowLinks.push(all_links_map[neoid])
+      }
+      option.series[0].data = toShowNodes
+      option.series[0].links = toShowLinks
+
+      myChart.clear();
+      myChart.setOption(option);
+      myChart.hideLoading();
+      console.log(myChart.getOption())
+    }
+
+    function goSearch(event) {
+      keyword = $("#kw").val()
+      console.log(event);
+      console.log($("#kw").val());
+      myChart.showLoading();
+      $.getJSON("http://82.156.248.152:8383/qgapp/atlas_query",
+        { name: keyword },
+        render
+      )
+      //render()
+    }
+
+    myChart.on('dblclick', function (params) {      
+      if (params.dataType == "node") {
+        //console.log(params)
+        console.log(params.name)
+        keyword = params.name
+        myChart.showLoading();
+        $.getJSON("http://82.156.248.152:8383/qgapp/atlas_query",
+          { name: params.name },
+          render
+        )
+        //render()
+      }
+    });
+  </script>
+<style type="text/css">
+  .qgi-front-module {
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, .2);
+  }
+</style>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

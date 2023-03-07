@@ -1,0 +1,22 @@
+from . import live_editor
+from flask import redirect,render_template,make_response,request,jsonify,session
+from .models import *
+@live_editor.route('/liveEditor',methods=['GET'])
+def live_editor_index():
+    return render_template('liveEditor.html')
+
+
+
+@live_editor.route('/bitable_query',methods=['GET','POST'])
+def bitable_query():
+    args=request.args
+    print('bitable_query:"%s"'%args)
+    bitapp_token=args.get('bitapp_token')
+    graph_name=args.get('graph_name')
+    r=bitable_works(bitapp_token,graph_name)
+    r['user_name']=session.get('name')
+    r['graph_name']=graph_name
+    r['bitapp_name']=bitable_name(bitapp_token)
+    print(r['bitapp_name'])
+    #return json.dumps(r)
+    return jsonify(r)

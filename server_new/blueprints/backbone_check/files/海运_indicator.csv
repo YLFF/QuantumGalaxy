@@ -1,0 +1,14 @@
+,name,code,x,y,external,category,cate_ch,backbone
+rULmSWup,成品油运输指数,S0031553,480,80,,Indicator,指标,海运
+3isowOYS,波罗的海干散货指数,S0031550,1320,770,,Indicator,指标,海运
+r47NYS17,原油运输指数,S0031554,170,150,,Indicator,指标,海运
+HKLwDqvy,波罗的海货运指数,T3549529,1523.53,-280,,Indicator,指标,海运
+7BzwlAGU,LNG Carrier Spot,人工指标,610,850,,Indicator,指标,海运
+JgzbsfJB,英国布伦特原油,S5111905,650,210,,Indicator,指标,海运
+0fh6TR0j,LR2型油轮主要线路平均TCE,人工指标,-30,-380,,Indicator,指标,海运
+aqHZiZbs,中国海员平均工资,手动指标,1110,120,,Indicator,指标,海运
+0ud0BPlO,VLCC 运单主要航线平均TCE,人工指标,-10,670,,Indicator,指标,海运
+Bfh3H822,宁波港港口货物吞吐量,S0173721,925.33,-316.57,,Indicator,指标,海运
+n2WNfCZd,北部港湾港口货物吞吐量,S0238462,817.12,-360,,Indicator,指标,海运
+76JBv3ow,广州港港口货物吞吐量,S0267033,675.33,-296.57,,Indicator,指标,海运
+WeZbEAmF,上港集团港口货物吞吐量,S0113932,615.33,-156.57,,Indicator,指标,海运

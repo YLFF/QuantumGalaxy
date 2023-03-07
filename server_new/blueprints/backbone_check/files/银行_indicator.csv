@@ -1,0 +1,22 @@
+,name,code,x,y,external,category,cate_ch,backbone
+rylIgAk8,存款准备金率,M0061518 ,360,-1689.9999999999998,,Indicator,指标,银行
+0YmDQ9od,支小再贷款余额,M6193652,-420,-1577.07,,Indicator,指标,银行
+clCQUHDu,M2供应量,M0001384,190,-1160,,Indicator,指标,银行
+8QfeXsxr,M1供应量,M0001382,848.9999999999999,-1517.07,,Indicator,指标,银行
+ajyzK1A8,M0供应量,M0001380,470,-1587.0700000000002,,Indicator,指标,银行
+HXM1wAcI,活期存款基准利率,M0043801,1349,-1610,,Indicator,指标,银行
+U4IXQilK,余额宝收益率,S0211686,1380,-1477.07,,Indicator,指标,银行
+3cY81ohT,信用债收益率减国债收益率,人工指标,1079,-940,,Indicator,指标,银行
+zkTgpKnb,沪深300期权隐含波动率,人工指标,918,-970,,Indicator,指标,银行
+kmnqY37w,同业拆借利率,M0009936,320,-1417.07,,Indicator,指标,银行
+cjlEH9a3,超额准备金率,M0010096,-142,-1800.0000000000002,,Indicator,指标,银行
+os9oZ7LN,基础货币供应量,M0010129,549,-1970.0000000000002,,Indicator,指标,银行
+cdqDOqsv,核心资本充足率,人工指标,530,-1050,,Indicator,指标,银行
+mgyYdOSb,再贴现余额,M6193654,-180,-1280,,Indicator,指标,银行
+XXC52BfO,支农再贷款余额,M6193651,-380,-1700,,Indicator,指标,银行
+8WzK8ZCl,扶贫再贷款余额,M6193653,-400,-1440,,Indicator,指标,银行
+4jxDPLYZ,再贷款利率,M0043824,-340,-1340,,Indicator,指标,银行
+uXZT203j,再贴现利率,M0043828,-60,-1280,,Indicator,指标,银行
+OIPYlyBd,央行对其他存款性公司债权,M0001685,100,-1280,,Indicator,指标,银行
+mcJXRW5m,货币净投放,M0061614,-290,-1787.07,,Indicator,指标,银行
+f3fkkb0h,国债收益率：1年,M1001646,1210,-1010,,Indicator,指标,银行

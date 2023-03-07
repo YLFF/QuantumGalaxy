@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>量子星河-星图编辑器</title>
+    <link rel="shortcut icon" href="static/favicon.ico" />
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 画布
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"> -->
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="position-relative" style="height:100vh;">
+            <!-- 画布 -->
+            <div id="main" style="height:100%;"></div>
+            <!-- 下方工具栏 -->
+            <div class="btn-group position-absolute bottom-0 start-50 translate-middle qgi-front-module" role="group">
+                <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+                    onclick="goRefresh(event)">刷新数据</button>
+                <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+                    onclick="listNodePos(event)">
+                    More
+                </button>
+                <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+                    onclick="bigNode(event)">放大节点</button>
+                    <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+                    onclick="smallNode(event)">缩小节点</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header pb-0">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">节点位置列表</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <hr>
+        <div class="offcanvas-body d-flex flex-column pt-0">
+            <div class="form-text">绘制哪个多维表格文件：</div>
+            <div class="form-text">https://quantumgalaxy.feishu.cn/base/【多维表id】?table=</div>
+            <div class="input-group p-2">
+                <span class="input-group-text" id="basic-addon2">多维表id</span>
+                <input type="text" class="form-control" id="bitapp_token" placeholder="类似bascnx0n..."
+                    aria-describedby="bitapp_token">
+            </div>
+
+            <div class="form-text">绘制表中的哪张图：</div>
+            <div class="input-group p-2">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" id="graph_mode">粗骨干</button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item"
+                            onclick='$("#graph_name").attr("placeholder", "").attr("disabled", true);$("#graph_mode").text("粗骨干")'>粗骨干</a>
+                    </li>
+                    <li><a class="dropdown-item"
+                            onclick='$("#graph_name").attr("placeholder", "").attr("disabled", true);$("#graph_mode").text("全景图")'>全景图</a>
+                    </li>
+                    <li><a class="dropdown-item"
+                            onclick='$("#graph_name").attr("placeholder", "局部图名称").attr("disabled", false);$("#graph_mode").text("局部图")'>局部图</a>
+                    </li>
+                </ul>
+                <input class="form-control pb-2" type="search" placeholder="" aria-label="Search" id="graph_name"
+                    disabled>
+                <button class="btn btn-outline-primary" type="button" id="button-addon2"
+                    onclick="goSearch(event)">Go!</button>
+            </div>
+
+            <hr>
+            <table class="table table-striped justify-content-end mb-auto p-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Node</th>
+                        <th scope="col">Pos X</th>
+                        <th scope="col">Pos Y</th>
+                    </tr>
+                </thead>
+                <tbody id="nodes-pos"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.1/echarts.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+
+
+    <script type="text/javascript">
+        web_root = "";
+        if (document.domain == "") {
+            web_root = "http://82.156.248.152:83";
+        }
+
+
+        mysymbolSize = 50;
+        all_nodes_map = {};
+        all_links_map = {};
+
+        bitapp_token = getUrlParamCN("bitapp_token");
+        graph_name = getUrlParamCN("graph_name");
+        const offcanvasNav = bootstrap.Offcanvas.getOrCreateInstance("#offcanvasNavbar")
+        if (!bitapp_token) {
+            offcanvasNav.show();
+        }
+
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));// 指定图表的配置项和数据
+
+        var option0 = {
+            legend: { show: false, left: "right", top: "middle", orient: "vertical", itemGap: 20, icon: "circle", itemHeight: 25 },
+
+            animationDurationUpdate: 500,
+            animationEasingUpdate: 'quinticInOut',
+            series: [
+                {
+                    id: 'atlas',
+                    name: 'atlas',
+                    type: 'graph',
+                    layout: 'force',
+                    symbolSize: mysymbolSize,
+
+                    roam: true,
+                    draggable: true,
+                    label: {
+                        show: true,
+                        formatter: function (params) {
+                            return params.data.rawname + (params.data.code ? "\n" + params.data.code : "");
+                        },
+                    },
+                    categories: [
+                        {
+                            name: "产品",
+                            itemStyle: { color: "#0362A1", borderColor: "lightskyblue", borderWidth: 0 }
+                        },
+                        {
+                            name: "企业",
+                            itemStyle: { color: "#FFF", borderColor: "#00AB0B", borderWidth: 3 }
+                        },
+                        {
+                            name: "工艺",
+                            itemStyle: { color: "#999999", borderColor: "lightskyblue", borderWidth: 0 }
+                        },
+                        {
+                            name: "需求",
+                            itemStyle: { color: "#CC0000", borderColor: "lightskyblue", borderWidth: 0 }
+                        },
+                        {
+                            name: "指标",
+                            itemStyle: { color: "#FFFFCC", borderColor: "lightskyblue", borderWidth: 0 }
+                        }
+                    ],
+                    edgeSymbol: ['circle', 'arrow'],
+                    edgeSymbolSize: [4, 10],
+                    edgeLabel: {
+                        show: false,
+                        fontSize: 14,
+                    },
+                    selectedMode: "multiple",//"single", 
+                    select: {
+                        itemStyle: { borderColor: "lightskyblue", borderWidth: 6 },
+                        lineStyle: { width: 6 },
+                        edgeLabel: { show: true },
+                        label: {
+                            show: true,
+                            formatter: function (params) {
+                                return params.data.rawname + (params.data.code ? "\n" + params.data.code : "")// + "\n" + params.data.x.toFixed(1) + "," + params.data.y.toFixed(1) ;
+                            },
+                        }
+                    },
+                    lineStyle: {
+                        opacity: 0.9,
+                        width: 2,
+                        curveness: 0
+                    },
+                    force: {
+                        repulsion: 160,
+                        gravity: 0.01,
+                        edgeLength: [80, 250],
+                        fraction: 0.6
+                    }
+                }
+            ]
+        };
+
+        myChart.setOption(option0);
+
+
+        function extract_selected_nl() {
+            let relnode = [];
+            let rellink = [];
+            var selectedMap = myChart.getOption().series[0].selectedMap;
+            for (var name in selectedMap) {
+                if (selectedMap[name]) {
+                    if (name.search(" > ") >= 0) {
+                        rellink.push(name);
+                    } else {
+                        relnode.push(name);
+                    }
+                }
+            }
+
+            return { node_name: relnode, link_name: rellink };
+        }
+
+
+        //resize
+        $(window).resize(function () {
+            myChart.resize();
+        });
+
+
+        //获取URL参数
+        function getUrlParamCN(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = decodeURI(window.location.search).substr(1).match(reg); //匹配目标参数
+            if (r != null) return unescape(r[2]); return null; //返回参数值
+        }
+
+        //清空画布
+        function clearScreen(event) {
+            all_nodes_map = {};
+            all_links_map = {};
+            myChart.clear();
+            myChart.setOption(option0);
+            myChart.hideLoading();
+            console.log("clearScreen");
+        }
+
+
+    </script>
+
+    <script>
+        function render(res) {
+            if (res.code) {
+                alert("接口返回值出错请联系开发者：" + res.msg);
+                myChart.hideLoading();
+                return
+            }
+
+            console.log("render");
+            console.log(res);
+
+
+            nodes = [
+                {
+                    name: 'Node 0',
+                    category: ["产品"],
+                    //x: 10,
+                    //y: 0,
+                    //value: [10, 0],
+                },
+                {
+                    name: 'Node 1',
+                    code: "601398.SH",
+                    category: "企业",
+                    //x: 0,
+                    //y: 10,
+                    //value: [0, 10],
+                },
+                {
+                    name: 'Node 2',
+                    category: "产品",
+                    x: 600,
+                    y: 400,
+                    fixed: true,
+                    //value: [10, 10],
+                },
+                {
+                    name: 'Node 3',
+                    category: "产品",
+                    //x: 20,
+                    //y: 20,
+                    //value: [20, 10],
+                }
+            ];
+            nodes = res.nodes;
+            nodemap_neoid_name = {};
+            var i = 0
+            nodes.forEach(function (node) {
+                node.bitapp_id = node.bitapp_id || i;
+
+                if (Array.isArray(node.category)) {
+                    node.category = node.category[0]
+                }
+
+
+                node.rawname = node.name;
+                node.name = node.rawname + "_" + node.category + "_" + node.bitapp_id;
+
+                node.fixed = node.hasOwnProperty("x") && node.hasOwnProperty("y");
+
+                nodemap_neoid_name[node.bitapp_id] = node.name;
+                if (!(node.name in all_nodes_map)) {
+                    node.show = true;
+                    all_nodes_map[node.name] = node;
+                }
+                i++
+            });
+
+
+
+            links = [
+                {
+                    source: 1,
+                    target: 0,
+                    label: {
+                        show: true
+                    }
+                },
+                {
+                    source: 0,
+                    target: 2,
+                    category: "父节点"
+                },
+                {
+                    source: 2,
+                    target: 3,
+                    category: "储运"
+                },
+                {
+                    source: 1,
+                    target: 3,
+                }
+            ];
+            links = res.links;
+            links.forEach(function (link) {
+                let a = link.category || "原材料";
+                link.label = { formatter: a };
+                link.category = a;
+                link.source = nodemap_neoid_name[link.source];
+                link.target = nodemap_neoid_name[link.target];
+                if (link.category == "父节点") {
+                    link.value = 250;
+                    link.lineStyle = { color: "#9933FF", width: 2 };
+                } else if (link.category == "储运") {
+                    link.value = 250;
+                    link.lineStyle = { color: "#FFB366", width: 2 };
+                } else if (link.category == "反映") {
+                    link.value = 350;
+                } else if (link.category == "生产") {
+                    link.value = 350;
+                } else {
+                    link.value = 50;
+                }
+
+                var n = link.source + " > " + link.target;
+                if (!(n in all_links_map)) {
+                    link.show = true;
+                    link.name = n;
+                    all_links_map[n] = link;
+                }
+            });
+
+            option = {
+                title: {
+                    show: true,
+                    text: res.bitapp_name,
+                    subtext: "图：" + res.graph_name + ", 用户：" + res.user_name,
+                    left: "center"
+                }
+            };
+
+            option0.series[0].data = nodes;
+            option0.series[0].links = links;
+
+            myChart.clear();
+            myChart.setOption(option0);
+            myChart.setOption(option);
+
+            myChart.hideLoading();
+            //console.log(myChart.getOption());
+        }
+
+        /**/
+        myChart.on('mouseup', function (params) {
+            console.log(params)
+            var p = myChart.convertFromPixel({ seriesId: 'atlas' }, [params.event.offsetX, params.event.offsetY])
+
+            all_nodes_map[params.data.name].x = p[0];
+            all_nodes_map[params.data.name].y = p[1];
+            all_nodes_map[params.data.name].fixed = true;
+            myChart.setOption({
+                series: [{
+                    id: "atlas",
+                    data: nodes,
+                }]
+            });
+            /*
+            */
+
+        });
+        function bigNode(event) {
+            //render()
+            clearScreen();
+            mysymbolSize=mysymbolSize+5
+            console.log("bignode:");
+            console.log(mysymbolSize);
+            myChart.showLoading();
+            option1 =  {series: [
+                {
+                    
+                    symbolSize: mysymbolSize,}]
+            };
+
+            myChart.setOption(option1);
+
+            myChart.hideLoading();
+        }
+        function smallNode(event) {
+            //render()
+            clearScreen();
+            mysymbolSize=mysymbolSize-5
+            console.log("smallnode:");
+            console.log(mysymbolSize);
+            myChart.showLoading();
+            option1 =  {series: [
+                {
+                    
+                    symbolSize: mysymbolSize,}]
+            };
+
+            myChart.setOption(option1);
+
+            myChart.hideLoading();
+        }
+        //扩展按钮发送搜索请求
+        function goRefresh(event) {
+            //render()
+            clearScreen();
+            console.log("goRefresh");
+            console.log({
+                bitapp_token: bitapp_token,
+                graph_name: graph_name,
+            });
+            myChart.showLoading();
+            $.getJSON(web_root + "/qgapp/bitable_query",
+                {
+                    bitapp_token: bitapp_token,
+                    graph_name: graph_name,
+                },
+                render
+            )
+        }
+
+
+        // 输出列表
+        function listNodePos(event) {
+            $("#nodes-pos").text("");
+            _pos_list = myChart._chartsViews[0]._symbolDraw._data;
+            for (var i = 0; i < _pos_list._idList.length; i++) {
+                n = _pos_list._idList[i];
+                node = all_nodes_map[n];
+                row_str = '<tr><th scope="row">' + node.rawname + '</th><td>' + _pos_list._itemLayouts[i][0].toFixed(1) + '</td><td>' + _pos_list._itemLayouts[i][1].toFixed(1) + '</td></tr>';
+                $("#nodes-pos").append(row_str);
+            }
+        }
+
+        // go
+        function goSearch(event) {
+            bitapp_token = $("#bitapp_token").val();
+            if ($("#graph_mode").text() == "全景图") {
+                graph_name = "";
+            } else if ($("#graph_mode").text() == "粗骨干") {
+                graph_name = "粗骨干图";
+
+            } else if ($("#graph_mode").text() == "局部图") {
+                graph_name = $("#graph_name").val();
+            }
+
+            if (bitapp_token) {
+                goRefresh();
+            }
+        }
+    </script>
+</body>

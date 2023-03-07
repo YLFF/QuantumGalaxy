@@ -5,9 +5,12 @@ from datetime import date, datetime, timedelta
 
 from flask import (Flask, abort, redirect, render_template, request, session,
                    url_for)
+from flask_session import Session
 from blueprints.map import map
+from blueprints.backbone_check import backbone_check
 from blueprints.ev_band import ev_band
 from blueprints.backbone import backbone
+from blueprints.live_editor import live_editor
 from blueprints.login import login
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 import re
@@ -39,7 +42,9 @@ app.config["JSON_AS_ASCII"] = False
 app.config['SCHEDULER_API_ENABLED'] = True
 app.config["SECRET_KEY"] = "core-quantumgalaxy"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=24)
-
+app.config["SESSION_TYPE"] = "filesystem"
+app.config['SESSION_FILE_DIR']=r'E:\wangzhilin\QuantumGalaxy\server_new\cookies'
+Session(app)
 
 #app.logger.removeHandler(default_handler)
 
@@ -65,6 +70,17 @@ def limit_remote_addr():
     if not valid:
         abort(403)
 '''
+@backbone_check.before_request
+def check_auth():
+        if session.get('login_status',None):
+                
+                name=session.get('name',None)
+                #print('status:%s'%session.get('login_status',None))
+                #print('code:%s'%code)
+                
+            
+        else:
+                return redirect(url_for('login.feishu_login'))
 
 @map.before_request
 def check_auth():
@@ -100,6 +116,8 @@ def check_auth():
 app.register_blueprint(login)
 app.register_blueprint(backbone)
 app.register_blueprint(ev_band)
+app.register_blueprint(backbone_check)
+app.register_blueprint(live_editor)
 app.register_blueprint(map)
 from log import Logger
 

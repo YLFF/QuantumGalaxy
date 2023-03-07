@@ -22,7 +22,8 @@ def job1():
 
 @scheduler.task('cron',id='ev_band_routine',hour=4,minute=4,second=0)
 def job0():
-    ev_band_routine()
+    #ev_band_routine()
+    pass
 
 
 @scheduler.task('cron',id='backbone_routine',hour=17,minute=17,second=0)

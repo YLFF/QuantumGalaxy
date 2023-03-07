@@ -1,0 +1,776 @@
+﻿<!doctype html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>量子星河-星图探索</title>
+  <link rel="shortcut icon" href="static/favicon.ico" />
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+  <!-- 画布
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"> -->
+</head>
+
+<body>
+  <div class="container">
+    <div class="position-relative" style="height:100vh;">
+      <!-- 画布 -->
+      <div id="main" style="height:100%;"></div>
+
+      <!-- 右上设置按钮 -->
+      <div class="position-absolute sticky-top top-0 mt-4 end-0">
+        <button class="navbar navbar-toggler qgi-front-module" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <!-- 搜索组 -->
+      <div class="sticky-top position-absolute top-0 mt-4" style="width:80%">
+        <form class="input-group rounded qgi-front-module px-0" role="search" onsubmit="goSearch(event); return false"
+          style="max-width:450px">
+
+          <input class="form-control px-4 py-3" type="search" placeholder="模糊检索" aria-label="Search" id="kw">
+
+          <button class="btn btn-outline-secondary dropdown-toggle text-nowarp" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false" id="searchmode" style="min-width:80px">模糊</button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item"
+                onclick='$("#kw").attr("placeholder", "模糊检索");$("#searchmode").text("模糊")'>模糊检索</a></li>
+            <li><a class="dropdown-item"
+                onclick='$("#kw").attr("placeholder", "精确检索");$("#searchmode").text("精确")'>精确检索</a></li>
+            <li><a class="dropdown-item"
+                onclick='$("#kw").attr("placeholder", "代码检索： 600000.SH");$("#searchmode").text("代码")'>代码检索</a></li>
+          </ul>
+        </form>
+
+
+        <div class="btn-group mt-2 qgi-front-module" role="group">
+          <!-- 清空画布按钮 -->
+          <button class="btn btn-outline-secondary" type="button" onclick="confirmClear(event)" data-bs-toggle="tooltip"
+            data-bs-placement="bottom" data-bs-title="清空画布">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2"
+              viewBox="0 0 16 16">
+              <path
+                d="M3.5 2a.5.5 0 0 0-.5.5v12a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-12a.5.5 0 0 0-.5-.5H12a.5.5 0 0 1 0-1h.5A1.5 1.5 0 0 1 14 2.5v12a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-12A1.5 1.5 0 0 1 3.5 1H4a.5.5 0 0 1 0 1h-.5Z" />
+              <path
+                d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5Z" />
+            </svg>
+          </button>
+
+          <!-- 图例开关按钮 -->
+          <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off" onclick="onToggleLegend(event)">
+          <label class="btn btn-outline-secondary" for="btncheck2" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            data-bs-title="开关图例"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-ui-radios" viewBox="0 0 16 16">
+              <path
+                d="M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zM0 12a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm7-1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM3 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+            </svg></label>
+
+
+          <!-- 取消选择按钮 -->
+          <button class="btn btn-outline-secondary" type="button" onclick="unselectAll(event)" data-bs-toggle="tooltip"
+            data-bs-placement="bottom" data-bs-title="取消选择">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+              class="bi bi-dash-square-dotted" viewBox="0 0 16 16">
+              <path
+                d="M2.5 0c-.166 0-.33.016-.487.048l.194.98A1.51 1.51 0 0 1 2.5 1h.458V0H2.5zm2.292 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zm1.833 0h-.916v1h.916V0zm1.834 0h-.917v1h.917V0zm1.833 0h-.917v1h.917V0zM13.5 0h-.458v1h.458c.1 0 .199.01.293.029l.194-.981A2.51 2.51 0 0 0 13.5 0zm2.079 1.11a2.511 2.511 0 0 0-.69-.689l-.556.831c.164.11.305.251.415.415l.83-.556zM1.11.421a2.511 2.511 0 0 0-.689.69l.831.556c.11-.164.251-.305.415-.415L1.11.422zM16 2.5c0-.166-.016-.33-.048-.487l-.98.194c.018.094.028.192.028.293v.458h1V2.5zM.048 2.013A2.51 2.51 0 0 0 0 2.5v.458h1V2.5c0-.1.01-.199.029-.293l-.981-.194zM0 3.875v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 5.708v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zM0 7.542v.916h1v-.916H0zm15 .916h1v-.916h-1v.916zM0 9.375v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .916v.917h1v-.917H0zm16 .917v-.917h-1v.917h1zm-16 .917v.458c0 .166.016.33.048.487l.98-.194A1.51 1.51 0 0 1 1 13.5v-.458H0zm16 .458v-.458h-1v.458c0 .1-.01.199-.029.293l.981.194c.032-.158.048-.32.048-.487zM.421 14.89c.183.272.417.506.69.689l.556-.831a1.51 1.51 0 0 1-.415-.415l-.83.556zm14.469.689c.272-.183.506-.417.689-.69l-.831-.556c-.11.164-.251.305-.415.415l.556.83zm-12.877.373c.158.032.32.048.487.048h.458v-1H2.5c-.1 0-.199-.01-.293-.029l-.194.981zM13.5 16c.166 0 .33-.016.487-.048l-.194-.98A1.51 1.51 0 0 1 13.5 15h-.458v1h.458zm-9.625 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zm1.834 0h.916v-1h-.916v1zm1.833 0h.917v-1h-.917v1zm1.833 0h.917v-1h-.917v1zM4.5 7.5a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7z" />
+            </svg>
+          </button>
+
+
+          <!-- 评论按钮 -->
+          <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-placement="bottom"
+            data-bs-title="反馈建议" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-text"
+              viewBox="0 0 16 16">
+              <path
+                d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+              <path
+                d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+
+
+      <!-- 下方工具栏 -->
+      <div class="btn-group position-absolute bottom-0 start-50 translate-middle qgi-front-module" role="group">
+        <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+          onclick="goExpandSearch(event)">扩展选中节点</button>
+
+        <!-- 
+        <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+          onclick="goExpandSearch2(event)">扩展两层</button>
+        -->
+        <!-- 下方工具栏 
+        <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">展开详情
+        </button>
+         -->
+        <!-- 下方工具栏 
+        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <div class="btn-group" role="group">
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" onclick="unselectAll(event)">取消选择</a></li>
+              <li><a class="dropdown-item" onclick="confirmClear(event)">清空页面</a></li>
+            </ul>
+          </div>
+          画布操作
+        </button>
+        -->
+      </div>
+
+
+      <div class="toast-container position-fixed top-0 end-0 p-3">
+        <!-- 返回评论成功消息框 -->
+        <div id="liveToast-commented" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <strong class="me-auto">星图收到！</strong>
+            <small>刚刚</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body" id="toast-content">
+            评论已提交，感谢您的建议！
+          </div>
+        </div>
+
+        <!-- 评论过短提示消息框 -->
+        <div id="liveToast-warning" class="toast align-items-center text-bg-warning border-0" role="alert"
+          aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              您的评论内容需要长于10字。
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+              aria-label="Close"></button>
+          </div>
+        </div>
+
+        <!-- 清画布确认 -->
+        <div id="liveToast-clearing" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-body">
+            是否清空当前画布？
+            <div class="mt-2 pt-2 border-top">
+              <button type="button" class="btn btn-primary btn-sm" onclick="clearScreen(event)"
+                data-bs-dismiss="toast">是</button>
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">否</button>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 搜索结果消息框 -->
+        <div id="liveToast-searched" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body" id="toast-search-result">
+              本次搜索新增 x 个点和 y 条关系
+            </div>
+            <button type="button" class="btn-close btn-close me-2 m-auto" data-bs-dismiss="toast"
+              aria-label="Close"></button>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+    <!-- 下方评论区 -->
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel"
+      style="height:auto;">
+      <div class="container">
+        <div class="offcanvas-header pb-1">
+          <h5 class="offcanvas-title" id="offcanvasBottomLabel">感谢您提供的修订意见</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+
+        <div class="offcanvas-body small py-1">
+          <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="commentTextarea1"
+              style="height:150px;"></textarea>
+            <label for="commentTextarea1">意见会关联到选中的点或边<span id="cmt-content"></span></label>
+          </div>
+          <button id="comment_btn" class="btn btn-outline-success my-2" onclick="goComment(event)">提交</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 设置区 -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header pb-0">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">欢迎使用星图</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <hr>
+      <div class="offcanvas-body d-flex flex-column ">
+        <ul class="navbar-nav justify-content-end mb-auto p-3">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page"
+              href="https://quantumgalaxy.feishu.cn/docx/OGqvdybQoo9fuixYM4xcydzBnob" target="_blank">星图侦察日报</a>
+          </li>
+          <li class="nav-item">
+          </li>
+        </ul>
+        <!--
+        <hr>
+        <ul class="navbar-nav justify-content-end p-3">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="#" target="_blank" disabled>系统文档</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" target="_blank">
+              关于我们
+            </a>
+            <a class="nav-link" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+              关于我们
+            </a>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+              </div>
+            </div>
+    
+          </li>
+        </ul>
+
+        -->
+      </div>
+      <hr>
+      <div class="p-3 pb-4">
+        <a class="nav-link" href="/login/logout">退出登录</a>
+      </div>
+
+
+
+      <!-- 详情区 -->
+      <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasLeft" aria-labelledby="offcanvasLeftLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasLeftLabel">Offcanvas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.1/echarts.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+
+
+    <script type="text/javascript">
+      //页面初始化，非echarts 部分
+      //初始化
+
+      //确认环境
+      web_root = "";
+      if (document.domain == "") {
+        web_root = "http://82.156.248.152:83";
+      }
+
+
+      const toastLiveCommented = document.getElementById('liveToast-commented')
+      const toastLiveWarning = document.getElementById('liveToast-warning')
+      const toastLiveClearing = document.getElementById('liveToast-clearing')
+      const toastLiveSearchResult = document.getElementById('liveToast-searched')
+
+      function showSearchResult(x, y) {
+        var toastInsSearchResult = new bootstrap.Toast(toastLiveSearchResult);
+        $("#toast-search-result").text("本次搜索新增 " + x + " 个点和 " + y + " 条关系");
+        toastInsSearchResult.show();
+      }
+
+      function confirmClear(event) {
+        const toast3 = new bootstrap.Toast(toastLiveClearing);
+        toast3.show();
+      }
+      // go Comment
+      function goComment(event) {
+        var comment = $("#commentTextarea1").val();
+        if (comment.length < 10) {
+          const toast2 = new bootstrap.Toast(toastLiveWarning);
+          toast2.show();
+          return
+        }
+        console.log(event);
+        console.log(comment);
+
+        var selected_nl = extract_selected_nl();
+        $.post(web_root + "/comment/write_comment",
+          { content: comment, node_name: selected_nl.node_name, link_name: selected_nl.link_name },
+          function (data, status) {
+            console.log(data);
+            console.log(status);
+
+            const toast = new bootstrap.Toast(toastLiveCommented);
+            toast.show();
+          }
+        );
+
+        const offcanvas = bootstrap.Offcanvas.getInstance('#offcanvasBottom');
+        offcanvas.hide();
+      }
+
+
+
+      //水印
+      const canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 250;
+      const ctx = canvas.getContext('2d');
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.globalAlpha = 0.05;
+      ctx.font = '20px Microsoft Yahei';
+      ctx.translate(125, 125);
+      ctx.rotate(-Math.PI / 8);
+      ctx.fillText('量子星河-星图', 0, 0);
+      ctx.save()
+
+      function setWaterMark(t) {
+        ctx.restore();
+        ctx.fillText(t, 0, 30);
+      }
+
+      // Ready
+      login_info = {}
+      $(window).ready(function () {
+        var tooltipTriggerList = document.querySelectorAll('[data-bs-title="反馈建议"]')
+        var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        var tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        //获取用户信息
+        $.getJSON("/qgapp/login_status", {}, function (li) {
+          console.log(li);
+          login_info = li
+          setWaterMark(login_info.user)
+        })
+        //处理URL自带搜索
+        var search_param = {};
+        if (keyword = getUrlParamCN("exact_kw")) {
+          console.log("精确：" + keyword);
+          search_param = { exact_kw: keyword };
+        } else if (keyword = getUrlParamCN("vague_kw")) {
+          console.log("模糊：" + keyword);
+          search_param = { vague_kw: keyword };
+        } else if (keyword = getUrlParamCN("code_kw")) {
+          console.log("代码：" + keyword);
+          search_param = { code_kw: keyword };
+        }
+        search_param.name = keyword;
+        if (keyword) {
+          $.getJSON(web_root + "/qgapp/atlas_query",
+            search_param,
+            render
+          )
+
+        }
+      });
+
+    </script>
+
+
+    <script type="text/javascript">
+      all_nodes_map = {};
+      all_links_map = {};
+
+
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('main'));// 指定图表的配置项和数据
+
+      var option0 = {
+        backgroundColor: {
+          type: 'pattern',
+          image: canvas,
+          repeat: 'repeat'
+        },
+        legend: { show: false, left: "right", top: "middle", orient: "vertical", itemGap: 20, icon: "circle", itemHeight: 25 },
+        tooltip: { show: false },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+          {
+            name: 'atlas',
+            type: 'graph',
+            layout: 'force',
+            symbolSize: 50,
+            roam: true,
+            draggable: true,
+            label: {
+              show: true,
+              //formatter: function (params) {
+              // return params.name.split("_")[0]+(all_nodes_map[params.name].code?"\n"+all_nodes_map[params.name].code:"");
+              //},
+
+              formatter: function (params) {
+                return all_nodes_map[params.name].rawname + (all_nodes_map[params.name].code ? "\n" + all_nodes_map[params.name].code : "");
+              },
+            },
+            categories: [
+              {
+                name: "产品",
+                itemStyle: { color: "#0362A1", borderColor: "lightskyblue", borderWidth: 0 }
+              },
+              {
+                name: "企业",
+                itemStyle: { color: "#FFF", borderColor: "#00AB0B", borderWidth: 3 },
+                label: {
+                  formatter: function (params) {
+                    return "qiye";
+                  },
+                },
+
+              },
+              {
+                name: "工艺",
+                itemStyle: { color: "#999999", borderColor: "lightskyblue", borderWidth: 0 }
+              },
+              {
+                name: "需求",
+                itemStyle: { color: "#CC0000", borderColor: "lightskyblue", borderWidth: 0 }
+              },
+              {
+                name: "指标",
+                itemStyle: { color: "#FFFFCC", borderColor: "lightskyblue", borderWidth: 0 }
+              }
+            ],
+            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbolSize: [4, 10],
+            edgeLabel: {
+              show: false,
+              fontSize: 14,
+            },
+            selectedMode: "single", //"multiple",
+            select: {
+              itemStyle: { borderColor: "lightskyblue", borderWidth: 6 },
+              lineStyle: { width: 6 },
+              edgeLabel: { show: true },
+            },
+            lineStyle: {
+              opacity: 0.9,
+              width: 2,
+              curveness: 0
+            },
+            force: {
+              repulsion: 80,
+              gravity: 0.01,
+              edgeLength: [80, 250],
+              fraction: 0.6
+            }
+          }
+        ]
+      };
+
+      //myChart.on('finished', function () {
+      //  $("#search_btn").text("Search");
+      //});
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option0);
+
+
+      function extract_selected_nl() {
+        let relnode = [];
+        let rellink = [];
+        var selectedMap = myChart.getOption().series[0].selectedMap;
+        for (var name in selectedMap) {
+          if (selectedMap[name]) {
+            if (name.search(" > ") >= 0) {
+              rellink.push(name);
+            } else {
+              relnode.push(name);
+            }
+          }
+        }
+
+        return { node_name: relnode, link_name: rellink };
+      }
+
+
+      //resize
+      $(window).resize(function () {
+        myChart.resize();
+      });
+
+
+      //获取URL参数
+      function getUrlParamCN(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = decodeURI(window.location.search).substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+      }
+
+
+    </script>
+
+
+    <script>
+      function render(res) {
+        console.log("render");
+        console.log(res);
+        //let option = JSON.parse(JSON.stringify(option0));
+        let option = {};
+        //res = { data: { nodes: [], links: [] } }
+        var inc_num_n = 0;
+        var inc_num_l = 0;
+
+        var nodes = [
+          {
+            name: 'Node 1',
+            category: ["Product"],
+          },
+          {
+            name: 'Node 2',
+            category: "Company",
+          },
+          {
+            name: 'Node 3',
+            category: "Product",
+          },
+          {
+            name: 'Node 4',
+            category: "Product",
+          }
+        ];
+        var nodes = res.nodes;
+        nodemap_neoid_name = {};
+        var i = 0
+        nodes.forEach(function (node) {
+          if (Array.isArray(node.category)) {
+            node.category = node.category[0]
+          }
+          node.rawname = node.name;
+          node.name = node.rawname + "_" + node.category + "_" + node.neoid;
+
+          nodemap_neoid_name[node.neoid] = node.name;
+          //delete node.id
+          if (!(node.name in all_nodes_map)) {
+            node.show = true;
+            all_nodes_map[node.name] = node;
+            inc_num_n++;
+
+          }
+        });
+
+
+        var links = [
+          {
+            source: 0,
+            target: 1,
+            label: {
+              show: true
+            }
+          },
+          {
+            source: 'Node 1',
+            target: 'Node 3'
+          },
+          {
+            source: 'Node 2',
+            target: 'Node 3'
+          },
+          {
+            source: 'Node 2',
+            target: 'Node 4',
+            category: "储运"
+          },
+          {
+            source: 'Node 1',
+            target: 'Node 4',
+            category: "父节点"
+          }
+        ];
+        var links = res.links;
+        links.forEach(function (link) {
+          let a = link.category || "原材料";
+          link.source = nodemap_neoid_name[link.source];
+          link.target = nodemap_neoid_name[link.target];
+          link.label = { formatter: a };
+          link.category = a;
+          if (link.category == "父节点") {
+            link.value = 250;
+            link.lineStyle = { color: "#9933FF", width: 2 };
+          } else if (link.category == "储运") {
+            link.value = 250;
+            link.lineStyle = { color: "#FFB366", width: 2 };
+          } else if (link.category == "反映") {
+            link.value = 350;
+          } else if (link.category == "生产") {
+            link.value = 350;
+          } else {
+            link.value = 50;
+
+          }
+          var n = link.source + " > " + link.target;
+
+
+          if (!(n in all_links_map)) {
+            link.show = true;
+            link.name = n;
+            all_links_map[n] = link;
+            inc_num_l++;
+          }
+        });
+
+        var toShowNodes = []
+        for (var name in all_nodes_map) {
+          node = all_nodes_map[name]
+          if (!node.show) {
+            continue;
+          }
+          if (node.name == keyword) {
+            node.fixed = true;
+            node.x = myChart.getWidth() / 2;
+            node.y = myChart.getHeight() / 2;
+            node.symbolSize = 75;
+          } else {
+            node.fixed = false;
+            delete node.symbolSize;
+          }
+          toShowNodes.push(node);
+        }
+
+        var toShowLinks = []
+        for (var name in all_links_map) {
+          link = all_links_map[name]
+          if (!link.show) {
+            continue;
+          }
+          toShowLinks.push(link);
+        }
+
+        option = {
+          series: [{
+            data: toShowNodes,
+            links: toShowLinks,
+            label: {
+              show: true
+            }
+          }],
+          backgroundColor: {
+            type: 'pattern',
+            image: canvas,
+            repeat: 'repeat'
+          }
+        };
+        console.log(option)
+
+        //myChart.clear();
+        myChart.setOption(option);
+        myChart.hideLoading();
+        showSearchResult(inc_num_n, inc_num_l);
+        console.log(myChart.getOption());
+        onToggleLegend();
+      }
+
+      //搜索框发送搜索请求
+      function goSearch(event) {
+        keyword = $("#kw").val()
+        console.log(event);
+        if (keyword.length) {
+          myChart.showLoading();
+          //精确检索
+          var search_param = {};
+          if ($("#searchmode").text() == "精确") {
+            console.log("精确：" + keyword);
+            search_param = { exact_kw: keyword };
+          } else if ($("#searchmode").text() == "模糊") {
+            console.log("模糊：" + keyword);
+            search_param = { vague_kw: keyword };
+          } else if ($("#searchmode").text() == "代码") {
+            console.log("代码：" + keyword);
+            search_param = { code_kw: keyword };
+          }
+          search_param.name = keyword;
+          $.getJSON(web_root + "/qgapp/atlas_query",
+            search_param,
+            render
+          )
+        }
+
+      }
+
+      //扩展按钮发送搜索请求
+      function goExpandSearch(event) {
+        keywords = extract_selected_nl().node_name.map(function (n) {
+          return all_nodes_map[n].rawname;
+        })
+        console.log(keywords);
+        if (keywords.length) {
+          myChart.showLoading();
+          $.getJSON(web_root + "/qgapp/atlas_query",
+            { expand_kws: keywords },
+            render
+          )
+        }
+      }
+
+      //图例开关
+      function onToggleLegend(event) {
+        myChart.setOption({ legend: { show: $("#btncheck2").get(0).checked } });
+
+      }
+
+      // 取消选择    
+      function unselectAll(event) {
+        var selectedMap = myChart.getOption().series[0].selectedMap;
+        for (var k in selectedMap) {
+          myChart.dispatchAction({ type: "unselect", name: k })
+        }
+      }
+
+      // 执行清画布
+      function clearScreen(event) {
+        all_nodes_map = {};
+        all_links_map = {};
+        myChart.clear();
+        myChart.setOption(option0);
+        myChart.hideLoading();
+        console.log("clearScreen");
+      }
+
+    // 单选
+
+      /*
+      myChart.on('click', function (params) {
+        if (params.dataType == "node") {
+          console.log("点击：" + params.name)
+          keyword = all_nodes_map[params.name].rawname;
+        }
+      });
+  
+      myChart.on('dblclick', function (params) {
+        if (params.dataType == "node") {
+          console.log("双击：" + params.name)
+          keyword = all_nodes_map[params.name].rawname;
+          myChart.showLoading();
+          $.getJSON("http://82.156.248.152:83/qgapp/atlas_query",
+            { name: keyword },
+            render
+          )
+        }
+      });
+      */
+    </script>
+    <style type="text/css">
+      body {
+        overflow: hidden;
+      }
+
+      .qgi-front-module {
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, .2);
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

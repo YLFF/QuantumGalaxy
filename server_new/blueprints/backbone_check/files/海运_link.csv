@@ -1,0 +1,76 @@
+,name,source,target,sourcename,targetname,info
+1gNdwRD1,储运,vyZAfcxv,1IOguknp,原油航运,原油,
+OgMPR3sR,原材料,GyPMDj0Q,ivMMn3zV,码头运营,海运服务,
+sG2d4NqH,反映,rULmSWup,WedTZXhM,成品油运输指数,成品油航运,
+xKNwbvsF,生产,5SXYWMIo,WedTZXhM,前线海运 ,成品油航运,补充信息</font>
+J7B1KAL9,生产,X3RiN6LR,WedTZXhM,Scorpio Tankers ,成品油航运,补充信息</font>
+SpMIGhUi,生产,AreXBZUQ,WedTZXhM,International Seaways ,成品油航运,补充信息</font>
+DMRypnlN,父节点,WedTZXhM,VqvmtzRn,成品油航运,MR型油轮成品油运输航运,
+bpJfdrh3,父节点,WedTZXhM,mDubLRYq,成品油航运,LR1型油轮成品油航运,
+jbGgqv5X,反映,r47NYS17,vyZAfcxv,原油运输指数,原油航运,
+w7eB238X,父节点,vyZAfcxv,nyJcXdbj,原油航运,阿芙拉型油轮原油航运,
+VAO2IBI3,父节点,vyZAfcxv,RuBVVqpd,原油航运,苏伊士型油轮原油航运,
+vlxNXGfU,父节点,Gqp6bYQr,WedTZXhM,油气航运,成品油航运,
+z2SswQAK,父节点,Gqp6bYQr,vyZAfcxv,油气航运,原油航运,
+WMY5ptO9,父节点,vyZAfcxv,q0X3O4he,原油航运,VLCC型油轮原油航运,
+wbZgV4kO,父节点,Gqp6bYQr,oUPVakmU,油气航运,液化天然气航运,
+Ak8uaush,生产,AreXBZUQ,vyZAfcxv,International Seaways ,原油航运,补充信息</font>
+Q3M7YYAv,生产,qydzXWqI,vyZAfcxv,招商轮船 ,原油航运,补充信息</font>
+90zgB4hZ,生产,ZMhXLvmg,vyZAfcxv,招商南油 ,原油航运,补充信息</font>
+oLgP2wB5,生产,2STRcTZy,vyZAfcxv,中远海能 ,原油航运,补充信息</font>
+06Y1jiWu,父节点,ivMMn3zV,Gqp6bYQr,海运服务,油气航运,
+e9PNVAfS,生产,2vyOF7zY,oUPVakmU,GOLAR,液化天然气航运,补充信息</font>
+AoBkZNCZ,储运,WedTZXhM,g6uWMZcA,成品油航运,成品油,
+6v2J4pUJ,储运,oUPVakmU,uU9s4NBe,液化天然气航运,液化天然气,
+cs446qPK,父节点,ivMMn3zV,PwWI5AcC,海运服务,滚装船航运,
+QBFCFtGG,父节点,ivMMn3zV,WyiW9Ybb,海运服务,干散货航运,
+OL0M039m,生产,qydzXWqI,oUPVakmU,招商轮船 ,液化天然气航运,补充信息</font>
+xyZLybPL,生产,6awBFlAq,PwWI5AcC,中远海特 ,滚装船航运,补充信息</font>
+QDeGelCu,反映,3isowOYS,WyiW9Ybb,波罗的海干散货指数,干散货航运,
+00QFKByW,父节点,WyiW9Ybb,LV9ToPoh,干散货航运,大灵便型散货船航运,
+U2Iuw9KQ,父节点,NghqKmHd,yvJgGAl5,VLOC型散货船航运,小灵便型散货船航运,
+w7JlD9EG,父节点,WyiW9Ybb,Zpj7pqTS,干散货航运,巴拿马型散货船航运,
+67Ks6uit,父节点,WyiW9Ybb,5pgXx7zb,干散货航运,好望角型散货船航运,
+1eTLdAVa,生产,VEeqXad9,WyiW9Ybb,国航远洋 ,干散货航运,补充信息</font>
+7n64Oqx8,储运,WyiW9Ybb,vzKxbqXz,干散货航运,铁矿石,
+wadQ3Apo,储运,WyiW9Ybb,s7BXWdwa,干散货航运,纸浆,
+G8ZkQKce,生产,qydzXWqI,WyiW9Ybb,招商轮船 ,干散货航运,补充信息</font>
+21NuZCxq,储运,WyiW9Ybb,pt0brPyD,干散货航运,粮食,
+OwflbeP3,储运,WyiW9Ybb,NfZUWdh2,干散货航运,水泥,
+yHo5nfyK,父节点,WyiW9Ybb,NghqKmHd,干散货航运,VLOC型散货船航运,
+PpGfFJJf,生产,uxk4LdIH,WyiW9Ybb,宁波海运 ,干散货航运,补充信息</font>
+bf8L5gUX,生产,r3W94n99,WyiW9Ybb,金海洋集团 ,干散货航运,补充信息</font>
+Vy21yCEZ,父节点,ivMMn3zV,BUd6SEB7,海运服务,集装箱航运,
+nJ1Ytvdy,生产,Yzk6fv0H,BUd6SEB7,中远海控 ,集装箱航运,补充信息</font>
+kjhF912a,生产,Yzk6fv0H,GyPMDj0Q,中远海控 ,码头运营,补充信息</font>
+ZszsaG5Q,生产,ov5ao0V2,GyPMDj0Q,上港集团,码头运营,补充信息</font>
+MQnLfvZw,储运,BUd6SEB7,8Dj0mrP2,集装箱航运,集装箱,
+7nh8DrGJ,生产,8HyO5yoc,8Dj0mrP2,中集集团,集装箱,补充信息</font>
+eqt49IJK,生产,WZTFCOK9,BUd6SEB7,中谷物流,集装箱航运,补充信息</font>
+4PK799Jt,生产,ipwa2mL2,BUd6SEB7,长荣海运,集装箱航运,补充信息</font>
+NN7N5HNv,父节点,WyiW9Ybb,GyPMDj0Q,干散货航运,码头运营,
+7QBhRyyF,反映,HKLwDqvy,BUd6SEB7,波罗的海货运指数,集装箱航运,
+htBWjTts,反映,7BzwlAGU,oUPVakmU,LNG Carrier Spot,液化天然气航运,
+UrjwfriT,反映,JgzbsfJB,1IOguknp,英国布伦特原油,原油,
+wSK57hKY,反映,aqHZiZbs,ivMMn3zV,中国海员平均工资,海运服务,
+QTVVpkqb,反映,0ud0BPlO,q0X3O4he,VLCC 运单主要航线平均TCE,VLCC型油轮原油航运,
+kMP5khSk,反映,0fh6TR0j,xkGXp8Xb,LR2型油轮主要线路平均TCE,LR2型油轮成品油运输航运,
+RoRWpzi5,反映,Bfh3H822,GyPMDj0Q,宁波港港口货物吞吐量,码头运营,
+hsypVa2V,反映,n2WNfCZd,GyPMDj0Q,北部港湾港口货物吞吐量,码头运营,
+jsk7fVwE,反映,76JBv3ow,GyPMDj0Q,广州港港口货物吞吐量,码头运营,
+WOBWvORQ,反映,WeZbEAmF,GyPMDj0Q,上港集团港口货物吞吐量,码头运营,
+YDuAQcyH,生产,MukbRLMK,GyPMDj0Q,宁波港,码头运营,补充信息</font>
+gxRN8TH3,生产,hXdNuRCh,BUd6SEB7,集装箱船,集装箱航运,补充信息</font>
+d3kP6r7E,原材料,38bLoES5,ivMMn3zV,货船,海运服务,
+pFrlCu6L,生产,qQh2oj7H,LbzWi6HX,GTT,货船设计,
+iglIoFrm,父节点,38bLoES5,YVkZ5glm,货船,滚装船,
+cAJzdnEm,父节点,38bLoES5,x9wJq54Z,货船,集装箱船,
+JjkOljfh,父节点,38bLoES5,8zcqUFVq,货船,LNG船,
+XJPjKf6r,生产,QSnOgjZK,38bLoES5,中国重工,货船,
+wJykzg4r,父节点,38bLoES5,kMgomfkq,货船,风电安装船,
+IXLNp6gm,父节点,38bLoES5,qjt0h4Y3,货船,原油运输船,
+nvQYr7yp,原材料,LbzWi6HX,38bLoES5,货船设计,货船,
+FB0rAxl3,父节点,38bLoES5,aLBPGvLt,货船,成品油运输船,
+zpRCBkxf,生产,KxVdTp9H,38bLoES5,中国船舶,货船,
+Nmt328AU,父节点,WedTZXhM,xkGXp8Xb,成品油航运,LR2型油轮成品油运输航运,
+yLjVqSNe,储运,PwWI5AcC,D5o4QtvC,滚装船航运,汽车,

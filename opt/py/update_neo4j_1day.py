@@ -45,7 +45,9 @@ def update_from_name():
     sql="select code,close_price from ticker_data where date='%s' and code in %s"%(today,codestr1)
     r=mysql.read_query(sql)
     neo.update_company_value(data=r)
-
+    sql="select code, market_value2 from processed_data where date='%s' and code in %s and not market_value2 is null"%(today,codestr1)
+    r=mysql.read_query(sql)
+    neo.update_node_market_value(data=r)
     sql="select code, stdchg3m from processed_data where date='%s' and code in %s"%(today,codestr1)
     result=mysql.read_query(sql)
     neo.update_company_stdcgh3m(data=result)
@@ -79,7 +81,9 @@ def update_from_code_1day():
     r=mysql.read_query(sql)
     
     neo.update_node_value(data=r)
-    
+    sql="select code, market_value2 from processed_data where date='%s' and code in %s and not market_value2 is null"%(today,codestr1)
+    r=mysql.read_query(sql)
+    neo.update_node_market_value(data=r)
     sql="select code,date from ticker_data where date='%s' and code in %s  "%(today,codestr1)
     r=mysql.read_query(sql)
     neo.update_node_data_date(data=r)

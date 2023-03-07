@@ -5,6 +5,9 @@ from .models import *
 
 from flask import render_template,redirect,abort,url_for,request
 import json 
+@backbone.route('/new',methods=['GET','POST'])
+def new_graph():
+        return render_template('new.html')
 
 @backbone.route('/example',methods=['GET'])
     

@@ -174,7 +174,8 @@ def metajob(region):
     test_sql='select * from ticker_data where date = "%s" limit 5'%today.__format__("%Y-%m-%d")
     result=mysql.read_query(test_sql)
     if len(result)==0:
-        logger.info('no data from ticker_data for region %s on %s'%(region,today.__format__("%Y-%m-%d")))
+        info='no data from ticker_data for region %s on %s'%(region,today.__format__("%Y-%m-%d"))
+        logger.info(info)
     else:
         df=query_code(mysql,today)
         logger.info('begin compute')
@@ -185,7 +186,16 @@ def metajob(region):
         sql='insert ignore into processed_data (code,date,change_rate_1d,change_rate_3d,change_rate_2w,change_rate_1m,change_rate_3m,change_rate_6m,change_rate_1y,stdchg7d,stdchg1m,stdchg3m,vol) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         val=result.values.tolist()
         number=mysql.write_many_query(sql,val)
-        return result
+        info='processed %s records for region %s on  %s'%(number,region,today.__format__("%Y-%m-%d"))
+        if number<=500:
+            info+='******may have some problems******'
+    from QGI.feishu import text_group_msg
+    try:
+        
+        info='routine report:    '+info
+        text_group_msg(info)
+    except:pass
+    return info
 
         
 

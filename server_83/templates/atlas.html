@@ -1,0 +1,195 @@
+﻿<!doctype html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>量子星河-星图探索</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <div class="d-flex" role="search" style="margin-top: 5px;">
+      <input class="form-control me-2" type="search" placeholder="名称检索" aria-label="Search" id="kw">
+      <button class="btn btn-outline-success" onclick="goSearch(event)">Search</button>
+    </div>
+    <div id="main" style="height:80vh;"></div>
+  </div>
+  <!-- 为 ECharts 准备一个定义了宽高的 DOM -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+  <script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));// 指定图表的配置项和数据
+
+    var option0 = {
+      tooltip: { show: false },
+      animationDurationUpdate: 1500,
+      animationEasingUpdate: 'quinticInOut',
+      series: [
+        {
+          name: 'atlas',
+          type: 'graph',
+          layout: 'force',
+          symbolSize: 50,
+          roam: true,
+          label: {
+            show: true
+          },
+          categories: [
+            {
+              name: "产品",
+              itemStyle: { color: "#0362A1" }
+            },
+            {
+              name: "企业",
+              itemStyle: { color: "#FFF", borderColor: "#00AB0B", borderWidth: 4 }
+            },
+            {
+              name: "工艺",
+              itemStyle: { color: "#999999" }
+            },
+            {
+              name: "需求",
+              itemStyle: { color: "#CC0000" }
+            },
+            {
+              name: "指标",
+              itemStyle: { color: "#FFFFCC" }
+            }
+          ],
+          edgeSymbol: ['circle', 'arrow'],
+          edgeSymbolSize: [4, 10],
+          edgeLabel: {
+            fontSize: 14
+          },
+          lineStyle: {
+            opacity: 0.9,
+            width: 2,
+            curveness: 0
+          },
+          force: {
+            repulsion: 1000,
+            gravity: 0.1,
+            edgeLength: 200,
+            fraction: 0.2
+          }
+        }
+      ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option0);
+
+
+  </script>
+  <script>
+    function render(res) {
+      let option = JSON.parse(JSON.stringify(option0));
+      //res = {}
+      var nodes = [
+        {
+          name: 'Node 1',
+          category: "产品",
+        },
+        {
+          name: 'Node 2',
+          category: "企业",
+        },
+        {
+          name: 'Node 3',
+          category: "产品",
+        },
+        {
+          name: 'Node 4',
+          category: "产品",
+        }
+      ];
+      nodes.forEach(function (node) {
+        if (node.name == keyword) {
+          node.fixed = true;
+          node.x = myChart.getWidth() / 2,
+            node.y = myChart.getHeight() / 2,
+            node.symbolSize = 80;
+        }
+      });
+
+
+
+      var links = [
+        {
+          source: 0,
+          target: 1,
+          label: {
+            show: true
+          }
+        },
+        {
+          source: 'Node 1',
+          target: 'Node 3'
+        },
+        {
+          source: 'Node 2',
+          target: 'Node 3'
+        },
+        {
+          source: 'Node 2',
+          target: 'Node 4',
+          category: "储运"
+        },
+        {
+          source: 'Node 1',
+          target: 'Node 4',
+          category: "父节点"
+        }
+      ];
+      links.forEach(function (link) {
+        let a = link.category || "原材料";
+        link.label = { show: true, formatter: a};
+        if (link.category == "父节点") {
+          link.lineStyle = { color: "#9933FF", width: 2 };
+        } else if (link.category == "储运") {
+          link.lineStyle = { color: "#FFB366", width: 2 };
+        }
+      });
+
+
+      option.series[0].data = nodes
+      option.series[0].links = links
+
+      myChart.clear();
+      myChart.setOption(option);
+      //console.log(myChart.getOption())
+    }
+
+    function goSearch(event) {
+      keyword = $("#kw").val()
+      console.log(event);
+      console.log($("#kw").val());
+      $.getJSON("http://82.156.248.152:83/qgapp/atlas_query",
+        { name: keyword },
+        render
+      )
+      render()
+    }
+
+    myChart.on('dblclick', function (params) {
+      if (params.dataType == "node") {
+        //console.log(params)
+        console.log(params.name)
+        keyword = params.name
+        $.getJSON("http://82.156.248.152:81/qgapp/atlas_query",
+          { name: params.name },
+          render
+        )
+        render()
+
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
