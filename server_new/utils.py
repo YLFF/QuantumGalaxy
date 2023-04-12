@@ -4,7 +4,7 @@ import logging
 import sys     
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 import re
-
+from QGI.feishu import text_group_msg
 import numpy as np
 import pandas as pd
 from jira import JIRA
@@ -37,3 +37,17 @@ def get_mysql(database='qgdbs'):
     #database='qgdbs'
     mysql=MYSQL(host,user,password,database)
     return mysql
+
+def openai_test():
+    try:
+        r=requests.get('http://172.21.0.14:84/test',timeout=(5, 10))
+        r=r.json()
+        if r['code']==0:
+            r['msg']='ALL OK'
+    except:
+        r={'code':-3,'msg':':84 SERVER DOWN'}
+    return r
+
+def send_test_msg(msg):
+    text_group_msg(str(msg))
+    return True

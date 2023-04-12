@@ -1,19 +1,19 @@
 ,name,code,x,y,external,category,cate_ch,backbone
-VWbHTE9U,国内鸡蛋平均批发价,S5065109,-240,-610,,Indicator,指标,畜牧业
-Ew51YZ2y,出栏成本价:蛋鸡苗,S6947985,-485,-790,,Indicator,指标,畜牧业
-eBoY2C2X,鸡苗报价,人工指标,-850,-260,,Indicator,指标,畜牧业
-wnre1zN2,国内36个城市鸡蛋平均零售价,S5063757,-320.00000000000006,-500,,Indicator,指标,畜牧业
-oWru54Lt,蛋鸡饲料价格,S5063769,-1420,-45,,Indicator,指标,畜牧业
-RrudcyzI,生猪饲料市场均价,S004374158,-1360,70,,Indicator,指标,畜牧业
-M1elPgXd,白条鸭报价,人工指标,-540,340,,Indicator,指标,畜牧业
-iWLLgsWK,USA National Shell Egg Index Price,人工指标,-115,-644,,Indicator,指标,畜牧业
-8pD5l3AV,USA - Carcass Cutout Values,人工指标,70,680,,Indicator,指标,畜牧业
-qsaIq8NI,LH.CME,人工指标,-410,635,,Indicator,指标,畜牧业
-ozZXZcXn,LH.DCE,人工指标,-530,613.87,,Indicator,指标,畜牧业
-EXmQCUVI,国内36城猪肉平均零售价,S5063753,-157.5,562.5,,Indicator,指标,畜牧业
-GOB0NDQz,欧盟猪肉平均价格,人工指标,-33.75,603.85,,Indicator,指标,畜牧业
-MW4P3lXH,生猪出栏体重,人工指标,-850,764.5,,Indicator,指标,畜牧业
-ZVebXtSQ,猪粮比,人工指标,-827,880,,Indicator,指标,畜牧业
-7p2MjBgy,国内22省市生猪平均价格,S0113891,-650,620,,Indicator,指标,畜牧业
-Gx4H5PMK,国内能繁母猪存栏量,S0114187,-770,664.5,,Indicator,指标,畜牧业
-TKKf6EwN,全国猪肉平均批发价,S5065106,-287.5,545,,Indicator,指标,畜牧业
+dUQ3U9Oi,国内鸡蛋平均批发价,S5065109,-240,-610,,Indicator,指标,畜牧业
+bq2G1p4r,出栏成本价:蛋鸡苗,S6947985,-485,-790,,Indicator,指标,畜牧业
+8N6S3xUJ,鸡苗报价,人工指标,-850,-260,,Indicator,指标,畜牧业
+1ssogzeV,国内36个城市鸡蛋平均零售价,S5063757,-320.00000000000006,-500,,Indicator,指标,畜牧业
+ayg3222R,蛋鸡饲料价格,S5063769,-1420,-45,,Indicator,指标,畜牧业
+j9tetyQs,生猪饲料市场均价,S004374158,-1360,70,,Indicator,指标,畜牧业
+7aPB5fe7,白条鸭报价,人工指标,-540,340,,Indicator,指标,畜牧业
+BqrecdKo,USA National Shell Egg Index Price,人工指标,-115,-644,,Indicator,指标,畜牧业
+cJbkzB9Y,USA - Carcass Cutout Values,人工指标,-33.75,813.87,,Indicator,指标,畜牧业
+3ZKqRaWl,LH.CME,人工指标,-410,635,,Indicator,指标,畜牧业
+e4wr3dqQ,LH.DCE,人工指标,-530,613.87,,Indicator,指标,畜牧业
+v8nACnKD,国内36城猪肉平均零售价,S5063753,-157.5,613.87,,Indicator,指标,畜牧业
+Ssc4fqcL,欧盟猪肉平均价格,人工指标,-33.75,670,,Indicator,指标,畜牧业
+NtFgDdwP,生猪出栏体重,人工指标,-850,764.5,,Indicator,指标,畜牧业
+5hODghJv,猪粮比,人工指标,-827,880,,Indicator,指标,畜牧业
+lUQZwsO1,国内22省市生猪平均价格,S0113891,-650,620,,Indicator,指标,畜牧业
+oW81RhTk,国内能繁母猪存栏量,S0114187,-770,664.5,,Indicator,指标,畜牧业
+av6qA1F3,全国猪肉平均批发价,S5065106,-280,602.97,,Indicator,指标,畜牧业

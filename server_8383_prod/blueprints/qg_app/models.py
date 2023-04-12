@@ -17,12 +17,12 @@ def get_neo():
         neo_user = "QG_Editor"
         neo_password = "editor"
     else:
-        #neo_uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
-        #neo_user = "neo4j"
-        #neo_password = "QuantumGalaxy"
-        neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
-        neo_user = "QG_Editor"
-        neo_password = "editor"
+        neo_uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
+        neo_user = "neo4j"
+        neo_password = "QuantumGalaxy"
+        #neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+        #neo_user = "QG_Editor"
+        #neo_password = "editor"
 
 
     neo=Neo4j(neo_uri,neo_user,neo_password)
@@ -72,6 +72,13 @@ def node_process(node):
     if prop.get('stdchg3m',None):
         dic['more_info']['stdchg3m']=prop['stdchg3m']
 
+
+    #关于配图。图片索引为多维表格的token加recordid（默认为节点表），每次联调后需要下载多为表格中图片到固定位置，并把token和id存入neo。还需要做针对产品的下载图片接口
+    if prop.get('file_token',None):
+        dic['more_info']['file_token']=prop['file_token']
+    if prop.get('record_id',None):
+        dic['more_info']['record_id']=prop['record_id']
+    
     ###dic中可能存在无法json化的数据 如Date类型###
     return dic
 
@@ -414,3 +421,15 @@ def bitable_works(bitapp_token,subgraph_name=None):
             return result
         else:
             return {'code':-2,'msg':'检查节点/边/指标表失败，可能是子图名有误。检查到的结果：节点：%s\t\n边:%s \t\n 指标:%s'%(nodes,links,indicators)}
+def find_file(token,id):
+    import os
+    root_dir=r'E:\wangzhilin\QuantumGalaxy\pics'
+    file_dir=os.path.join(root_dir,token)
+    files=os.listdir(file_dir)
+    file_name=None
+    for file in files:
+        name=os.path.splitext(file)
+        if name[0]==id:
+            file_name=name[0]+name[1]
+    return  file_dir,file_name
+   

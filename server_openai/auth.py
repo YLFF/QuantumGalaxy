@@ -1,0 +1,9 @@
+MYSQL_HOST='localhost'
+MYSQL_USER='Local_Editor'
+MYSQL_PASSWORD='QuantumGalaxy'
+NOVA_URI = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
+NOVA_USER = "neo4j"
+NOVA_PASSWORD = "QuantumGalaxy"
+ATLAS_URI = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+ATLAS_USER = "QG_Editor"
+ATLAS_PASSWORD = "editor"

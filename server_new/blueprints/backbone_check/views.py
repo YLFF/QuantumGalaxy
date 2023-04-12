@@ -3,7 +3,7 @@ from . import backbone_check
 
 from .models import xml2graph_worker
 
-from flask import render_template,redirect,abort,url_for,request,session,g,send_from_directory,make_response
+from flask import render_template,redirect,abort,url_for,request,session,g,send_from_directory,make_response,jsonify
 import json 
 '''在首页输入名称和字符串并跳转，进行检查后到确认页面向用户展示解析结果，进行确认后把相关解析结果存储到后端'''
 def pop_session_attr(name):
@@ -70,6 +70,9 @@ def confirm():
     except Exception as e:
         print(e)
         return redirect(url_for('backbone_check.backbone_checker'))
+@backbone_check.route('/raw')
+def raw():
+    return jsonify(session['graph_data'])
 @backbone_check.route('/scout_doc',methods=["GET"])
 def scout_doc():
     import pandas as pd

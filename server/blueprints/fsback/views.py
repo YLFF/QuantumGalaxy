@@ -99,7 +99,13 @@ def fold_api():
                 },
                 "msg":"no token!"
                 })
-
+@fsback.route('/fold_children',methods=['GET'])
+def fold_children():
+    if request.args.get('fld_token'):
+        token=request.args.get('fld_token')
+        r=fetch_folder_children(token)
+        return r
+    else:return jsonify(code=-1,message='no token')
 
 def build_send_msg_card(text,title,receive_id=None):
     #print('%s'%receive_id)

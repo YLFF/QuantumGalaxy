@@ -95,7 +95,7 @@ def update_from_code_1day():
     sql="select code, change_rate_1d from processed_data where date='%s' and code in %s and not change_rate_1d is null"%(today,codestr1)
     result=mysql.read_query(sql)
     neo.update_node_chg1d(data=result)
-    neo.add_indicator_to_company()
+    #neo.add_indicator_to_company()
     neo.close()
     mysql.close()
 
@@ -106,10 +106,14 @@ def update_from_code_1day():
 
 
 def update_from_code():
-    neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
-    neo_user = "QG_Editor"
-    neo_password = "editor"
-    neo=Neo4j(neo_uri,neo_user,neo_password)
+    #neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    #neo_user = "QG_Editor"
+    #neo_password = "editor"
+    #neo=Neo4j(neo_uri,neo_user,neo_password)
+    uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
+    user = "neo4j"
+    password = "QuantumGalaxy"
+    neo=Neo4j(uri,user,password)
     sql_host='localhost'
     sql_user='Local_Editor'
     sql_password='QuantumGalaxy'
@@ -127,7 +131,7 @@ def update_from_code():
     result=mysql.write_query(sql)
     sql="select code,close_price from ticker_data where date='%s' and code in %s and not close_price is null  "%(today,codestr1)
     r=mysql.read_query(sql)
-
+    print(len(r))
     neo.update_node_value(data=r)
     sql="select code,date from ticker_data where date='%s' and code in %s   "%(today,codestr1)
     r=mysql.read_query(sql)
@@ -144,7 +148,7 @@ def update_from_code():
     sql="select code, change_rate_1d from processed_data where date='%s' and code in %s and not change_rate_1d is null"%(today,codestr1)
     result=mysql.read_query(sql)
     neo.update_node_chg1d(data=result)
-    neo.add_indicator_to_company()
+    #neo.add_indicator_to_company()
     neo.close()
     mysql.close()
 

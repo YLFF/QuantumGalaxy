@@ -176,6 +176,7 @@ def metajob(region):
     if len(result)==0:
         info='no data from ticker_data for region %s on %s'%(region,today.__format__("%Y-%m-%d"))
         logger.info(info)
+        number=0
     else:
         df=query_code(mysql,today)
         logger.info('begin compute')
@@ -192,7 +193,11 @@ def metajob(region):
     from QGI.feishu import text_group_msg
     try:
         
-        info='routine report:    '+info
+        week=datetime.today().weekday()
+
+        info='行情更新日报'+info
+        if 1<=week<=5 and number==0:
+            info+='******may have some problems!!!!!!!!!!!!!!******'
         text_group_msg(info)
     except:pass
     return info

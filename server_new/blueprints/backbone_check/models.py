@@ -201,20 +201,39 @@ def data_check(data):
         checkedge.append((v['sourcename'],v['targetname']))
         pass
     for v in error_vertex:
-        data['vertex'].pop(v)
+        try:
+            data['vertex'].pop(v)
+        except:
+            pass
     for v in error_edge:
-        data['edge'].pop(v)
+        try:
+            data['edge'].pop(v)
+        except:
+            pass
     return data
 def split_data(data):
     '''将data中节点表拆成一般节点和指标表'''
     data['indicator']={}
     indi_keys=[]
+    reflect_links=[]
     for k,v in data['vertex'].items():
         if v['category']=='Indicator':
             data['indicator'][k]=v
             indi_keys.append(k)
     for k in indi_keys:
+        print('pop')
         data['vertex'].pop(k)
+    for k,v in data['edge'].items():
+        if v['name']=='反映':
+            reflect_links.append(k)
+            try:
+                ind=v['source']
+                data['indicator'][ind]['reflect_node_name']=v['targetname']
+            except:
+                pass
+    for k in reflect_links:
+        data['edge'].pop(k)
+
     return data
 def xml2graph_worker(string,name):
     data=graph_recognizer(string)

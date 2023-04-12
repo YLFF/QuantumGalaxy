@@ -24,7 +24,6 @@ def qgcode_generator(mysql: MYSQL) -> str:
 
     return new
 
-
 class QGCodeLoader():
     ''' 检查一个输入的qgnode信息是否合法，合法则录入qgindicatorinfo并根据分类录入下属的三个info，并录入其他相关信息；不合法则不入库并返回错误信息。
     '''

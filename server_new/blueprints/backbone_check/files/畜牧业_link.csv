@@ -1,184 +1,180 @@
 ,name,source,target,sourcename,targetname,info
-jja17tzB,储运,ziX1TcUR,ct9VRQN4,商超零售,肉类食品,
-3NxPLMXS,父节点,ct9VRQN4,89itog8P,肉类食品,鸡肉,
-4ThKI3oQ,父节点,7WigK4FZ,BHrcARQ0,家猪,种猪,
-wH6DG72r,父节点,7WigK4FZ,dkSRlRHc,家猪,生猪；商品猪,
-sNbp30T9,储运,ziX1TcUR,D9y1Dx2L,商超零售,商品蛋,
-ODfhwld1,父节点,ct9VRQN4,OGKTbu6Z,肉类食品,猪肉,
-pQgjTVH2,父节点,26XZRjrD,FPRl8GoB,禽蛋类,家鸡,
-XIRmKCfy,父节点,26XZRjrD,h1SMZ5Tc,禽蛋类,家鸭,
-f7M8KpvS,父节点,PYhgK08n,7WigK4FZ,畜类,家猪,
-oOheph70,父节点,PYhgK08n,xCogiNZY,畜类,牛类,
-b7DCbTzf,父节点,PYhgK08n,dIkFuoAz,畜类,羊类,
-XTNKqGYx,储运,uhUAG8NB,H6rUdPHK,粮食贸易,饲料,
-2YipYV2i,父节点,9vrqyfqi,iB7Seek9,植物性原料,能量原材料,
-DArE1DnE,父节点,9vrqyfqi,uhiTbkQ1,植物性原料,植物性蛋白,
-g0BvyImg,父节点,fpIxJrP6,tmJLKjAK,兽药,生物制品兽药,
-Xek9P8an,父节点,fpIxJrP6,NGK1nUYC,兽药,原料药及化学制剂,
-ECZWRCIH,父节点,fpIxJrP6,M5pQGgko,兽药,中药兽药,
-E7XszMZi,父节点,NGK1nUYC,8Rs7GeDq,原料药及化学制剂,抗微生物、寄生虫药物,
-RgZ0D9Pn,父节点,NGK1nUYC,5BAYb460,原料药及化学制剂,消毒药剂,
-dgC7nacm,父节点,tmJLKjAK,sNvTNy3u,生物制品兽药,兽用疫苗,
-4KGgr967,父节点,M5pQGgko,19jXzzLO,中药兽药,散剂、片剂兽用药品,
-wKgmGA2w,父节点,M5pQGgko,l6WgT77t,中药兽药,注射药剂,
-y2CpA2Lz,父节点,xCogiNZY,Pmqfvuw2,牛类,奶牛,
-LtFq1L8Y,父节点,xCogiNZY,oG5dREMz,牛类,肉牛,
-5AIu8IPx,父节点,oG5dREMz,m1I0KXS0,肉牛,肉牛商品牛,
-iyiet6W5,父节点,oG5dREMz,fb5XEejE,肉牛,肉牛种牛,
-bnXkXz4C,父节点,Pmqfvuw2,FbfFtcJG,奶牛,奶牛商品牛,
-8tO8TTQM,父节点,Pmqfvuw2,f4GFMEkK,奶牛,奶牛种牛,
-eawStZoX,父节点,SrpQQALw,lYoeh6OI,肉鸭,樱桃谷鸭,
-c0FYtwSk,父节点,SrpQQALw,DAwsxZr8,肉鸭,番鸭,
-DGB0LlyS,父节点,ct9VRQN4,5KlBEtR2,肉类食品,鸭肉,
-Lh6Bp7jM,父节点,6iJkyTrS,SrpQQALw,商品鸭,肉鸭,
-Nn09cDlu,父节点,6iJkyTrS,DLipokXg,商品鸭,蛋鸭,
-yeA0r1Cp,父节点,h1SMZ5Tc,6iJkyTrS,家鸭,商品鸭,
-STd5Skjy,父节点,h1SMZ5Tc,bPrGWY3t,家鸭,种鸭,
-Oqa7ypQ0,父节点,YPLmP8bi,TR9sceZ6,肉裘商品羊,小尾寒羊,
-TSQyLBLD,父节点,iZB990ij,FirE1eVt,肉羊商品羊,马头山羊,
-Q3qm8SqF,父节点,dIkFuoAz,LlYO17GU,羊类,肉羊,
-BamfSabM,父节点,dIkFuoAz,qmwnwhnh,羊类,肉毛兼用羊,
-LhZBmdUp,父节点,LlYO17GU,iZB990ij,肉羊,肉羊商品羊,
-5MiVC0nU,父节点,qmwnwhnh,YPLmP8bi,肉毛兼用羊,肉裘商品羊,
-dfyJizo3,父节点,qmwnwhnh,8hzH3XUv,肉毛兼用羊,肉裘种羊,
-FGQieV2q,父节点,iZB990ij,JtohgnhX,肉羊商品羊,波尔山羊,
-XmR6Z4Db,父节点,LlYO17GU,3I9EYNcT,肉羊,肉羊种羊,
-TihoW4ey,父节点,dWXiBVff,Kd00W4jG,商品鸡,肉鸡,
-nOUR1s1i,父节点,dWXiBVff,2Js65NT8,商品鸡,蛋鸡,
-8ONXvHv6,父节点,D9y1Dx2L,QEio6ZYa,商品蛋,鲜鸡蛋,
-dkLkFTGV,父节点,FPRl8GoB,dWXiBVff,家鸡,商品鸡,
-mcoR2Ocl,父节点,FPRl8GoB,5RPz0F5C,家鸡,种鸡,
-6IssXq9b,父节点,Kd00W4jG,SeBRbI8T,肉鸡,白羽鸡,
-UP4fVfbG,父节点,Kd00W4jG,4z4a28TI,肉鸡,黄羽鸡,
-KHLGgfTl,父节点,D9y1Dx2L,78yQQ42c,商品蛋,鸭蛋,
-pFUReZeM,反映,VWbHTE9U,QEio6ZYa,国内鸡蛋平均批发价,鲜鸡蛋,
-HucJGboq,反映,Ew51YZ2y,SywFcrHG,出栏成本价:蛋鸡苗,蛋鸡苗,
-mh7T6ZMy,反映,eBoY2C2X,dWXiBVff,鸡苗报价,商品鸡,
-yqEpHWgy,原材料,SywFcrHG,2Js65NT8,蛋鸡苗,蛋鸡,原材料占比2%<br />去向占比100%
-Qq7J1bLe,原材料,QEio6ZYa,6Em3eZ3Q,鲜鸡蛋,烘焙食品,去向占比10%
-ZRzWy1bl,原材料,2Js65NT8,QEio6ZYa,蛋鸡,鲜鸡蛋,去向占比100%<br />配比33
-FGLhweSD,原材料,Kd00W4jG,89itog8P,肉鸡,鸡肉,去向占比100%<br />配比400
-ZCeolV0z,原材料,5RPz0F5C,dWXiBVff,种鸡,商品鸡,去向占比100%<br />配比0.004
-qQziXWuS,原材料,bPrGWY3t,6iJkyTrS,种鸭,商品鸭,去向占比100%<br />配比0.02
-lZqu4R1V,原材料,DLipokXg,78yQQ42c,蛋鸭,鸭蛋,去向占比100%<br />配比33
-mVqCm2WD,原材料,SrpQQALw,5KlBEtR2,肉鸭,鸭肉,去向占比95%
-wLoPhPIa,原材料,SrpQQALw,fOK1ltJX,肉鸭,鸭绒,去向占比5%
-90huv62j,储运,5wlcCn8D,14sH9Q0u,冷链运输,冷冻肉,
-4Yq3wxx4,储运,5wlcCn8D,YeEeisYg,冷链运输,冷鲜肉,
-G0GGrUmL,储运,bx9OPCv4,VPmueew4,低温储运,热鲜肉,
-kGVTyphB,储运,bMJYRkOH,YeEeisYg,冷链储存,冷鲜肉,
-AownL6GT,储运,bMJYRkOH,14sH9Q0u,冷链储存,冷冻肉,
-W7mjfGSG,父节点,DlySIe8D,vJ3SitYF,低温肉制品,预制肉产品,
-IsFlZi5C,父节点,NcreX4Nf,vJ3SitYF,高温肉制品,预制肉产品,
-AT1IyxJH,储运,5wlcCn8D,vJ3SitYF,冷链运输,预制肉产品,
-p4pbHvXq,原材料,Fftnvksz,YeEeisYg,屠宰,冷鲜肉,生产占比10%
-EMzqeOwU,原材料,YeEeisYg,zKlJuIQS,冷鲜肉,肉制品加工,
-3yyEGixS,原材料,14sH9Q0u,zKlJuIQS,冷冻肉,肉制品加工,
-nBsaxXVb,原材料,VPmueew4,BRIjpOsJ,热鲜肉,餐饮服务,
-4WjaT495,原材料,vJ3SitYF,BRIjpOsJ,预制肉产品,餐饮服务,
-udI8NLoG,原材料,ct9VRQN4,Fftnvksz,肉类食品,屠宰,
-t7vpbq0H,原材料,Fftnvksz,14sH9Q0u,屠宰,冷冻肉,生产占比20%
-MktHQVe7,原材料,Fftnvksz,VPmueew4,屠宰,热鲜肉,生产占比70%
-rPj6APRK,原材料,zKlJuIQS,vJ3SitYF,肉制品加工,预制肉产品,生产占比100%
-IBF4oxVh,原材料,fOK1ltJX,iwfvDCeI,鸭绒,服装纺织,
-m2tKwHWv,原材料,dkSRlRHc,OGKTbu6Z,生猪；商品猪,猪肉,"去向占比97%<br style=""font-size: 15px;"">配比10"
-qiGd10oN,原材料,BHrcARQ0,dkSRlRHc,种猪,生猪；商品猪,"去向占比100%<br style=""font-size: 15px;"" />配比0.04"
-2tmWGVbM,原材料,3TG1tny4,7WigK4FZ,轮回二元育种,家猪,"材料占比6%<br style=""font-size: 15px;"" />去向占比100%"
-VCvoFdx6,原材料,CFrsr5kP,7WigK4FZ,外三元杂交育种,家猪,"材料占比94%<br style=""font-size: 15px;"" />去向占比100%"
-fHUFBZvF,原材料,dkSRlRHc,ERdpnC4B,生猪；商品猪,猪皮,去向占比3%
-rHf7cnkw,原材料,ERdpnC4B,iwfvDCeI,猪皮,服装纺织,
-hwiPef1k,父节点,ct9VRQN4,8etUjwrJ,肉类食品,牛肉,
-BJ0fYYXY,父节点,ct9VRQN4,nKe9Whee,肉类食品,羊肉,
-PM0p8Y3H,原材料,fb5XEejE,m1I0KXS0,肉牛种牛,肉牛商品牛,"去向占比100%<br style=""font-size: 15px;"" />配比0.09"
-Lo0mCwXu,原材料,z7AI0gwA,iwfvDCeI,牛皮,服装纺织,
-44Cb7DMd,原材料,m1I0KXS0,8etUjwrJ,肉牛商品牛,牛肉,去向占比92%
-osrfckvZ,原材料,m1I0KXS0,z7AI0gwA,肉牛商品牛,牛皮,去向占比8%
-BdcHGoVk,原材料,f4GFMEkK,FbfFtcJG,奶牛种牛,奶牛商品牛,"去向占比100%<br style=""font-size: 15px;"" />配比0.07"
-jiZbqYd5,原材料,FbfFtcJG,4pbdVjg4,奶牛商品牛,牛奶,"去向占比100%<br style=""font-size: 15px;"" />配比10"
-gl58ejEF,原材料,4pbdVjg4,3nFIRJWB,牛奶,鲜牛奶,
-T3kVvRu7,原材料,4pbdVjg4,tbTTIiZB,牛奶,乳制品,
-d9yy0mTG,原材料,iZB990ij,nKe9Whee,肉羊商品羊,羊肉,去向占比100%
-2qy0dCYM,原材料,19IYe6sl,iwfvDCeI,羊毛,服装纺织,"去向占比100%<br style=""font-size: 15px;"" />配比10"
-PeQ85zlT,原材料,3I9EYNcT,iZB990ij,肉羊种羊,肉羊商品羊,"去向占比67%<br style=""font-size: 15px;"" />配比0.04"
-70B056B3,原材料,YPLmP8bi,nKe9Whee,肉裘商品羊,羊肉,去向占比95%
-HmcjiuZt,原材料,YPLmP8bi,19IYe6sl,肉裘商品羊,羊毛,去向占比5%
-Z9aex3n8,原材料,8hzH3XUv,YPLmP8bi,肉裘种羊,肉裘商品羊,"去向占比33%<br style=""font-size: 15px;"" />配比0.04"
-F4UIEacC,原材料,fpIxJrP6,PYhgK08n,兽药,畜类,
-vMm6VpLU,原材料,3BCgjrEk,XUoyb0NI,鱼粉,动物性蛋白,
-vCtAhbwT,原材料,Wo9FRIUP,XUoyb0NI,肉骨粉,动物性蛋白,
-imCrq42J,原材料,8LN76LJv,XUoyb0NI,鸡肉粉,动物性蛋白,
-8OQKnZSF,原材料,H6rUdPHK,PYhgK08n,饲料,畜类,"材料占比55%<br style=""font-size: 15px;"" />去向占比100%<br />配比0.5"
-beenAp6v,原材料,fpIxJrP6,26XZRjrD,兽药,禽蛋类,
-6TW4zZk8,原材料,H6rUdPHK,26XZRjrD,饲料,禽蛋类,"材料占比70%<br style=""font-size: 15px;"" />去向占比100%<br />配比0.0042"
-4yB9kygu,原材料,FbUa1pVP,H6rUdPHK,饲料添加剂,饲料,"材料占比5%<br style=""font-size: 15px;"" />去向占比30%<br />配比0.35"
-XUKdZGdP,原材料,UMW1SDQc,H6rUdPHK,单细胞蛋白,饲料,
-WRfjy6xh,原材料,XUoyb0NI,H6rUdPHK,动物性蛋白,饲料,
-pntzzt22,原材料,9vrqyfqi,H6rUdPHK,植物性原料,饲料,
-ajJ3TqUx,原材料,6xQEWHmE,FbUa1pVP,微量元素,饲料添加剂,
-Fpys6xfH,原材料,CAlUs5hC,FbUa1pVP,维生素,饲料添加剂,
-vlmvTBy3,原材料,9kAM39wb,FbUa1pVP,酵制剂,饲料添加剂,
-2OdNw8Bq,原材料,70w2ftns,uhiTbkQ1,菜粕,植物性蛋白,
-BVViLOlS,原材料,RqgkcjbH,iB7Seek9,高粱,能量原材料,
-bxiaJndx,原材料,KSJDKRQ8,iB7Seek9,小麦,能量原材料,
-jw1GUKw1,原材料,rYFXUY16,UMW1SDQc,藻粉,单细胞蛋白,
-EhNs2Lsh,原材料,GuGcEVAk,UMW1SDQc,酵母,单细胞蛋白,
-FLhuTFZD,同位,wAz5dMhr,6KjJQn9A,豆粕,玉米,
-tTiIMcPq,原材料,wAz5dMhr,uhiTbkQ1,豆粕,植物性蛋白,"材料占比20%<br style=""font-size: 15px;"" />去向占比25%<br />配比0.13"
-1sVLMqHG,原材料,6KjJQn9A,iB7Seek9,玉米,能量原材料,"材料占比60%<br style=""font-size: 15px;"" />去向占比18%<br />配比0.325"
-XDM3eitk,原材料,NPVCJz91,co5esITR,大豆榨取,大豆油,去向占比90%
-BwsdNZgK,原材料,NPVCJz91,wAz5dMhr,大豆榨取,豆粕,去向占比1%
-alG7HMNp,原材料,SjWbOSJw,NPVCJz91,大豆,大豆榨取,材料占比90%<br />去向占比91%
-jtqAH5mt,生产,jN4floAc,uhUAG8NB,鹏都农牧,粮食贸易,
-QhvHh3jC,反映,qsaIq8NI,OGKTbu6Z,LH.CME,猪肉,
-hLposAc9,反映,qsaIq8NI,dkSRlRHc,LH.CME,生猪；商品猪,
-032hnNvz,反映,8pD5l3AV,OGKTbu6Z,USA - Carcass Cutout Values,猪肉,
-IHPVUAYo,反映,EXmQCUVI,OGKTbu6Z,国内36城猪肉平均零售价,猪肉,
-3SDHI00m,反映,TKKf6EwN,OGKTbu6Z,全国猪肉平均批发价,猪肉,
-mBGV0jY0,反映,GOB0NDQz,OGKTbu6Z,欧盟猪肉平均价格,猪肉,
-sNtLwK0k,反映,MW4P3lXH,dkSRlRHc,生猪出栏体重,生猪；商品猪,
-gMwaBrBB,反映,7p2MjBgy,dkSRlRHc,国内22省市生猪平均价格,生猪；商品猪,
-eklZ33i1,反映,ZVebXtSQ,dkSRlRHc,猪粮比,生猪；商品猪,
-O3FssobJ,反映,wnre1zN2,QEio6ZYa,国内36个城市鸡蛋平均零售价,鲜鸡蛋,
-AzmHYgDY,反映,oWru54Lt,H6rUdPHK,蛋鸡饲料价格,饲料,
-RQn8liBg,反映,RrudcyzI,H6rUdPHK,生猪饲料市场均价,饲料,
-soV4KUuv,反映,ozZXZcXn,dkSRlRHc,LH.DCE,生猪；商品猪,
-rxk1SH4P,反映,Gx4H5PMK,dkSRlRHc,国内能繁母猪存栏量,生猪；商品猪,
-6kNk243u,反映,M1elPgXd,SrpQQALw,白条鸭报价,肉鸭,
-NEKaV9uY,反映,iWLLgsWK,QEio6ZYa,USA National Shell Egg Index Price,鲜鸡蛋,
-uzwt8qOc,父节点,7pQfcEpY,ziX1TcUR,线下零售渠道,商超零售,
-tMnxdVg1,父节点,7pQfcEpY,acjtSqbb,线下零售渠道,农贸市场,
-iXldVVXY,储运,acjtSqbb,VPmueew4,农贸市场,热鲜肉,
-YXIz0GlJ,原材料,BRIjpOsJ,Jr2DL7p0,餐饮服务,饮食类需求,
-iUB7infX,生产,NCOgFrmj,H6rUdPHK,大北农,饲料,
-PRIMUgnD,生产,NCOgFrmj,fpIxJrP6,大北农,兽药,
-2jJvJUmN,生产,EDxhMEXF,sNvTNy3u,科前生物,兽用疫苗,
-U3QKFh2A,生产,C3ErC7hU,NGK1nUYC,绿康生化,原料药及化学制剂,
-EIfsMjZq,生产,qIKcEGxd,tmJLKjAK,中牧股份,生物制品兽药,
-ziZ5SQFf,生产,l0osKInV,tmJLKjAK,生物股份,生物制品兽药,
-ROucJdFO,生产,RB4edoD0,sNvTNy3u,海利生物,兽用疫苗,
-PyRiCxzK,生产,WznpdX9r,QEio6ZYa,CAL-MAINE FOODS,鲜鸡蛋,
-TISe460u,生产,jW9M8zQe,H6rUdPHK,新希望,饲料,
-KYaHDmXY,生产,JANuysex,H6rUdPHK,傲农生物,饲料,
-fKlXJdYE,生产,dTp74wmH,H6rUdPHK,海大集团,饲料,
-iqxgmBj9,生产,jW9M8zQe,7WigK4FZ,新希望,家猪,
-HCwV7jxa,生产,jW9M8zQe,26XZRjrD,新希望,禽蛋类,
-pmWiXpfq,生产,rWbPZyy3,QEio6ZYa,VITAL FARMS,鲜鸡蛋,
-zjBDJC3G,生产,iggZnqr4,5RPz0F5C,益生股份,种鸡,
-SKLqlIP8,生产,FlwxiN5V,SeBRbI8T,圣农发展,白羽鸡,
-sKoPeWOm,生产,eu1bkCDX,Kd00W4jG,温氏股份,肉鸡,
-sfH7qnGy,生产,SfKXrjlV,4z4a28TI,立华股份,黄羽鸡,
-I19nENba,生产,bzu7GO8K,7WigK4FZ,温氏股份,家猪,
-znryhW4P,生产,XaaEVNOD,3TG1tny4,牧原股份,轮回二元育种,
-d2VJd2li,生产,XaaEVNOD,7WigK4FZ,牧原股份,家猪,
-enlJ06aR,生产,OIywQA9h,dkSRlRHc,巨星农牧,生猪；商品猪,
-TfMpBRES,生产,OIywQA9h,ERdpnC4B,巨星农牧,猪皮,
-YET4DuyX,生产,JD9DYrMY,7WigK4FZ,正邦科技,家猪,
-udja9O3o,生产,aQOM9aCI,zKlJuIQS,华统股份,肉制品加工,
-pE9nyBQ5,生产,dvMgk10U,Fftnvksz,龙大美食,屠宰,
-dpNyKzrI,生产,UNVEjQ5l,bMJYRkOH,四方科技,冷链储存,
-QSZB6Uxu,生产,lAw1RqQU,vJ3SitYF,得利斯,预制肉产品,
-6btWm77q,生产,lAw1RqQU,14sH9Q0u,得利斯,冷冻肉,
-2TcJ2Vch,生产,pYbMlOzh,14sH9Q0u,广弘控股,冷冻肉,
-S1jMm0PN,生产,aQOM9aCI,Fftnvksz,华统股份,屠宰,
-QzMMq2pi,生产,4OnSh5p9,fpIxJrP6,普莱柯,兽药,
-fdzVs6to,生产,JD9DYrMY,H6rUdPHK,正邦科技,饲料,
+bC9fmTxx,储运,exIFUNKK,ktumk6pj,商超零售,冷鲜肉,
+jO11olul,父节点,TCTISO4b,7HPqCCKt,家猪,种猪,
+m8cmPKCs,父节点,TCTISO4b,mXrNpfUH,家猪,生猪；商品猪,
+Kx6YkJSU,储运,exIFUNKK,BzxDRkeK,商超零售,商品蛋,
+qsIjxyNG,父节点,ihaZ1ZtD,SFGUpZRR,禽蛋类,家鸡,
+W5bAQ7Nf,父节点,ihaZ1ZtD,WyOC4P3Z,禽蛋类,家鸭,
+LMgdIDIG,父节点,A1mvkiGt,TCTISO4b,畜类,家猪,
+CyQClQDL,父节点,A1mvkiGt,Oe0SqDBZ,畜类,牛类,
+K8U9FeHL,父节点,A1mvkiGt,Uc7el5Nz,畜类,羊类,
+OtfAdnpy,储运,07NfJpix,9eGH0UbE,饲料贸易,饲料,
+U9hjvXas,父节点,lma2PRS2,ZmvnZJWG,植物性原料,能量原材料,
+rlgqeNds,父节点,lma2PRS2,bhMFKFK8,植物性原料,植物性蛋白,
+EtvmVyP8,父节点,dX2RJ7aS,S0ZqmGbd,兽药,生物制品兽药,
+UNCR72ql,父节点,dX2RJ7aS,6hPYJ2b3,兽药,原料药及化学制剂,
+gMLCBYad,父节点,dX2RJ7aS,RzfXmXT3,兽药,中药兽药,
+tN7SkHmT,父节点,6hPYJ2b3,K94n7dxk,原料药及化学制剂,抗微生物、寄生虫药物,
+XqOvCZwg,父节点,6hPYJ2b3,vZtdc2aG,原料药及化学制剂,消毒药剂,
+kM3E524t,父节点,S0ZqmGbd,A2OeR9v2,生物制品兽药,兽用疫苗,
+AYs5d694,父节点,RzfXmXT3,ongjnOMR,中药兽药,散剂、片剂兽用药品,
+crzv0kxn,父节点,RzfXmXT3,bfeQLCeB,中药兽药,注射药剂,
+sAJY9o5m,父节点,Oe0SqDBZ,DDjhTq0z,牛类,奶牛,
+JlyMAzx0,父节点,Oe0SqDBZ,4mdnJMp4,牛类,肉牛,
+4cT4v205,父节点,4mdnJMp4,hmqEy4hu,肉牛,肉牛商品牛,
+pVgvECTi,父节点,4mdnJMp4,Cp9XblPC,肉牛,肉牛种牛,
+kJKlhZkx,父节点,DDjhTq0z,26LWBndq,奶牛,奶牛商品牛,
+BG37hou6,父节点,DDjhTq0z,ovYBe0bu,奶牛,奶牛种牛,
+BAwz8XNN,父节点,5r7RkPrM,5Xu4oXQ5,肉鸭,樱桃谷鸭,
+MAKxYvdK,父节点,5r7RkPrM,xTETgzoc,肉鸭,番鸭,
+Y84f30t5,父节点,l7K85Gru,5r7RkPrM,商品鸭,肉鸭,
+f5GueLAS,父节点,l7K85Gru,b7tynSd8,商品鸭,蛋鸭,
+hgfquek0,父节点,WyOC4P3Z,l7K85Gru,家鸭,商品鸭,
+dohgil5l,父节点,WyOC4P3Z,6HKUKwTE,家鸭,种鸭,
+beUYKA3Z,父节点,7MxELV3H,bE2ORhBW,肉裘商品羊,小尾寒羊,
+nmlqkxeh,父节点,zFlaWHfp,owLpFAG1,肉羊商品羊,马头山羊,
+6Zj5kXB5,父节点,Uc7el5Nz,BLpiMKla,羊类,肉羊,
+WxnZ7nk1,父节点,Uc7el5Nz,OsNzCt5d,羊类,肉毛兼用羊,
+pKl9tkRh,父节点,BLpiMKla,zFlaWHfp,肉羊,肉羊商品羊,
+RMwohGjK,父节点,OsNzCt5d,7MxELV3H,肉毛兼用羊,肉裘商品羊,
+tpVhhgH7,父节点,OsNzCt5d,GrR4OXgu,肉毛兼用羊,肉裘种羊,
+aqHjujos,父节点,zFlaWHfp,3HBsTkrt,肉羊商品羊,波尔山羊,
+K7x6m7A8,父节点,BLpiMKla,qcdIOVXH,肉羊,肉羊种羊,
+GEnFI5Cd,父节点,UWid3aUG,UeiZVMIa,商品鸡,肉鸡,
+D7kYPsdq,父节点,UWid3aUG,smQ5JSzJ,商品鸡,蛋鸡,
+L0nTcp7f,父节点,BzxDRkeK,7Gn3xHxG,商品蛋,鲜鸡蛋,
+m93z98aQ,父节点,SFGUpZRR,UWid3aUG,家鸡,商品鸡,
+OaMrWaAX,父节点,SFGUpZRR,YyjfiOAq,家鸡,种鸡,
+NQDFjDRG,父节点,UeiZVMIa,98Bfuu8s,肉鸡,白羽鸡,
+HJmDp2ud,父节点,UeiZVMIa,0abyTUL7,肉鸡,黄羽鸡,
+3WRSXV2e,父节点,BzxDRkeK,CQ19o3tY,商品蛋,鸭蛋,
+Jpx6Sxrq,反映,dUQ3U9Oi,7Gn3xHxG,国内鸡蛋平均批发价,鲜鸡蛋,
+QtfnN4DB,反映,bq2G1p4r,g7Q4KFk0,出栏成本价:蛋鸡苗,蛋鸡苗,
+lXA1myZX,反映,8N6S3xUJ,UWid3aUG,鸡苗报价,商品鸡,
+5XyJxD8K,原材料,g7Q4KFk0,smQ5JSzJ,蛋鸡苗,蛋鸡,原材料占比2%<br />去向占比100%
+QGqHZtr2,原材料,7Gn3xHxG,3MaFxfi0,鲜鸡蛋,烘焙食品,去向占比10%
+NKu9uCVE,原材料,smQ5JSzJ,7Gn3xHxG,蛋鸡,鲜鸡蛋,去向占比100%<br />配比33
+IiTIrhix,原材料,UeiZVMIa,UDlJVdr2,肉鸡,鸡肉,去向占比100%<br />配比400
+ixYTAF3q,原材料,YyjfiOAq,UWid3aUG,种鸡,商品鸡,去向占比100%<br />配比0.004
+71SYgRd9,原材料,6HKUKwTE,l7K85Gru,种鸭,商品鸭,去向占比100%<br />配比0.02
+lENFUI1w,原材料,b7tynSd8,CQ19o3tY,蛋鸭,鸭蛋,去向占比100%<br />配比33
+aqVhVsOd,原材料,5r7RkPrM,zXnWP7Yv,肉鸭,鸭肉,去向占比95%
+iSigFKcU,原材料,5r7RkPrM,MMgKez08,肉鸭,鸭绒,去向占比5%
+3qQk7jqq,储运,YW9YcmVZ,exxH0kzz,冷链运输,冷冻肉,
+WLG3t5yQ,储运,YW9YcmVZ,ktumk6pj,冷链运输,冷鲜肉,
+pa1R88p5,储运,4DrgFf7i,J1FvZyuD,低温储运,热鲜肉,
+Ob4COjKi,储运,SZ3UNWSU,ktumk6pj,冷链储存,冷鲜肉,
+vuKnDql4,储运,SZ3UNWSU,exxH0kzz,冷链储存,冷冻肉,
+yga0nGUT,储运,YW9YcmVZ,1tJVNCLj,冷链运输,预制肉产品,
+T2ykHoX0,原材料,ktumk6pj,m3fNlBMg,冷鲜肉,肉制品加工,
+ce9NJh7t,原材料,exxH0kzz,m3fNlBMg,冷冻肉,肉制品加工,
+9tqRvVmS,原材料,m3fNlBMg,1tJVNCLj,肉制品加工,预制肉产品,生产占比100%
+M4Ee0veb,原材料,MMgKez08,ezEhO7ar,鸭绒,服装纺织,
+dITlkGDF,原材料,mXrNpfUH,uZlnG0MA,生猪；商品猪,猪肉,"去向占比97%<br style=""font-size: 15px;"">配比10"
+ZTlhKLO1,原材料,7HPqCCKt,mXrNpfUH,种猪,生猪；商品猪,"去向占比100%<br style=""font-size: 15px;"" />配比0.04"
+dhSm0unh,原材料,ukhKAE2V,TCTISO4b,轮回二元育种,家猪,"材料占比6%<br style=""font-size: 15px;"" />去向占比100%"
+R9K56BMX,原材料,khVv2AbJ,TCTISO4b,外三元杂交育种,家猪,"材料占比94%<br style=""font-size: 15px;"" />去向占比100%"
+IClEfzxL,原材料,mXrNpfUH,FEmYHvGR,生猪；商品猪,猪皮,去向占比3%
+YV5MR8wN,原材料,FEmYHvGR,ezEhO7ar,猪皮,服装纺织,
+9aGOZm9T,原材料,Cp9XblPC,hmqEy4hu,肉牛种牛,肉牛商品牛,"去向占比100%<br style=""font-size: 15px;"" />配比0.09"
+HJAA0eiK,原材料,anbhM2iU,ezEhO7ar,牛皮,服装纺织,
+VdlxdQoa,原材料,hmqEy4hu,9deA8bw8,肉牛商品牛,牛肉,去向占比92%
+2LhRPmUC,原材料,hmqEy4hu,anbhM2iU,肉牛商品牛,牛皮,去向占比8%
+DNCsWybo,原材料,ovYBe0bu,26LWBndq,奶牛种牛,奶牛商品牛,"去向占比100%<br style=""font-size: 15px;"" />配比0.07"
+TBos7EEr,原材料,26LWBndq,AyHnF1zx,奶牛商品牛,牛奶,"去向占比100%<br style=""font-size: 15px;"" />配比10"
+YQ5WxeKX,原材料,zFlaWHfp,iEgSYDlF,肉羊商品羊,羊肉,去向占比100%
+MhRLA46A,原材料,FLDwX2z8,ezEhO7ar,羊毛,服装纺织,"去向占比100%<br style=""font-size: 15px;"" />配比10"
+sxG9KGpB,原材料,qcdIOVXH,zFlaWHfp,肉羊种羊,肉羊商品羊,"去向占比67%<br style=""font-size: 15px;"" />配比0.04"
+WlAtdPeq,原材料,7MxELV3H,iEgSYDlF,肉裘商品羊,羊肉,去向占比95%
+mdmjFCq4,原材料,7MxELV3H,FLDwX2z8,肉裘商品羊,羊毛,去向占比5%
+vnSb5LJI,原材料,GrR4OXgu,7MxELV3H,肉裘种羊,肉裘商品羊,"去向占比33%<br style=""font-size: 15px;"" />配比0.04"
+DNPqQhRM,原材料,dX2RJ7aS,A1mvkiGt,兽药,畜类,
+g5GYXfcG,原材料,yNrbfgog,E1ktRIZl,鱼粉,动物性蛋白,
+vOFFoMiL,原材料,I0Xf2241,E1ktRIZl,肉骨粉,动物性蛋白,
+9uDXM4ek,原材料,1QkvTD2E,E1ktRIZl,鸡肉粉,动物性蛋白,
+6s170TBl,原材料,9eGH0UbE,A1mvkiGt,饲料,畜类,"材料占比55%<br style=""font-size: 15px;"" />去向占比100%<br />配比0.5"
+2pfcVtp3,原材料,dX2RJ7aS,ihaZ1ZtD,兽药,禽蛋类,
+sCIU1KwY,原材料,9eGH0UbE,ihaZ1ZtD,饲料,禽蛋类,"材料占比70%<br style=""font-size: 15px;"" />去向占比100%<br />配比0.0042"
+GSVomQPq,原材料,PNi6in3s,9eGH0UbE,饲料添加剂,饲料,"材料占比5%<br style=""font-size: 15px;"" />去向占比30%<br />配比0.35"
+L8F46gsr,原材料,dbc74giH,9eGH0UbE,微生物蛋白,饲料,
+U9cf9mfB,原材料,E1ktRIZl,9eGH0UbE,动物性蛋白,饲料,
+02q9BhBk,原材料,lma2PRS2,9eGH0UbE,植物性原料,饲料,
+VAaKgW0z,原材料,dP6epH0Q,PNi6in3s,微量元素,饲料添加剂,
+Z3feSYXC,原材料,YJy99vxs,PNi6in3s,维生素,饲料添加剂,
+pfHdnvNX,原材料,CECZb9ko,PNi6in3s,酵制剂,饲料添加剂,
+RxCA9C8v,原材料,lORciUO3,bhMFKFK8,菜粕,植物性蛋白,
+ToXGFrBu,原材料,Ai8dCsIp,ZmvnZJWG,高粱,能量原材料,
+gkwZ50Tb,原材料,7oBGNP6f,ZmvnZJWG,小麦,能量原材料,
+KbXUfrDX,原材料,MXRf2WEe,dbc74giH,藻粉,微生物蛋白,
+gluMYDOS,原材料,Aad7E3Sq,dbc74giH,酵母,微生物蛋白,
+9LWD1KWg,原材料,NhwWTZpE,bhMFKFK8,豆粕,植物性蛋白,"材料占比20%<br style=""font-size: 15px;"" />去向占比25%<br />配比0.13"
+WRZUHjNM,原材料,iFXgH8r8,ZmvnZJWG,玉米,能量原材料,"材料占比60%<br style=""font-size: 15px;"" />去向占比18%<br />配比0.325"
+iqEgpzro,原材料,evDzLGej,NhwWTZpE,大豆榨取,豆粕,去向占比1%
+Jh0cduFy,原材料,Oo6I27Cs,evDzLGej,大豆,大豆榨取,材料占比90%<br />去向占比91%
+prfbD1Bp,反映,3ZKqRaWl,uZlnG0MA,LH.CME,猪肉,
+pIeesC3I,反映,3ZKqRaWl,mXrNpfUH,LH.CME,生猪；商品猪,
+z9yIQjz5,反映,cJbkzB9Y,uZlnG0MA,USA - Carcass Cutout Values,猪肉,
+Pk7dPttx,反映,v8nACnKD,uZlnG0MA,国内36城猪肉平均零售价,猪肉,
+Mv0MJDQd,反映,av6qA1F3,uZlnG0MA,全国猪肉平均批发价,猪肉,
+3M90o8CY,反映,Ssc4fqcL,uZlnG0MA,欧盟猪肉平均价格,猪肉,
+mbDSv6yr,反映,NtFgDdwP,mXrNpfUH,生猪出栏体重,生猪；商品猪,
+VNfqocXA,反映,lUQZwsO1,mXrNpfUH,国内22省市生猪平均价格,生猪；商品猪,
+cD1rzfYi,反映,5hODghJv,mXrNpfUH,猪粮比,生猪；商品猪,
+FCy9Dr3I,反映,1ssogzeV,7Gn3xHxG,国内36个城市鸡蛋平均零售价,鲜鸡蛋,
+Hsyo0iXd,反映,ayg3222R,9eGH0UbE,蛋鸡饲料价格,饲料,
+q2KJ5SNv,反映,j9tetyQs,9eGH0UbE,生猪饲料市场均价,饲料,
+QuKIEZTt,反映,e4wr3dqQ,mXrNpfUH,LH.DCE,生猪；商品猪,
+vBd8arsV,反映,oW81RhTk,mXrNpfUH,国内能繁母猪存栏量,生猪；商品猪,
+oqZSRTJf,反映,7aPB5fe7,5r7RkPrM,白条鸭报价,肉鸭,
+BpeAqgW4,反映,BqrecdKo,7Gn3xHxG,USA National Shell Egg Index Price,鲜鸡蛋,
+edXIHZMX,父节点,mJjrt7XR,exIFUNKK,线下零售渠道,商超零售,
+28BJIryA,父节点,mJjrt7XR,miEvdqFz,线下零售渠道,农贸市场,
+DOzkBBLg,储运,miEvdqFz,J1FvZyuD,农贸市场,热鲜肉,
+HUAIwOF1,原材料,K7SKX0g6,tki28pNv,肉类,饮食类需求,
+qDrKVT23,生产,zlm0hagB,9eGH0UbE,大北农,饲料,
+s86hfz17,生产,zlm0hagB,dX2RJ7aS,大北农,兽药,
+IztqHtcd,生产,jGIOKX4y,A2OeR9v2,科前生物,兽用疫苗,
+3ms1tjHp,生产,49CKAt8w,6hPYJ2b3,绿康生化,原料药及化学制剂,
+mnRNomtC,生产,I7NGKSrm,S0ZqmGbd,中牧股份,生物制品兽药,
+zyOYWrKw,生产,1AdNcJCv,S0ZqmGbd,生物股份,生物制品兽药,
+KYrW84sa,生产,fWQ4ouoQ,A2OeR9v2,海利生物,兽用疫苗,
+Saa2cL6O,生产,FbgNpxKZ,7Gn3xHxG,CAL-MAINE FOODS,鲜鸡蛋,
+azn3XIgc,生产,48FQzFJB,9eGH0UbE,新希望,饲料,
+Eaku0cxO,生产,0cG9doG1,9eGH0UbE,傲农生物,饲料,
+YQMZumef,生产,jvnNjA6y,9eGH0UbE,海大集团,饲料,
+Dt7Bh4Qa,生产,48FQzFJB,TCTISO4b,新希望,家猪,
+8tYn4CzG,生产,48FQzFJB,ihaZ1ZtD,新希望,禽蛋类,
+ZQDE4Rws,生产,wIX1oNzg,7Gn3xHxG,VITAL FARMS,鲜鸡蛋,
+mggl1WCL,生产,9r8vfNLt,YyjfiOAq,益生股份,种鸡,
+S3ACZNV6,生产,14XoRqFd,98Bfuu8s,圣农发展,白羽鸡,
+2YiG0iRB,生产,rFj6Lxqv,UeiZVMIa,rFj6Lxqv,肉鸡,
+LwJXmjrj,生产,yDWDJcL2,0abyTUL7,立华股份,黄羽鸡,
+dTPJxBO4,生产,l8xPARSu,TCTISO4b,温氏股份,家猪,
+KtJjfnmm,生产,567pIcLB,ukhKAE2V,牧原股份,轮回二元育种,
+y85yCrIA,生产,567pIcLB,TCTISO4b,牧原股份,家猪,
+GXB1Logh,生产,QzprXZZJ,mXrNpfUH,巨星农牧,生猪；商品猪,
+c8IXGaew,生产,QzprXZZJ,FEmYHvGR,巨星农牧,猪皮,
+sq1CXN0L,生产,JKj732Qk,TCTISO4b,正邦科技,家猪,
+Fb6YCbdK,生产,S4cyrv2l,m3fNlBMg,华统股份,肉制品加工,
+Es72fZk7,生产,MLNYJC9J,SZ3UNWSU,四方科技,冷链储存,
+urYJtl23,生产,6U1XoeWC,1tJVNCLj,得利斯,预制肉产品,
+kcCvhhKR,生产,6U1XoeWC,exxH0kzz,得利斯,冷冻肉,
+FMMqcOsc,生产,r50wIubK,exxH0kzz,广弘控股,冷冻肉,
+i0YKr9nY,生产,o3RFkaVU,dX2RJ7aS,普莱柯,兽药,
+O4ge6vZV,生产,JKj732Qk,9eGH0UbE,正邦科技,饲料,
+vn8rE3Oj,生产,ceaDwcuv,MMgKez08,ST华英,鸭绒,
+QkGq6Ryg,生产,ceaDwcuv,zXnWP7Yv,ST华英,鸭肉,
+wEuuVzsM,生产,W9u2KLj1,9deA8bw8,福成股份,牛肉,
+pECcyMai,生产,W9u2KLj1,4mdnJMp4,福成股份,肉牛,
+tyPnPrmB,原材料,uZlnG0MA,K7SKX0g6,猪肉,肉类,
+jhrbhnXT,原材料,9deA8bw8,K7SKX0g6,牛肉,肉类,
+dDZranKZ,原材料,iEgSYDlF,K7SKX0g6,羊肉,肉类,
+EkmLyiO7,原材料,UDlJVdr2,K7SKX0g6,鸡肉,肉类,
+Z8FSEP0Y,原材料,zXnWP7Yv,K7SKX0g6,鸭肉,肉类,
+TlWYweWn,父节点,K7SKX0g6,ktumk6pj,肉类,冷鲜肉,占比10%
+gQ54PnGv,父节点,K7SKX0g6,exxH0kzz,肉类,冷冻肉,占比20%
+TcDEdQLj,父节点,K7SKX0g6,J1FvZyuD,肉类,热鲜肉,占比70%
+S5udTmVs,储运,exIFUNKK,exxH0kzz,商超零售,冷冻肉,
+8f61AEhh,原材料,QqkKXjFA,ZmvnZJWG,饲用油脂,能量原材料,
+VwutOP0H,原材料,6ztrNAzW,PNi6in3s,氨基酸,饲料添加剂,
+ZuXNwyPe,原材料,Q4mHBlAO,PNi6in3s,益生菌,饲料添加剂,

@@ -43,11 +43,15 @@ def fetch_records():
     app_token=request.args.get('app_token')
     table_id=request.args.get('table_id')
     graph_name=request.args.get('graph_name',None)
-    if graph_name:
+    arg_filter=request.args.get('filter',None)
+    if arg_filter:
+        #print('get arg_filter')
+        filter=str(arg_filter)
+    elif graph_name:
 
         filter='CurrentValue.[粗骨干权限]="是"' if graph_name=='粗骨干图' else 'CurrentValue.[参与子图].contains("%s")'%graph_name
     else:filter=None
-
+    
     field_names=request.args.get('fields',None)
     #可行的请求例 r=fetch_table_records(app_token,table_id,filter='CurrentValue.[参与子图].contains("粗骨干图")',field_names='["节点名称","节点类型"]')
     r=fetch_table_records(app_token,table_id,filter=filter,field_names=field_names)

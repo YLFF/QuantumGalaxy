@@ -8,6 +8,11 @@
 *.py[cod]
 *.so
 *.egg
+*.png
+*.jpeg
+*.webp
+*.json
+*.csv
 *.egg-info
 dist
 build

@@ -11,7 +11,7 @@ from QGI.feishu import *
 from QGI.neoapi import Neo4j
 from .models import *
 feishu=FeishuAPI()
-from utils import chatbot
+#from utils import chatbot
 def write_check_id(id):
     from QGI.mysql import MYSQL
     host='localhost'
@@ -73,11 +73,12 @@ def receive_message():
     else:
         sender=req['event']['sender']['sender_id']['open_id']
         event_id=req['header']['event_id']
+        
         if write_check_id(event_id):
-            if not sender in ['ou_e32afa3ec16eae9f334d27c02c037259','ou_bdb8583689f98ddc96484441b8477975']:
+            if not sender in ['ou_e32afa3ec16eae9f334d27c02c037259','ou_bdb8583689f98ddc96484441b8477975','ou_6055b4f9ede3b6d4a3ac9f303b17971c','ou_6fe1b9026fc41be0414c723f4a1d174b','ou_5257a5c4f845c57e45a054f275e2f9b2']:
                 #ou_bdb8583689f98ddc96484441b8477975
                 
-                
+                #print()
                 content=req['event']['message']['content']
                 #print(len(content))
                 chat_id=req['event']['message']['chat_id']
@@ -91,11 +92,33 @@ def receive_message():
 
             else:
                 try:
+                    msg=req['event']['message']['content']
+                    #print(msg)
+                    try:
+                        l=eval(msg)
+                        print(l)
+                        l1=eval(l.get('text'))
+                        if type(l1)==list:
+                            print(l1)
+                            r=requests.post('http://43.153.23.232:81/cust_chat',json=json.dumps({'messages':l1}))
+                        else:
+                            r=requests.post('http://43.153.23.232:81/chat',json=json.dumps({'message':msg}))
+                    except:
+                        r=requests.post('http://43.153.23.232:81/chat',json=json.dumps({'message':msg}))
+                    
+                    content=r.json()['res']
+                    r=feishu.send_msg(content,sender)
+                    
+                except Exception as e:
+                    content='had problem in bot:"%s"'%e
+                    r=feishu.send_msg(content,sender)
+                
+                '''
+                try:
 
                     
                     prompt = req['event']['message']['content']
-                    '''{'text:"abcdefg"}'''
-                    #
+                    #{'text:"abcdefg"                  #
                    
                     a=json.loads(prompt)
                     prompt=a['text']
@@ -116,6 +139,7 @@ def receive_message():
                 except Exception as e:
                     content='had problem in bot:"%s"'%e
                     r=feishu.send_msg(content,sender)
+                    '''
         else:
                 print('overtimed requset')    
     return json.dumps({'code': 200}, ensure_ascii=False)

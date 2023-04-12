@@ -8,7 +8,7 @@ from flask import session
 from flask_apscheduler.auth import HTTPBasicAuth
 from blueprints.ev_band.ev_band_aps import ev_band_routine
 from blueprints.backbone.backbone_aps import reset_mysql
- 
+from utils import openai_test,send_test_msg
 # interval examples
 scheduler = APScheduler()
 
@@ -26,9 +26,12 @@ def job0():
     pass
 
 
-@scheduler.task('cron',id='backbone_routine',hour=17,minute=17,second=0)
+@scheduler.task('interval',id='openai_test',seconds=3600*6)
 def job1():
-    #reset_mysql()
+    print('test openai')
+    r=openai_test()
+    print(str(r))
+    send_test_msg(str(r))
     pass
 
 

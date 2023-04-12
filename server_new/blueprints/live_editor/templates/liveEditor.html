@@ -253,38 +253,10 @@
             console.log(res);
 
 
-            nodes = [
-                {
-                    name: 'Node 0',
-                    category: ["产品"],
-                    //x: 10,
-                    //y: 0,
-                    //value: [10, 0],
-                },
-                {
-                    name: 'Node 1',
-                    code: "601398.SH",
-                    category: "企业",
-                    //x: 0,
-                    //y: 10,
-                    //value: [0, 10],
-                },
-                {
-                    name: 'Node 2',
-                    category: "产品",
-                    x: 600,
-                    y: 400,
-                    fixed: true,
-                    //value: [10, 10],
-                },
-                {
-                    name: 'Node 3',
-                    category: "产品",
-                    //x: 20,
-                    //y: 20,
-                    //value: [20, 10],
-                }
-            ];
+            max_x=0;
+            max_y=0;
+            min_x=0;
+            min_y=0;
             nodes = res.nodes;
             nodemap_neoid_name = {};
             var i = 0
@@ -300,7 +272,12 @@
                 node.name = node.rawname + "_" + node.category + "_" + node.bitapp_id;
 
                 node.fixed = node.hasOwnProperty("x") && node.hasOwnProperty("y");
-
+                if (node.fixed){
+                    if (node.x>max_x){max_x=node.x}
+                    if (node.y>max_y){max_y=node.y}
+                    if (node.x<min_x){min_x=node.x}
+                    if (node.y<min_y){min_y=node.y}
+                }
                 nodemap_neoid_name[node.bitapp_id] = node.name;
                 if (!(node.name in all_nodes_map)) {
                     node.show = true;
@@ -308,32 +285,10 @@
                 }
                 i++
             });
+            center_x=Math.round((max_x+min_x)/2);
+            center_y=Math.round((max_y+min_y)/2)
 
-
-
-            links = [
-                {
-                    source: 1,
-                    target: 0,
-                    label: {
-                        show: true
-                    }
-                },
-                {
-                    source: 0,
-                    target: 2,
-                    category: "父节点"
-                },
-                {
-                    source: 2,
-                    target: 3,
-                    category: "储运"
-                },
-                {
-                    source: 1,
-                    target: 3,
-                }
-            ];
+            
             links = res.links;
             links.forEach(function (link) {
                 let a = link.category || "原材料";
@@ -364,6 +319,7 @@
             });
 
             option = {
+                center:[center_x,center_y],
                 title: {
                     show: true,
                     text: res.bitapp_name,
@@ -404,6 +360,7 @@
         function bigNode(event) {
             //render()
             clearScreen();
+            
             mysymbolSize=mysymbolSize+5
             console.log("bignode:");
             console.log(mysymbolSize);
@@ -421,6 +378,7 @@
         function smallNode(event) {
             //render()
             clearScreen();
+            
             mysymbolSize=mysymbolSize-5
             console.log("smallnode:");
             console.log(mysymbolSize);

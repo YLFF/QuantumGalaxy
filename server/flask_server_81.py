@@ -24,7 +24,7 @@ from QGI.feishu import *
 feishu=FeishuAPI()
 from models import *
 from flask_cors import CORS
-from utils import chatbot
+#from utils import chatbot
 from jira import JIRA
 
 jira = JIRA('https://research.quantumgalaxy.cn/',

@@ -28,11 +28,13 @@ def bitable_check(app_token):
                     link_table=table['table_id']
                 if table['name']=='监测指标表':
                     indi_table=table['table_id']
+                if table['name']=='骨干定义表':
+                    backbone_table=table['table_id']
             if node_table and link_table and indi_table:
                 print('good table')
-                return True,[node_table,link_table,indi_table]
+                return True,[node_table,link_table,indi_table,backbone_table]
             else:
-                msg='not all tables found, node,link,indicator :%s'%[node_table,link_table,indi_table]
+                msg='not all tables found, node,link,indicator :%s'%[node_table,link_table,indi_table,backbone_table]
                 return False,msg
         else:
             print(tables)
@@ -47,7 +49,7 @@ def get_main_info(field):
 
 def post_process(raw):
     '''raw:{nodes:...,links:...,indicators:,,,'''
-    nodes,links,indicators=raw['nodes'],raw['links'],raw['indicators']
+    nodes,links,indicators,backbone_mark=raw['nodes'],raw['links'],raw['indicators'],raw['backbone_mark']
     res_nodes=[]
     try:
         for n in nodes:
@@ -56,11 +58,18 @@ def post_process(raw):
             
             external_backbone=get_main_info(f.get('所属外部骨干'))
             if external_backbone:more_info['external_backbone']=external_backbone
-            
+            intro=f.get('简要介绍')
+            if intro:more_info['intro']=intro
             res_node={'bitapp_id':n['record_id'],'name':f.get('节点名称'),'category':f.get('节点类型'),'more_info':more_info}
             code=f.get('公司代码')
             if code:res_node['code']=code
             x,y=f.get('画布位置X'),f.get('画布位置Y')
+            #用查找引用方式写xy的话返回列表
+            if type(x)==list:
+              x=x[0]
+            if type(y)==list:
+              y=y[0]
+
             if x and y:
                 res_node['x']=round(float(x),2)
                 res_node['y']=round(float(y),2)
@@ -70,20 +79,26 @@ def post_process(raw):
     res_links=[]
     try:
         for l in links:
+          try:
             f=l['fields']
-            res_link={'bitapp_id':l['record_id'],'source':f['主体'][0]['record_ids'][0],'target':f['客体'][0]['record_ids'][0],'category':get_main_info(f['关系'])[0]}
+            more_info={}
+            pro_line=f.get('产线地位')
+            if pro_line:more_info['pro_line']=pro_line
+            res_link={'bitapp_id':l['record_id'],'source':f['主体'][0]['record_ids'][0],'source_name_ref':f['主体'][0]['text'],'target_name_ref':f['客体'][0]['text'],'target':f['客体'][0]['record_ids'][0],'category':get_main_info(f['关系'])[0],'more_info':more_info}
             res_links.append(res_link)
+          except:pass
     except Exception as e:
         return {'code':-3,'msg':'had problem when processing edges, type:"%s"exception:%s'%(e.__class__.__name__,str(e))}
     try:
         for i in indicators:
+          try:
             f=i['fields']
             res_link={'bitapp_id':i['record_id'],'source':i['record_id'],'target':f['挂钩节点'][0]['record_ids'][0],'category':"反映"}
             #res_links.append(res_link)
             #"指标代码","挂钩节点","指标性质","单位","指标定义","影响方向","画布位置X","画布位置Y","世界线跟踪表-主要相关指标"
             more_info={}
-            type=f.get('指标性质')
-            if type:more_info['type']=type
+            itype=f.get('指标性质')
+            if itype:more_info['type']=itype
             
             res_node={'bitapp_id':i['record_id'],'name':f.get('指标名'),'category':'指标','more_info':more_info}
             code=f.get('指标代码')
@@ -94,21 +109,22 @@ def post_process(raw):
                 res_node['y']=round(float(y),2)
             res_links.append(res_link)
             res_nodes.append(res_node)
+          except:pass
     except Exception as e:
         return {'code':-3,'msg':'had problem when processing indicators, type:"%s"exception:%s'%(e.__class__.__name__,str(e))}
-    return{'code':0,'nodes':res_nodes,'links':res_links}
+    return{'code':0,'nodes':res_nodes,'links':res_links,'backbone_mark':backbone_mark}
 
     
 def bitable_works(bitapp_token,subgraph_name=None):
-    '''查多维表格的完整性（节点表 关系表 监测指标表'''
+    '''查多维表格的完整性（节点表 关系表 监测指标表,骨干定义表'''
     res,data=bitable_check(bitapp_token)
     if not res:
         return {'code':-1,'msg':'查多维表格完整性失败，请确认包含节点表/关系表/监测指标表，并且给予星图编辑器可读权限    '+str(data)}
     else:
         #查节点表内容
-        node_table,link_table,indi_table=data
+        node_table,link_table,indi_table,backbone_table=data
         nodes,links,indicators=None,None,None
-        params={'app_token':bitapp_token,'table_id':node_table,'graph_name':subgraph_name,'fields':'["节点名称","节点类型","公司代码","画布位置X","画布位置Y","参与子图","所属外部骨干"]'}
+        params={'app_token':bitapp_token,'table_id':node_table,'graph_name':subgraph_name,'fields':'["节点名称","节点类型","公司代码","画布位置X","画布位置Y","参与子图","所属外部骨干","简要介绍"]'}
         r=base_fetch_func('http://172.21.0.14:81/bitapp/record',headers=None,params=params,method='get')
         ''' {
         "fields": {
@@ -136,7 +152,7 @@ def bitable_works(bitapp_token,subgraph_name=None):
     }, '''
         if r['code']==0:
             nodes=r['data']
-        params={'app_token':bitapp_token,'table_id':link_table,'graph_name':subgraph_name,'fields':'["主体","关系","客体","参与子图"]'}
+        params={'app_token':bitapp_token,'table_id':link_table,'graph_name':subgraph_name,'fields':'["主体","关系","客体","参与子图","产线地位"]'}
         r=base_fetch_func('http://172.21.0.14:81/bitapp/record',headers=None,params=params,method='get')
         '''"links": [
     {
@@ -215,12 +231,18 @@ def bitable_works(bitapp_token,subgraph_name=None):
   ], '''
         if r['code']==0:
             indicators=r['data']   
+        params={'app_token':bitapp_token,'table_id':backbone_table,'filter':'CurrentValue.[本骨干标记]=1'}
+        r=base_fetch_func('http://172.21.0.14:81/bitapp/record',headers=None,params=params,method='get')
+        
+        if r['code']==0:
+            backbone_mark=r['data']   
         if nodes and links :
             if not indicators:
                 indicators=[]
-            raw={'nodes':nodes,'links':links,'indicators':indicators}
+            raw={'nodes':nodes,'links':links,'indicators':indicators,'backbone_mark':backbone_mark}
             #return raw
             result=post_process(raw)
             return result
+            
         else:
             return {'code':-2,'msg':'检查节点/边/指标表失败，可能是子图名有误。检查到的结果：节点：%s\t\n边:%s \t\n 指标:%s'%(nodes,links,indicators)}

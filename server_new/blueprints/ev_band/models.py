@@ -68,7 +68,7 @@ class Code2JS():
             url='https://research.quantumgalaxy.cn/',
             username='wangzhilin',
             password='wangzhilin')
-        self.issue=jira.jql(f'project = POSITION AND cf[10201] ~  {self.code}')
+        self.issue=jira.jql(f'project = POSITION AND cf[10201] =  {self.code}')
        
         model=self.issue['issues'][0]['fields']['customfield_11206']
         if model:
@@ -193,20 +193,25 @@ class Code2JS():
                 history=self.split_ev_band(self.clean_data(self.find_issue()))
                 results=self.split_ev_band(history)
                 print('using jira api for history data')
+            print("result:%s"%str(results))
             js=[]
             results=results[::-1]
             for r in results:
                 one=self.one_work(r)
                 
                 if not one:
-                    return False,False
+                    return False,False,False
                 js.append(one)
                 r['start_date']=r['start_date'].strftime("%Y-%m-%d")
                 r['target_date']=r['target_date'].strftime("%Y-%m-%d")
             #js=json.dumps(js)
             return results,js,self.m
         except Exception as e:
+            import traceback
+            #print('here?')
             logger.error(e)
+            traceback_str = traceback.format_exc()
+            print(traceback_str)
             return (False,False,False)
     def gen_dataset(self,data,model='xn'):
         code=self.code
@@ -250,9 +255,11 @@ class Code2JS():
             start=np.outer(stock_data,factor)[0]
             #print(start)
             if code.split('.')[1].upper()  in ['HK','SH','BJ','SZ']:
-                n=mysql.read_query('select value from customized_data where code="C00002.QG" order by date desc limit 1')[0][0]
+                n=mysql.read_query('select value from customized_data where code="C00002.QG" and not value is null order by date desc limit 1')[0][0]
             else:
-                n=mysql.read_query('select value from customized_data where code="C00004.QG" order by date desc limit 1')[0][0]
+                n=mysql.read_query('select value from customized_data where code="C00004.QG"  and not value is null order by date desc limit 1')[0][0]
+            print('mu,s:%s,%s'%(mu,s))
+            print('N:%s'%n)
             end=np.exp([mu-0.842*s,mu-0.5*s,mu,mu+0.5*s,mu+0.842*s])*n
             
             #print(start_date)
@@ -461,11 +468,16 @@ class Code2JS():
         code=self.code
         
         try:
+            print(data,self.m)
             dataset=self.gen_dataset(data,self.m)
             #print(dataset)
             return dataset
         except Exception as e:
-
+            import traceback
+            #print('here?')
+            #logger.error(e)
+            traceback_str = traceback.format_exc()
+            print(traceback_str)
             #raise Exception
             logger.error('had exception during process data: %s'%e)
             return False
@@ -488,6 +500,7 @@ class New_band(Code2JS):
                 js.append(one)
                 r['start_date']=r['start_date'].strftime("%Y-%m-%d")
                 r['target_date']=r['target_date'].strftime("%Y-%m-%d")
+            print(results,js,self.m)
             return results,js,self.m
 
 def fetch_all_position():
