@@ -105,15 +105,15 @@ def update_from_code_1day():
 
 
 
-def update_from_code():
+def update_from_code(neo):
     #neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
     #neo_user = "QG_Editor"
     #neo_password = "editor"
     #neo=Neo4j(neo_uri,neo_user,neo_password)
-    uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
-    user = "neo4j"
-    password = "QuantumGalaxy"
-    neo=Neo4j(uri,user,password)
+    #uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
+    #user = "neo4j"
+    #password = "QuantumGalaxy"
+    #neo=Neo4j(uri,user,password)
     sql_host='localhost'
     sql_user='Local_Editor'
     sql_password='QuantumGalaxy'
@@ -157,7 +157,16 @@ def update_from_code():
 
 
 if __name__=='__main__':
-    update_from_code()
+    neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    neo_user = "QG_Editor"
+    neo_password = "editor"
+    neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
+    uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
+    user = "neo4j"
+    password = "QuantumGalaxy"
+    neo_nova=Neo4j(uri,user,password)
+    update_from_code(neo_atlas)
+    update_from_code(neo_nova)
 
 
 
