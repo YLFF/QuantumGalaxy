@@ -1,0 +1,3 @@
+[submodule "QGI"]
+    path = QGI
+    url = https://github.com/YLFF/QGI.git
