@@ -1,0 +1,11 @@
+// My Thoughts
+digraph {
+	A [label="First thought"]
+	B [label="Second thought"]
+	C [label="Third thought"]
+	D [label="Fourth thought"]
+	A -> B
+	B -> C
+	C -> D
+	rankdir=Radial
+}

@@ -75,7 +75,7 @@ def receive_message():
         event_id=req['header']['event_id']
         
         if write_check_id(event_id):
-            if not sender in ['ou_e32afa3ec16eae9f334d27c02c037259','ou_bdb8583689f98ddc96484441b8477975','ou_6055b4f9ede3b6d4a3ac9f303b17971c','ou_6fe1b9026fc41be0414c723f4a1d174b','ou_5257a5c4f845c57e45a054f275e2f9b2']:
+            if not sender in ['ou_f18cbba54710fb91bbb6697fa2fe6563','ou_e32afa3ec16eae9f334d27c02c037259','ou_bdb8583689f98ddc96484441b8477975','ou_6055b4f9ede3b6d4a3ac9f303b17971c','ou_6fe1b9026fc41be0414c723f4a1d174b','ou_5257a5c4f845c57e45a054f275e2f9b2']:
                 #ou_bdb8583689f98ddc96484441b8477975
                 
                 #print()

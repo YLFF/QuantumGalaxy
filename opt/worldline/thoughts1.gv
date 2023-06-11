@@ -1,0 +1,13 @@
+// My Thoughts
+digraph {
+	A [label="Topic A"]
+	B [label="Subtopic B"]
+	C [label="Subtopic C"]
+	D [label="Subtopic D"]
+	E [label="Subtopic E"]
+	A -> B
+	A -> C
+	C -> D
+	C -> E
+	layout=fdp nodesep=50
+}

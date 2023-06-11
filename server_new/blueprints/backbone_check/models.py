@@ -10,8 +10,22 @@ def item_reader(s:str):
             if (not re.findall('diagramName',s)) or  re.findall('diagramName="RoundedRectangle"',s):
                 print(s)    
                 external='外部节点' if  re.findall('diagramName="RoundedRectangle"',s) else None
+                
                 info=re.search('id="(.*?)" value="(.*?)" .*fillColor=(.*?);.*x="(.*?)".*y="(.*?)".*',s)
-                id,name,color,x,y=info.group(1),info.group(2),info.group(3),info.group(4),info.group(5)
+                if info:
+                    id,name,color,x,y=info.group(1),info.group(2),info.group(3),info.group(4),info.group(5)
+                else:
+                    #print('hello?')
+                    #print(s)
+                    #x,y为0是，xml会缺项。。。。。。
+                    info=re.search('id="(.*?)" value="(.*?)" .*fillColor=(.*?);',s)
+                    id,name,color=info.group(1),info.group(2),info.group(3)
+                    x=re.search(' x="(.*?)"',s)
+                    x=x.group(1) if x else 0
+                    y=re.search(' y="(.*?)"',s)
+                    y=y.group(1) if y else 0
+                    #print(x,y)
+                #id,name,color,x,y=info.group(1),info.group(2),info.group(3),info.group(4),info.group(5)
                 try:
                     
                     name=html.unescape(name)
@@ -104,7 +118,7 @@ def data_mapper(data):
     产品 #0362A1
     公司 #ffffff'''
     color2type={'#ffffff':'Company','#FFFFFF':'Company',
-        '#0362A1':'Product',
+        '#0362A1':'Product','#B5739D':'Product',
         '#CC0000':'Demand',
         '#999999':'Technique','#CCCCCC':'Technique',
         '#FFB570':'Indicator','#FFFFCC':'Indicator'}
@@ -140,6 +154,10 @@ def data2text(data):
     num_o=len(data['other'])
     num=num_v+num_e+num_o+num_i
     text='解析飞书流程图结果如下:\n总获取到合法数据%s条\n'%num
+    text+='存疑数据%s条\n'%num_o
+    for v in data['other']:
+        text+=html.escape(str(v))+'\n'
+    text+='\n\n'
     text+='正确节点%s个\n'%num_v
     for v in data['vertex'].values():
         text+= v['name']+'\t'+v['category']+'\n'
@@ -151,10 +169,8 @@ def data2text(data):
     text+='正确边%s个\n'%num_e
     for v in data['edge'].values():
         text+= v['sourcename']+'--['+v['name']+']->'+v['targetname']+'\n'
-    text+='\n\n'
-    text+='存疑数据%s条\n'%num_o
-    for v in data['other']:
-        text+=html.escape(str(v))+'\n'
+    
+
 
     text = text.replace('\n','<br/>')
 
@@ -235,14 +251,16 @@ def split_data(data):
         data['edge'].pop(k)
 
     return data
-def xml2graph_worker(string,name):
+def xml2graph_worker(string,name,split_indicator=True):
     data=graph_recognizer(string)
     data=data_mapper(data)
     data=add_backbone(data,name)
     data=data_check(data)
-    data=split_data(data)
-    #json.dumps(data)
-    print(data['other'])
-    result=data2text(data)
-    print(result)
+    if split_indicator:
+        data=split_data(data)
+        #json.dumps(data)
+        print(data['other'])
+        result=data2text(data)
+        print(result)
+    else:result=''
     return result,data

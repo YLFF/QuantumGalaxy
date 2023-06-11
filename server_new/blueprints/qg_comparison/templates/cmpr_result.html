@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多维表流程图比对</title>
+</head>
+<body>
+  <h1>多维表流程图比对结果</h1>
+  <h2>黑色为流程图与多维表格一致。红色字体代表流程图有而多维表格没有的冲突部分，蓝色代表多维表格有而流程图没有的冲突部分</h2>
+  <p>
+    {{conflicts|safe}}
+    <br>
+    <br>
+    <br>
+  </p>
+  <p>
+    {{internal|safe}}
+<br>
+<form action="{{url_for('cmpr.download')}}" method='get'>
+    
+    
+  <input type="submit" value="下载坐标文件">
+  </form>
+        
+<form action="{{url_for('cmpr.raw')}}" method='get' target="_blank">
+    
+    
+  <input type="submit" value="原始冲突数据">
+  </form>
+        
+
+
+</p>
+        
+
+        
+</body>
+</html>

@@ -2,7 +2,7 @@ from auth import *
 import sys     
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 import re
-
+from logging.handlers import RotatingFileHandler
 import numpy as np
 import pandas as pd
 from jira import JIRA
@@ -12,9 +12,11 @@ from QGI.neoapi import Neo4j
 def get_logger(name,chlevel=logging.ERROR):
     logger = logging.getLogger(name)
     logger.setLevel(logging.INFO)
-    fh = logging.FileHandler(
+    fh = RotatingFileHandler(
         "E:\wangzhilin\QuantumGalaxy\server_openai\logs\%s.log"%name,
         'a',
+        maxBytes=10*1024*1024,
+        
         encoding='utf-8')
     fh.setLevel(logging.INFO)
     ch = logging.StreamHandler()

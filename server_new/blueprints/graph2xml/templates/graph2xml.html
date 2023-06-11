@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多维表转流程图</title>
+</head>
+<body>
+  <h1>多维表格转流程图</h1>
+  <p>
+    <a href="http://www.example.com"target="_blank">使用方法</a>
+    <form action="{{url_for('graph2xml.result')}}" method='post'>
+      
+        多维表格id: <input type="text" name="id"  maxlength="1000000000000"
+                     ><br>
+        区域名(无特定区域时留空）：<input type="text" name="region"  maxlength="1000000000000"
+        ><br>
+        <input
+                     type="checkbox"
+                     id="rough"
+                     name="rough"
+                      />
+                   <label for="rough">仅限粗骨干图</label>
+        <input
+                   type="checkbox"
+                   id="except_cop"
+                   name="except_cop"
+                    />
+                 <label for="except_cop">除去公司</label>
+        <input
+                 type="checkbox"
+                 id="except_ind"
+                 name="except_ind"
+                  />
+               <label for="except_ind">除去指标</label>
+        <!-- 多维表格区域名: <br> -->
+        <!--<textarea maxlength="500000000000000" rows = "3" cols = "20" name="graph"></textarea>-->
+<br>
+        
+        <input type="submit" value="提交">
+        </form>
+
+</p>
+        
+
+        
+</body>
+</html>

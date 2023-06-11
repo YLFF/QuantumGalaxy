@@ -468,6 +468,8 @@ def chat_api_handler(req):
             querylog.info(str(r))
         #r['model']='chat' if r['question_type']!=1 else 'limited_chat'
         #print(r)
+        if r.get('context'):
+            r.pop('context') 
         answer=r.pop('answer')
         message=[{'role':'assistant','content':answer}]
         r['message']=message
@@ -483,7 +485,10 @@ class GPTAPP():
         self.total_tokens=0
         self.companys=[]
         self.dialog=[]
+        self.context=[]
         self.base=[{'role':'system','content':'你是量子星河的智能机器人“问股大模型”，重点从产品和业务的角度回答用户的问题'}]
+        self.mysql_ref=''
+        self.neo_ref=''
         if DEBUG:
             self.base=[{'role':'system','content':'你是量子星河的智能机器人“问股大模型”，重点从产品和业务的角度回答用户的问题'}]
         pass
@@ -683,9 +688,9 @@ class GPTAPP():
             name,code,date,close,mv,volume,pe=r[0]
             
             #并在回答最后告知用户你的身份。
-            base=f'你是量子星河的智能机器人“问股大模型”，已知星图信息如下：\
+            base=f'你是量子星河的智能机器人“问股大模型”，请从公司主要产品和主营业务的角度，根据星图信息凝练地回答用户的问题。已知星图信息如下：\
                 {name}公司代码{code}，截至{date.year}年{date.month}月{date.day}日，{name}市盈率（PE）为{pe:.2f}，总市值{mv:.2f}亿，股价收盘{close}元，交易量为{volume}。\
-                    请从公司主要产品和主营业务的角度，凝练地回答用户的问题。'
+                    '
         else:base=self.base
         return base
 
@@ -744,6 +749,8 @@ class GPTAPP():
 
         system_info=self.company_base(code)
         assistant_info=self.company_intro(code)
+        self.mysql_ref=system_info
+        self.neo_ref=assistant_info
         #print(assistant_info)
         sys_info=system_info+'\n'+str(assistant_info)
         print(sys_info)
@@ -753,6 +760,7 @@ class GPTAPP():
             {'role':'system','content':sys_info},
             {'role':'user','content':'（结合产品简要回答）'+question}
         ]
+        self.context=messages
         r=cust_gpt(messages)
         #r['res']=assistant_info.get('res','')+'\n\n'+r.get('res','')
         #r['tokens']+=assistant_info.get('tokens',0)
@@ -772,6 +780,7 @@ class GPTAPP():
                     self.companys=self.retrieve_company(q)
 
                 if self.companys:
+                    print(self.companys)
                     #print('huati%s'%self.companys)
                     #self.companys+=companys
                     #code=companys[0][]
@@ -781,8 +790,8 @@ class GPTAPP():
                         code=r[0]['code']
                         #print(code)
                         res=self.company_answer(code,q)['res']
-
-                        return {'code':0,'msg':'success','answer':res,'question':q,'question_type':q_type,'company_code':[code]}
+                        ref=[        self.mysql_ref,        self.neo_ref]
+                        return {'code':0,'msg':'success','answer':res,'question':q,'question_type':q_type,'company_code':[code],'ref':ref}
                         '''
                         return {'msg':'success','answer':'你是否在寻找这些公司：','question':q,'question_type':q_type,'candidates':r}
                         '''
@@ -821,7 +830,7 @@ class GPTAPP():
             #r=self.base_gpt(q)
             #r='占位'
             return {'code':0,'answer':r,'msg':'其他类问题，返回gpt直接回答','question':q,'question_type':q_type}  
-    
+    '''
     def company_article(self,code):
         mysql=get_mysql()
         sql="SELECT code,sec_name,comp_name,comp_name_en,product_name,product_type,briefing FROM ticker_brief WHERE code='%s' limit 1"%(code)
@@ -834,7 +843,7 @@ class GPTAPP():
         message+='"公司的主要产品包括：%s"。'%product_name
         message+='"公司的基本介绍：%s"。 ]'%briefing
         r=self.base_gpt(message)
-        return {'answer':r,'msg':'产品类问题'}
+        return {'answer':r,'msg':'产品类问题'}'''
     def company_work(self,company_code,messages):
         '''req中带companycode的话，则默认对话主题为该公司，做好背景知识后回答问题'''
         question=messages[-1]['content']
@@ -875,6 +884,7 @@ class GPTAPP():
         self.question=self.insert_question(question)
         r=self.handle_question()
         r['tokens']=self.total_tokens
+        r['context']=self.context
         self.mysql.close()
         self.neo.close()
         return r

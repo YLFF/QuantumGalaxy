@@ -73,31 +73,74 @@ def update_from_code_1day():
     today=today.__format__('%y-%m-%d')
     codestr=str(strip_code)
     codestr1='('+codestr[1:-1]+')'
+    df=pd.DataFrame(index=code)
     sql='update ticker_info set status=1 where code in %s'%codestr1
     result=mysql.write_query(sql)
     sql="select code,close_price from ticker_data where date='%s' and code in %s and not close_price is null  "%(today,codestr1)
     r=mysql.read_query(sql)
-    
-    neo.update_node_value(data=r)
+    df1=pd.DataFrame(data=r,columns=['code','close']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    print(len(r))
+    #neo.update_node_value(data=r)
+    sql="select code,date from ticker_data where date='%s' and code in %s   "%(today,codestr1)
+    r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','date']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_data_date(data=r)
     sql="select code, market_value2 from ticker_data where date='%s' and code in %s and not market_value2 is null"%(today,codestr1)
     r=mysql.read_query(sql)
-    neo.update_node_market_value(data=r)
-    sql="select code,date from ticker_data where date='%s' and code in %s  "%(today,codestr1)
+    df1=pd.DataFrame(data=r,columns=['code','market_value']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_market_value(data=r)
+    sql="select code, stdchg3m from processed_data where date='%s' and code in %s  and not stdchg3m is null"%(today,codestr1)
     r=mysql.read_query(sql)
-    neo.update_node_data_date(data=r)
-    
-    sql="select code, stdchg3m from processed_data where date='%s' and code in %s and not stdchg3m is null"%(today,codestr1)
-    result=mysql.read_query(sql)
-    neo.update_node_stdcgh3m(data=result)
+    df1=pd.DataFrame(data=r,columns=['code','stdchg3m']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_stdchg3m(data=result)
     sql="select code, stdchg1m from processed_data where date='%s' and code in %s and not stdchg1m is null"%(today,codestr1)
-    result=mysql.read_query(sql)
-    neo.update_node_stdcgh1m(data=result)
+    r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','stdchg1m']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_stdchg1m(data=result)
     sql="select code, change_rate_1d from processed_data where date='%s' and code in %s and not change_rate_1d is null"%(today,codestr1)
-    result=mysql.read_query(sql)
-    neo.update_node_chg1d(data=result)
+    r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','stdchg1d']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_chg1d(data=result)
+    sql='''SELECT t1.code,t1.stdchg1m - t2.stdchg1m AS diff \
+    FROM processed_data t1 \
+    JOIN processed_data t2 ON t1.code = t2.code \
+    WHERE t1.date = '%s' AND t2.date = ( \
+        SELECT MAX(date) \
+        FROM processed_data \
+        WHERE date <= DATE_SUB('%s', INTERVAL 7 DAY) AND code = t1.code \
+    ) \
+    AND t1.code  in %s'''%(today,today,codestr1)
+    r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','chg1m_1w_diff']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     #neo.add_indicator_to_company()
+
+    df=df.dropna(how='all').round(2)
+    cypher_list=[]
+    for i,r in df.iterrows():
+        
+        cypher=f'''match (n:Company|Indicator {{code:'{i}'}}) set '''
+        fields=''
+        for k,v in r.items():
+            if k=='date':
+                fields+='n.'+k+'='+"'"+(str(v) if v else 'null')+"'"+','
+            else:
+                fields+='n.'+k+'='+(str(v) if v else 'null')+','
+        cypher+=fields[:-1]
+        
+        cypher_list.append(cypher)
+    print(f"{len(cypher_list)} cyphers loaded")
+    print(cypher_list[0])
+    r=neo.multi_cypher(cypher_list)  
     neo.close()
     mysql.close()
+    return r
 
 
 
@@ -127,30 +170,75 @@ def update_from_code(neo):
     today=today.__format__('%y-%m-%d')
     codestr=str(strip_code)
     codestr1='('+codestr[1:-1]+')'
+    df=pd.DataFrame(index=code)
     sql='update ticker_info set status=1 where code in %s'%codestr1
     result=mysql.write_query(sql)
     sql="select code,close_price from ticker_data where date='%s' and code in %s and not close_price is null  "%(today,codestr1)
     r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','value']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     print(len(r))
-    neo.update_node_value(data=r)
+    #neo.update_node_value(data=r)
     sql="select code,date from ticker_data where date='%s' and code in %s   "%(today,codestr1)
     r=mysql.read_query(sql)
-    neo.update_node_data_date(data=r)
+    df1=pd.DataFrame(data=r,columns=['code','datadate']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_data_date(data=r)
     sql="select code, market_value2 from ticker_data where date='%s' and code in %s and not market_value2 is null"%(today,codestr1)
     r=mysql.read_query(sql)
-    neo.update_node_market_value(data=r)
+    df1=pd.DataFrame(data=r,columns=['code','market_value']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_market_value(data=r)
     sql="select code, stdchg3m from processed_data where date='%s' and code in %s  and not stdchg3m is null"%(today,codestr1)
-    result=mysql.read_query(sql)
-    neo.update_node_stdcgh3m(data=result)
+    r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','stdchg3m']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_stdchg3m(data=result)
     sql="select code, stdchg1m from processed_data where date='%s' and code in %s and not stdchg1m is null"%(today,codestr1)
-    result=mysql.read_query(sql)
-    neo.update_node_stdcgh1m(data=result)
+    r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','stdchg1m']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_stdchg1m(data=result)
     sql="select code, change_rate_1d from processed_data where date='%s' and code in %s and not change_rate_1d is null"%(today,codestr1)
-    result=mysql.read_query(sql)
-    neo.update_node_chg1d(data=result)
+    r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','chgrate1d']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
+    #neo.update_node_chg1d(data=result)
+    sql='''SELECT t1.code,t1.stdchg1m - t2.stdchg1m AS diff \
+    FROM processed_data t1 \
+    JOIN processed_data t2 ON t1.code = t2.code \
+    WHERE t1.date = '%s' AND t2.date = ( \
+        SELECT MAX(date) \
+        FROM processed_data \
+        WHERE date <= DATE_SUB('%s', INTERVAL 7 DAY) AND code = t1.code \
+    ) \
+    AND t1.code  in %s'''%(today,today,codestr1)
+    r=mysql.read_query(sql)
+    df1=pd.DataFrame(data=r,columns=['code','stdchg1m_1w_diff']).set_index('code')
+    df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     #neo.add_indicator_to_company()
+
+    df=df.dropna(how='all').round(2)
+    cypher_list=[]
+    for i,r in df.iterrows():
+        
+        cypher=f'''match (n:Company|Indicator {{code:'{i}'}}) set '''
+        fields=''
+        for k,v in r.items():
+            if k=='datadate':
+                fields+='n.'+k+'='+"'"+(str(v) if v else 'null')+"'"+','
+            else:
+                fields+='n.'+k+'='+(str(v) if v else 'null')+','
+        cypher+=fields[:-1]
+        
+        cypher_list.append(cypher)
+    print(f"{len(cypher_list)} cyphers loaded")
+    print(cypher_list[0])
+    r=neo.multi_cypher(cypher_list)  
     neo.close()
     mysql.close()
+    return r
+
 
 
 
@@ -160,12 +248,12 @@ if __name__=='__main__':
     neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
     neo_user = "QG_Editor"
     neo_password = "editor"
-    neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
+    #neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
     uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
     user = "neo4j"
     password = "QuantumGalaxy"
     neo_nova=Neo4j(uri,user,password)
-    update_from_code(neo_atlas)
+    #update_from_code(neo_atlas)
     update_from_code(neo_nova)
 
 

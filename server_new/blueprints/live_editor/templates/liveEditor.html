@@ -18,18 +18,26 @@
             <!-- 画布 -->
             <div id="main" style="height:100%;"></div>
             <!-- 下方工具栏 -->
-            <div class="btn-group position-absolute bottom-0 start-50 translate-middle qgi-front-module" role="group">
-                <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
-                    onclick="goRefresh(event)">刷新数据</button>
-                <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
-                    data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
-                    onclick="listNodePos(event)">
-                    More
-                </button>
-                <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
-                    onclick="bigNode(event)">放大节点</button>
+            <div class="position-absolute bottom-0 start-50 translate-middle" role="group">
+
+
+                <div class="btn-group qgi-front-module" role="group">
                     <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
-                    onclick="smallNode(event)">缩小节点</button>
+                        onclick="goExpandSearch(event)">+扩展选中+</button>
+                    <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+                        onclick="goDissmiss(event)">-隐藏选中-</button>
+                </div>
+
+                <div class="btn-group qgi-front-module" role="group">
+                    <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+                        onclick="goRefresh(event)">刷新数据</button>
+
+                    <button type="button" class="btn btn-outline-primary" style="white-space: nowrap;"
+                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+                        onclick="listNodePos(event)">
+                        More
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -43,7 +51,7 @@
         <hr>
         <div class="offcanvas-body d-flex flex-column pt-0">
             <div class="form-text">绘制哪个多维表格文件：</div>
-            <div class="form-text">https://quantumgalaxy.feishu.cn/base/【多维表id】?table=</div>
+            <div class="form-text">quantumgalaxy.feishu.cn/base/【多维表id】?table=</div>
             <div class="input-group p-2">
                 <span class="input-group-text" id="basic-addon2">多维表id</span>
                 <input type="text" class="form-control" id="bitapp_token" placeholder="类似bascnx0n..."
@@ -99,13 +107,15 @@
     <script type="text/javascript">
         web_root = "";
         if (document.domain == "") {
-            web_root = "http://82.156.248.152:83";
+            web_root = "http://82.156.248.152:82";
         }
 
 
-        mysymbolSize = 50;
+        symbolSize = 50;
+        loading_timeout = 0;
         all_nodes_map = {};
         all_links_map = {};
+        nodemap_neoid_name = {};
 
         bitapp_token = getUrlParamCN("bitapp_token");
         graph_name = getUrlParamCN("graph_name");
@@ -119,7 +129,7 @@
         var myChart = echarts.init(document.getElementById('main'));// 指定图表的配置项和数据
 
         var option0 = {
-            legend: { show: false, left: "right", top: "middle", orient: "vertical", itemGap: 20, icon: "circle", itemHeight: 25 },
+            legend: { show: true, left: "right", top: "middle", orient: "vertical", itemGap: 20, icon: "circle", itemHeight: 25 },
 
             animationDurationUpdate: 500,
             animationEasingUpdate: 'quinticInOut',
@@ -129,7 +139,7 @@
                     name: 'atlas',
                     type: 'graph',
                     layout: 'force',
-                    symbolSize: mysymbolSize,
+                    symbolSize: 50,
 
                     roam: true,
                     draggable: true,
@@ -185,7 +195,7 @@
                         curveness: 0
                     },
                     force: {
-                        repulsion: 160,
+                        repulsion: 80,
                         gravity: 0.01,
                         edgeLength: [80, 250],
                         fraction: 0.6
@@ -235,6 +245,7 @@
             myChart.clear();
             myChart.setOption(option0);
             myChart.hideLoading();
+            clearTimeout(loading_timeout);
             console.log("clearScreen");
         }
 
@@ -242,25 +253,40 @@
     </script>
 
     <script>
-        function render(res) {
+        function refresh_showhide() {
+            option = myChart.getOption();
+            option.series[0].data = option.series[0].data.filter((item, i, arr) => { return all_nodes_map[item.name].show })
+            myChart.setOption(option);
+        }
+
+        function inc_render(res, status) {
+            return render(res, status, true);
+        }
+
+        function render(res, status, inc_show = false) {
+            console.log(res, status);
             if (res.code) {
-                alert("接口返回值出错请联系开发者：" + res.msg);
+                alert("接口返回值出错请联系开发者：" +res.code+ res.msg);
                 myChart.hideLoading();
+                clearTimeout(loading_timeout);
                 return
             }
 
-            console.log("render");
-            console.log(res);
+            //设置节点
+            if (!inc_show) {
+                all_nodes_map = {};
+                all_links_map = {};
+                console.log("!inc_show)");
+                
+                for (name in all_nodes_map) {
+                    all_nodes_map[name].show = false;
+                }
+            }
 
-
-            max_x=0;
-            max_y=0;
-            min_x=0;
-            min_y=0;
-            nodes = res.nodes;
-            nodemap_neoid_name = {};
-            var i = 0
-            nodes.forEach(function (node) {
+            max_x = max_y = -999999;
+            min_x = min_y = 999999;
+            var i = 0;
+            res.nodes.forEach(function (node) {
                 node.bitapp_id = node.bitapp_id || i;
 
                 if (Array.isArray(node.category)) {
@@ -268,9 +294,9 @@
                 }
 
 
+                node.show = true;
                 node.rawname = node.name;
                 node.name = node.rawname + "_" + node.category + "_" + node.bitapp_id;
-
                 node.fixed = node.hasOwnProperty("x") && node.hasOwnProperty("y");
                 if (node.fixed){
                     if (node.x>max_x){max_x=node.x}
@@ -278,19 +304,29 @@
                     if (node.x<min_x){min_x=node.x}
                     if (node.y<min_y){min_y=node.y}
                 }
+
                 nodemap_neoid_name[node.bitapp_id] = node.name;
                 if (!(node.name in all_nodes_map)) {
-                    node.show = true;
                     all_nodes_map[node.name] = node;
+                } else {
+                    all_nodes_map[node.name].show = true;
+                    node.x = all_nodes_map[node.name].x
+                    node.y = all_nodes_map[node.name].y
+                    node.fixed = all_nodes_map[node.name].fixed
                 }
                 i++
             });
             center_x=Math.round((max_x+min_x)/2);
-            center_y=Math.round((max_y+min_y)/2)
+            center_y=Math.round((max_y+min_y)/2);
 
-            
-            links = res.links;
-            links.forEach(function (link) {
+            nodes = []
+            for (name in all_nodes_map) {
+                if (all_nodes_map[name].show) {
+                    nodes.push(all_nodes_map[name])
+                }
+            }
+
+            res.links.forEach(function (link) {
                 let a = link.category || "原材料";
                 link.label = { formatter: a };
                 link.category = a;
@@ -311,15 +347,22 @@
                 }
 
                 var n = link.source + " > " + link.target;
-                if (!(n in all_links_map)) {
+                if (!(n in all_links_map) && link.source && link.target) {
                     link.show = true;
                     link.name = n;
                     all_links_map[n] = link;
                 }
             });
 
+            links = []
+            for (name in all_links_map) {
+                if (all_links_map[name].show) {
+                    links.push(all_links_map[name])
+                }
+            }
+
             option = {
-                center:[center_x,center_y],
+                center: [center_x, center_y], 
                 title: {
                     show: true,
                     text: res.bitapp_name,
@@ -329,6 +372,7 @@
             };
 
             option0.series[0].data = nodes;
+            //option0.series[0].data = option.series[0].data.filter((item, i, arr) => { return all_nodes_map[item.name].show })
             option0.series[0].links = links;
 
             myChart.clear();
@@ -336,73 +380,63 @@
             myChart.setOption(option);
 
             myChart.hideLoading();
-            //console.log(myChart.getOption());
+            clearTimeout(loading_timeout);
         }
 
         /**/
         myChart.on('mouseup', function (params) {
             console.log(params)
-            var p = myChart.convertFromPixel({ seriesId: 'atlas' }, [params.event.offsetX, params.event.offsetY])
+            if (params.dataType == "node") {
+                var p = myChart.convertFromPixel({ seriesId: 'atlas' }, [params.event.offsetX, params.event.offsetY])
 
-            all_nodes_map[params.data.name].x = p[0];
-            all_nodes_map[params.data.name].y = p[1];
-            all_nodes_map[params.data.name].fixed = true;
-            myChart.setOption({
-                series: [{
-                    id: "atlas",
-                    data: nodes,
-                }]
-            });
+                all_nodes_map[params.data.name].x = p[0];
+                all_nodes_map[params.data.name].y = p[1];
+                all_nodes_map[params.data.name].fixed = true;
+                myChart.setOption({
+                    series: [{
+                        id: "atlas",
+                        data: nodes,
+                    }]
+                });
+                refresh_showhide();
+            }
             /*
             */
 
         });
-        function bigNode(event) {
-            //render()
-            clearScreen();
-            
-            mysymbolSize=mysymbolSize+5
-            console.log("bignode:");
-            console.log(mysymbolSize);
-            myChart.showLoading();
-            option1 =  {series: [
-                {
-                    
-                    symbolSize: mysymbolSize,}]
-            };
 
-            myChart.setOption(option1);
+        myChart.on('dblclick', function (params) {
+            if (params.dataType == "node") {
+                is_selected = extract_selected_nl().node_name.findIndex((it) => { return it == params.name })>-1;
+                //console.log("双击：" + params.name, is_selected);
+                //bitapp_id = all_nodes_map[params.name].bitapp_id;
+                for (l in all_links_map) {
+                    if ((i = l.search(params.name)) > -1) {
+                        //console.log(l, is_selected ? 'unselect' : 'select', i == 0 ? all_links_map[l].target : all_links_map[l].source)
+                        myChart.dispatchAction({
+                            type: is_selected ? 'unselect' : 'select',
+                            name: i == 0 ? all_links_map[l].target : all_links_map[l].source,
+                        })
+                    }
+                }
+                myChart.dispatchAction({
+                    type: is_selected ? 'unselect' : 'select',
+                    name: params.name,
+                })
+            }
+        });
 
-            myChart.hideLoading();
-        }
-        function smallNode(event) {
-            //render()
-            clearScreen();
-            
-            mysymbolSize=mysymbolSize-5
-            console.log("smallnode:");
-            console.log(mysymbolSize);
-            myChart.showLoading();
-            option1 =  {series: [
-                {
-                    
-                    symbolSize: mysymbolSize,}]
-            };
 
-            myChart.setOption(option1);
-
-            myChart.hideLoading();
-        }
         //扩展按钮发送搜索请求
         function goRefresh(event) {
             //render()
             clearScreen();
-            console.log("goRefresh");
             console.log({
                 bitapp_token: bitapp_token,
                 graph_name: graph_name,
             });
             myChart.showLoading();
+            loading_timeout = setTimeout("myChart.hideLoading()", 15000);
             $.getJSON(web_root + "/qgapp/bitable_query",
                 {
                     bitapp_token: bitapp_token,
@@ -413,12 +447,47 @@
         }
 
 
+        function goDissmiss(event) {
+            //render()
+
+            extract_selected_nl().node_name.forEach(function (n) {
+                all_nodes_map[n].show = false;
+                myChart.dispatchAction({
+                    type: 'unselect',
+                    name: n,
+                })
+            })
+
+            refresh_showhide()
+        }
+
+        function goExpandSearch(event) {
+            bitapp_ids = extract_selected_nl().node_name.map(function (n) {
+                return all_nodes_map[n].bitapp_id;
+            })
+            if (bitapp_ids.length) {
+                myChart.showLoading();
+                loading_timeout = setTimeout("myChart.hideLoading()", 15000);
+                $.getJSON(web_root + "/qgapp/bitable_query",
+                    {
+                        bitapp_token: bitapp_token,
+                        expand_ids: bitapp_ids.join(",")
+                    },
+                    inc_render
+                )
+            }
+        }
         // 输出列表
         function listNodePos(event) {
+            $("#selected_nodes").val("123");
             $("#nodes-pos").text("");
+            sel_node_name = extract_selected_nl();
+            has_selected = sel_node_name.node_name.length > 0;
             _pos_list = myChart._chartsViews[0]._symbolDraw._data;
             for (var i = 0; i < _pos_list._idList.length; i++) {
                 n = _pos_list._idList[i];
+                if (has_selected && sel_node_name.node_name.indexOf(n) < 0)
+                    continue;
                 node = all_nodes_map[n];
                 row_str = '<tr><th scope="row">' + node.rawname + '</th><td>' + _pos_list._itemLayouts[i][0].toFixed(1) + '</td><td>' + _pos_list._itemLayouts[i][1].toFixed(1) + '</td></tr>';
                 $("#nodes-pos").append(row_str);

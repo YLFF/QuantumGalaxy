@@ -26,9 +26,10 @@ from flask import request, render_template, redirect, abort, url_for,session,Res
 import json
 from flask import Flask
 from datetime import datetime, timedelta
-ALLOWED_IPS = ['82.156', '127.0.0', '172.21.0', '123.58.10','36.112.76','221.216.208.84','61.149.70','123.118.184.143','54.86.50']
+ALLOWED_IPS = ['82.156', '127.0.0', '172.21.0', '123.58.10','36.112.76','221.216.208.84','61.149.70','123.118.184.143','54.86.50','218.255.85.205','159.226.178.227','36.133.11.240']
 app = Flask(__name__)
-cors = CORS(app, resources={r"/qgapp/*": {"origins": "*"}})
+#cors = CORS(app, resources={r"/qgapp/*": {"origins": "*"}},supports_credentials=True)
+cors = CORS(app, supports_credentials=True,resources={r"/*": {"origins": "*"}})
 app.config["JSON_AS_ASCII"] = False
 app.config['SCHEDULER_API_ENABLED'] = True
 app.config["SECRET_KEY"] = "core-quantumgalaxy"
@@ -46,8 +47,8 @@ def limit_remote_addr():
             break
     if not valid:
         abort(403)
-
-@app.route('/index',methods=['post','get'])
+#@app.route('/')
+#@app.route('/index',methods=['post','get'])
 def index():
     if request.method=='get':
         return Response(render_template('index.html'))
@@ -85,6 +86,9 @@ def chat():
     print(req)
     res=chat_api_handler(req)
     return jsonify(res)
+
+
+
 @app.route('/test')
 def test():
     print('test')
@@ -102,7 +106,7 @@ def test1():
     import time
     time.sleep(5)
     return 'good'
-@app.route('/')
+
 @app.route('/limited_chat',methods=['post'])
 def limited_chat():
     if request.get_json():

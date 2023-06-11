@@ -12,6 +12,7 @@ def pop_session_attr(name):
         return attr
     else:
         return None
+    
 @backbone_check.route('/',methods=['POST','GET'])
 #@backbone_check.route('/index')
 def backbone_checker():
@@ -36,7 +37,15 @@ def backbone_checker():
             print('write raw data')
             #print(session.keys())
             return redirect(url_for('backbone_check.xml2graph_page'))
-
+@backbone_check.route('/work',methods=['POST','GET'])
+def work():
+    req=request.get_json()
+    req=json.loads(req)
+    print(req)
+    backbonename=req.get('name',None)
+    raw=req.get('graph',None)
+    result,data=xml2graph_worker(raw,backbonename,split_indicator=False)
+    return jsonify(result=result,data=data)
 @backbone_check.route('/xml2graph')
 def xml2graph_page():
     #try:

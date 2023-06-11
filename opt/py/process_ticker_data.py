@@ -198,7 +198,7 @@ def metajob(region,today=None):
         info='行情更新日报'+info
         if 1<=week<=5 and number==0:
             info+='******may have some problems!!!!!!!!!!!!!!******'
-
+        print(info)
         text_group_msg(info)
     except:pass
     return info
