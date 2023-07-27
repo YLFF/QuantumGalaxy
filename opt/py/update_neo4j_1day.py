@@ -127,7 +127,7 @@ def update_from_code_1day(neo):
     cypher_list=[]
     for i,r in df.iterrows():
         
-        cypher=f'''match (n:Company|Indicator {{code:'{i}'}}) set '''
+        cypher=f'''match (n {{code:'{i}'}}) set '''
         fields=''
         for k,v in r.items():
             if k=='datadate':
@@ -172,7 +172,7 @@ def update_from_code(neo):
     strip_code=[]
     for c in code:
         strip_code.append(c.replace('\t','').replace('\n',''))
-    today=date.today()-timedelta(0)
+    today=date.today()-timedelta(1)
     today=today.__format__('%y-%m-%d')
     codestr=str(strip_code)
     codestr1='('+codestr[1:-1]+')'
@@ -181,13 +181,13 @@ def update_from_code(neo):
     result=mysql.write_query(sql)
     sql="select code,close_price from ticker_data where date='%s' and code in %s and not close_price is null  "%(today,codestr1)
     r=mysql.read_query(sql)
-    df1=pd.DataFrame(data=r,columns=['code','close']).set_index('code')
+    df1=pd.DataFrame(data=r,columns=['code','value']).set_index('code')
     df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     print(len(r))
     #neo.update_node_value(data=r)
     sql="select code,date from ticker_data where date='%s' and code in %s   "%(today,codestr1)
     r=mysql.read_query(sql)
-    df1=pd.DataFrame(data=r,columns=['code','date']).set_index('code')
+    df1=pd.DataFrame(data=r,columns=['code','datadate']).set_index('code')
     df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     #neo.update_node_data_date(data=r)
     sql="select code, market_value2 from ticker_data where date='%s' and code in %s and not market_value2 is null"%(today,codestr1)
@@ -220,15 +220,19 @@ def update_from_code(neo):
     ) \
     AND t1.code  in %s'''%(today,today,codestr1)
     r=mysql.read_query(sql)
+    print(len(r))
     df1=pd.DataFrame(data=r,columns=['code','chg1m_1w_diff']).set_index('code')
+    print(df1)
     df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     #neo.add_indicator_to_company()
 
     df=df.dropna(how='all').round(2)
+    df=df.where(df.notnull(), None)
+    df = df.fillna(value=0, method=None, axis=None, inplace=False, limit=None, downcast=None)
     cypher_list=[]
     for i,r in df.iterrows():
         
-        cypher=f'''match (n:Company|Indicator {{code:'{i}'}}) set '''
+        cypher=f'''match (n {{code:'{i}'}}) set '''
         fields=''
         for k,v in r.items():
             if k=='date':
@@ -253,13 +257,13 @@ if __name__=='__main__':
     neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
     neo_user = "QG_Editor"
     neo_password = "editor"
-    #neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
+    neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
     uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
     user = "neo4j"
     password = "QuantumGalaxy"
     neo_nova=Neo4j(uri,user,password)
-    #update_from_code(neo_atlas)
-    update_from_code_1day(neo_nova)
+    update_from_code(neo_atlas)
+    #update_from_code_1day(neo_nova)
 
 
 

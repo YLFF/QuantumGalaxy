@@ -276,7 +276,7 @@ def bitable_works(bitapp_token, subgraph_name=None):
             'app_token': bitapp_token,
             'table_id': link_table,
             'graph_name': subgraph_name,
-            'fields': '["主体","关系","客体","参与子图","产线地位"]'
+            'fields': '["主体","关系","客体","参与子图","产线地位","粗骨干权限"]'
         }
         r = base_fetch_func('http://172.21.0.14:81/bitapp/record',
                             headers=None,
@@ -353,7 +353,7 @@ def bitable_works(bitapp_token, subgraph_name=None):
             'graph_name':
             subgraph_name,
             'fields':
-            '["指标名","指标代码","挂钩节点","指标性质","单位","指标定义","影响方向","画布位置X","画布位置Y","世界线跟踪表-主要相关指标"]'
+            '["指标名","指标代码","挂钩节点","指标性质","单位","指标定义","影响方向","画布位置X","画布位置Y","世界线跟踪表-主要相关指标","粗骨干权限"]'
         }
         r = base_fetch_func('http://172.21.0.14:81/bitapp/record',
                             headers=None,

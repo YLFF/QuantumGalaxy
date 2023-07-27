@@ -8,7 +8,7 @@ from datetime import date
 import pandas as pd
 import numpy as np
 from QGI.neoapi import Neo4j
-
+from jira import JIRA
 
 
 def get_logger():
@@ -125,7 +125,7 @@ def update_from_code_1day():
     cypher_list=[]
     for i,r in df.iterrows():
         
-        cypher=f'''match (n:Company|Indicator {{code:'{i}'}}) set '''
+        cypher=f'''match (n {{code:'{i}'}}) set '''
         fields=''
         for k,v in r.items():
             if k=='date':
@@ -146,8 +146,41 @@ def update_from_code_1day():
 
 
 
+def update_clue_from_jira(neo):
+    jira=JIRA('https://research.quantumgalaxy.cn/', basic_auth=('bot2', "jira_bot2"))
+    target_issue=jira.search_issues("project = COMPSTUDY AND updated >=   startOfDay('-1d')")
+    code_clue=[]
+    for issue in target_issue:
+        if issue.fields.__dict__.get('customfield_11216'): #clue
+            if  (issue.fields.__dict__.get('customfield_10201')):  #code
+                code_clue.append((issue.fields.__dict__.get('customfield_10201'),issue.fields.__dict__.get('customfield_11216')))
 
 
+
+
+
+    codes=neo.fetch_company_and_indicator_with_code()
+    strip_code=[]
+    cyphers=[]
+    for c in codes:
+        strip_code.append(c.replace('\t','').replace('\n',''))
+    for code,clue in code_clue:
+        try:
+            
+            if code in strip_code:
+
+                #if clue:
+                    cypher=f'''match (n {{code:'{code}'}}) set n.clue="%s"'''%clue.replace('"', '\\\"').replace("'", "\\\'")
+                    cyphers.append(cypher)
+                    print(cypher)
+        except Exception as e:
+                    print(code,e)
+                    pass
+    #print(cyphers)
+    r=neo.multi_cypher(cyphers)
+    print(f"update cyphers: {r}")
+    return 1
+                    
 def update_from_code(neo):
     #neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
     #neo_user = "QG_Editor"
@@ -166,7 +199,7 @@ def update_from_code(neo):
     strip_code=[]
     for c in code:
         strip_code.append(c.replace('\t','').replace('\n',''))
-    today=date.today()-timedelta(0)
+    today=date.today()-timedelta()
     today=today.__format__('%y-%m-%d')
     codestr=str(strip_code)
     codestr1='('+codestr[1:-1]+')'
@@ -214,15 +247,16 @@ def update_from_code(neo):
     ) \
     AND t1.code  in %s'''%(today,today,codestr1)
     r=mysql.read_query(sql)
-    df1=pd.DataFrame(data=r,columns=['code','stdchg1m_1w_diff']).set_index('code')
+    df1=pd.DataFrame(data=r,columns=['code','chg1m_1w_diff']).set_index('code')
     df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     #neo.add_indicator_to_company()
-
+    df=df.where(df.notnull(),None)
+    df = df.fillna(value=0, method=None, axis=None, inplace=False, limit=None, downcast=None)
     df=df.dropna(how='all').round(2)
     cypher_list=[]
     for i,r in df.iterrows():
         
-        cypher=f'''match (n:Company|Indicator {{code:'{i}'}}) set '''
+        cypher=f'''match (n {{code:'{i}'}}) set '''
         fields=''
         for k,v in r.items():
             if k=='datadate':
@@ -235,7 +269,7 @@ def update_from_code(neo):
     print(f"{len(cypher_list)} cyphers loaded")
     print(cypher_list[0])
     r=neo.multi_cypher(cypher_list)  
-    neo.close()
+    #neo.close()
     mysql.close()
     return r
 
@@ -248,14 +282,15 @@ if __name__=='__main__':
     neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
     neo_user = "QG_Editor"
     neo_password = "editor"
-    #neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
+    neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
     uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
     user = "neo4j"
     password = "QuantumGalaxy"
     neo_nova=Neo4j(uri,user,password)
     #update_from_code(neo_atlas)
     update_from_code(neo_nova)
-
+    update_clue_from_jira(neo_nova)
+    neo_nova.close()
 
 
 

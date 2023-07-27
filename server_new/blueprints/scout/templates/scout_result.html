@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>侦察报告助手</title>
+</head>
+<body>
+  <h1>标的信息汇总</h1>
+  <p>
+    
+    {{result|safe}}
+</p>
+<form action="{{url_for('scout.download_file')}}" method='get' target="_blank">
+    
+    
+    <input type="submit" value="下载汇总excel">
+    </form>
+            
+
+</body>
+</html>

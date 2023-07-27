@@ -91,6 +91,10 @@ class Code2JS():
             self.find_issue()
             return self.issue['issues'][0]['fields']['summary']
         except Exception as e:
+            summary=self.mysql.read_query(f'select name from ticker_info where code="{self.code}"')
+            if summary:
+                summary=self.code+' '+summary[0][0]
+                return summary
             logger.error(e)
             return False
     def clean_data(self,log):

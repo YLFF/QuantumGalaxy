@@ -15,6 +15,7 @@ from blueprints.login import login
 from blueprints.pic import pic
 from blueprints.graph2xml import graph2xml
 from blueprints.qg_comparison import cmpr
+from blueprints.scout import scout
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 import re
 from flask_apscheduler import APScheduler
@@ -48,9 +49,9 @@ app.config["JSON_AS_ASCII"] = False
 app.config['SCHEDULER_API_ENABLED'] = True
 app.config["SECRET_KEY"] = "core-quantumgalaxy"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=24)
-app.config["SESSION_TYPE"] = "filesystem"
-app.config['SESSION_FILE_DIR']=r'E:\wangzhilin\QuantumGalaxy\server_new\cookies'
-Session(app)
+#app.config["SESSION_TYPE"] = "filesystem"
+#app.config['SESSION_FILE_DIR']=r'E:\wangzhilin\QuantumGalaxy\server_new\cookies'
+#Session(app)
 
 #app.logger.removeHandler(default_handler)
 
@@ -76,6 +77,7 @@ def limit_remote_addr():
     if not valid:
         abort(403)
 '''
+@scout.before_request
 @graph2xml.before_request
 @backbone_check.before_request
 @map.before_request
@@ -111,6 +113,7 @@ app.register_blueprint(map)
 app.register_blueprint(pic)
 app.register_blueprint(graph2xml)
 app.register_blueprint(cmpr)
+app.register_blueprint(scout)
 from log import Logger
 
 logger = Logger()
@@ -144,5 +147,5 @@ scheduler.start()
 
 logger.init_app(app)
 
-app.run(host='0.0.0.0', port=82,debug=True)
+app.run(host='0.0.0.0', port=82)
 

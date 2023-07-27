@@ -38,7 +38,8 @@ def init_ticker_info():
     mysql=MYSQL(host,user,password,database)
     THS_iFinDLogin('lzxh0011','450503')
     today=(date.today()-timedelta(1)).__format__('%Y-%m-%d')
-    dic={'CN':'001005010','HK':'011001012','US':'161001001'}
+    dic={'CN':'001005120','HK':'011001012','US':'161001001'}
+    #all cn:001005120 all A股 001005010
     #dic={'USA':'161001001'}
     for k,v in dic.items():
         list_df=THS_DP('block',today+';'+v,'thscode:Y,security_name:Y')
@@ -62,4 +63,4 @@ init_ticker_info()
 THS_iFinDLogout()
 
 
-time.sleep()
+#time.sleep()

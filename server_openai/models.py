@@ -3,6 +3,8 @@ from flask import jsonify
 from functools import wraps
 from config import *
 from utils import get_mysql,get_neo,get_logger
+from jira import JIRA
+jira=JIRA('https://research.quantumgalaxy.cn/', basic_auth=('bot2', "jira_bot2"))
 import traceback
 querylog=get_logger('query_logger')
 exceptionlog=get_logger('exception_logger')
@@ -38,6 +40,26 @@ def cust_gpt(messages):
 def compltion(prompt):
     r=requests.post('http://43.153.23.232:81/completion',json=json.dumps({'prompt':prompt}))
     return r
+
+def get_clue(code):
+    try:
+        get_issue=jira.search_issues(f'project = COMPSTUDY AND 万得代码 ={code}')
+        if get_issue:
+            issue=get_issue[0]
+            print('jiraissue:',issue)
+            #print(issue.fields.__dict__)
+            clue=issue.fields.__dict__.get('customfield_11216')
+            if clue:
+                return clue
+            else:
+                return None
+        else:return None
+    except Exception as e:
+        print(e)
+        
+        return None
+
+
 
 def get_product(code,neo):
     '''从公司代码找3个产品'''
@@ -753,6 +775,11 @@ class GPTAPP():
         self.neo_ref=assistant_info
         #print(assistant_info)
         sys_info=system_info+'\n'+str(assistant_info)
+        clue=get_clue(code)
+        print('clue'+'*'*20)
+        print(clue)
+        if clue:
+            sys_info=sys_info+'\n该公司上涨的原因可能是：'+clue
         print(sys_info)
         messages=[
             #{'role':'system','content':system_info},

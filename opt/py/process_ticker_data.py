@@ -14,13 +14,15 @@ def query_code(mysql,today):
    
     #today=date.today()-timedelta(1)
     start_date=(today-timedelta(370)).__format__('%Y-%m-%d')
+    end_date=today.__format__("%Y-%m-%d")
     #sql="select a.code, b.date,b.close_price from ticker_info a inner join ticker_data b on a.code = b.code where region ='%s' and b.date>'%s' and a.status=1"%(region,start_date)
-    sql="select a.code, b.date,b.close_price from ticker_info a inner join ticker_data b on a.code = b.code inner join qg_indicator_info c on c.qg_code=a.code where  b.date>'%s' and a.status=1 and c.need_process=1 "%start_date
+    sql="select a.code, b.date,b.close_price from ticker_info a inner join ticker_data b on a.code = b.code inner join qg_indicator_info c on c.qg_code=a.code where  b.date>'%s' and b.date<='%s' and a.status=1 and c.need_process=1 "%(start_date,end_date)
     result=mysql.read_query(sql)
-    sql="select c.qg_code, b.date,b.value from edb_info a inner join wind_edb_data b on a.wind_code = b.code inner join qg_indicator_info c on c.qg_code=a.code where  b.date>'%s'  and c.need_process=1 "%start_date
+    sql="select c.qg_code, b.date,b.value from edb_info a inner join wind_edb_data b on a.wind_code = b.code inner join qg_indicator_info c on c.qg_code=a.code where  b.date>'%s' and b.date<='%s'  and c.need_process=1 "%(start_date,end_date)
     
     
     result+=mysql.read_query(sql)
+
     result=list(result)
     
     df=pd.DataFrame(result,columns=['code','date','close'])
@@ -30,7 +32,8 @@ def query_code(mysql,today):
     #return result
     for t in group:
         #print(t)
-        if t[1].shape[0]>90:
+        #print(t[1].shape[0])
+        if t[1].shape[0]>25:
             t[1]['date']=pd.to_datetime(t[1]['date'])
             df=t[1].set_index('date')
             df1=pd.DataFrame(data={df.iloc[1]['code']:df['close']},index=df.index)
@@ -39,6 +42,10 @@ def query_code(mysql,today):
 
                 #print(t[0])
                 df_list.append(df1)
+#            else:
+#                print(df1)
+                #break
+    print(len(df_list))
     result=pd.concat(df_list,axis=1)
     result.replace({None:np.nan},inplace=True)
     result.fillna(method='pad',limit=10,inplace=True)
@@ -83,7 +90,7 @@ def compute_std_chg_from_days(df,today,days):
         return result
     except:
 
-        raise 
+        return None
 
 
 def compute_std_chg_from_days(df,today,days):
@@ -99,7 +106,7 @@ def compute_std_chg_from_days(df,today,days):
         return result
     except:
 
-        raise 
+        return None
 
 
 def compute_stdchg60(df,today):
@@ -112,9 +119,18 @@ def compute_stdchg60(df,today):
         return stdchg60
     except:
 
-        raise 
+        return None
+def compute_meanchg60(df,today):
+    try:
+        df=np.log(df)
+        df=df.truncate(after=today)
+        stdchg60=(df-df.shift(1)).iloc[-60:,:].mean()
+        
 
+        return stdchg60
+    except:
 
+        return None
 def compute(df, today: datetime.date):
     processed_df = pd.DataFrame(
         data={
@@ -129,7 +145,8 @@ def compute(df, today: datetime.date):
             'stdchg7d': compute_std_chg_from_days(df, today, 7),
             'stdchg1m': compute_std_chg_from_days(df, today, 30),
             'stdchg3m': compute_std_chg_from_days(df, today, 90),
-            'stdchg': compute_stdchg60(df, today)
+            'stdchg': compute_stdchg60(df, today),
+            'change_mean':compute_meanchg60(df,today)
         },
         index=df.columns,
     )
@@ -185,7 +202,7 @@ def metajob(region,today=None):
         result=result.reset_index().rename(columns={'index':'code'})
         result=result.replace([np.inf, -np.inf], np.nan)
         result.replace({np.nan: None},inplace=True)
-        sql='insert ignore into processed_data (code,date,change_rate_1d,change_rate_3d,change_rate_2w,change_rate_1m,change_rate_3m,change_rate_6m,change_rate_1y,stdchg7d,stdchg1m,stdchg3m,vol) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        sql='insert ignore into processed_data (code,date,change_rate_1d,change_rate_3d,change_rate_2w,change_rate_1m,change_rate_3m,change_rate_6m,change_rate_1y,stdchg7d,stdchg1m,stdchg3m,vol,change_mean) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         val=result.values.tolist()
         number=mysql.write_many_query(sql,val)
         info='processed %s records for region %s on  %s'%(number,region,today.__format__("%Y-%m-%d"))

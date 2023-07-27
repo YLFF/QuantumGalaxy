@@ -114,7 +114,17 @@ def compute_stdchg60(df,today):
 
         raise 
 
+def compute_meanchg60(df,today):
+    try:
+        df=np.log(df)
+        df=df.truncate(after=today)
+        stdchg60=(df-df.shift(1)).iloc[-60:,:].mean()
+        
 
+        return stdchg60
+    except:
+
+        return None
 def compute(df, today: datetime.date):
     processed_df = pd.DataFrame(
         data={
@@ -129,7 +139,8 @@ def compute(df, today: datetime.date):
             'stdchg7d': compute_std_chg_from_days(df, today, 7),
             'stdchg1m': compute_std_chg_from_days(df, today, 30),
             'stdchg3m': compute_std_chg_from_days(df, today, 90),
-            'stdchg': compute_stdchg60(df, today)
+            'stdchg': compute_stdchg60(df, today),
+            'change_mean':compute_meanchg60(df,today)
         },
         index=df.columns,
     )
@@ -184,7 +195,7 @@ def metajob(region):
         result=result.reset_index().rename(columns={'index':'code'})
         result=result.replace([np.inf, -np.inf], np.nan)
         result.replace({np.nan: None},inplace=True)
-        sql='insert ignore into processed_data (code,date,change_rate_1d,change_rate_3d,change_rate_2w,change_rate_1m,change_rate_3m,change_rate_6m,change_rate_1y,stdchg7d,stdchg1m,stdchg3m,vol) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        sql='insert ignore into processed_data (code,date,change_rate_1d,change_rate_3d,change_rate_2w,change_rate_1m,change_rate_3m,change_rate_6m,change_rate_1y,stdchg7d,stdchg1m,stdchg3m,vol,change_mean) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         val=result.values.tolist()
         number=mysql.write_many_query(sql,val)
         info='processed %s records for region %s on  %s'%(number,region,today.__format__("%Y-%m-%d"))
@@ -198,7 +209,7 @@ def metajob(region):
         info='行情更新日报'+info
         if 1<=week<=5 and number==0:
             info+='******may have some problems!!!!!!!!!!!!!!******'
-        text_group_msg(info)
+        #text_group_msg(info)
     except:pass
     return info
 
