@@ -7,7 +7,8 @@ import logging
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 from QGI.logger import get_logger
 from QGI.mysql import get_mysql
-
+import threading
+import queue
 import time
 
 def timeit(func):
@@ -18,8 +19,7 @@ def timeit(func):
         print(f"Time taken by {func.__name__}: {end_time - start_time} seconds")
         return result
     return wrapper
-import threading
-import queue
+
 @timeit
 def worker(jql, maxResults, startAt, endAt, out_queue):
     while startAt < endAt:
@@ -54,6 +54,7 @@ def threading_jira_search_2(jql, maxResults=500, startAt=0, num_threads=4):
     print('total issue:', len(result))
     return result
 if __name__=='__main__':
+    print('?')
     logger=get_logger(name='jira_issue_update',fh=True)
     mysql=get_mysql()
     jql='project = COMPSTUDY AND issuetype = 公司研究'

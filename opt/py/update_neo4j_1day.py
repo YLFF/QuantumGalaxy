@@ -221,14 +221,14 @@ def update_from_code(neo):
     AND t1.code  in %s'''%(today,today,codestr1)
     r=mysql.read_query(sql)
     print(len(r))
-    df1=pd.DataFrame(data=r,columns=['code','chg1m_1w_diff']).set_index('code')
+    df1=pd.DataFrame(data=r,columns=['code','stdchg1m_1w_diff']).set_index('code')
     print(df1)
     df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     #neo.add_indicator_to_company()
 
     df=df.dropna(how='all').round(2)
     df=df.where(df.notnull(), None)
-    df = df.fillna(value=0, method=None, axis=None, inplace=False, limit=None, downcast=None)
+    #df = df.fillna(value=0, method=None, axis=None, inplace=False, limit=None, downcast=None)
     cypher_list=[]
     for i,r in df.iterrows():
         

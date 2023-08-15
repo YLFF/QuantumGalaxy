@@ -11,7 +11,7 @@ from datetime import datetime,timedelta
 
 def query_code(mysql,today):
     '''return a list of df for every ticker in spcific region, df[code,close] [today-370,today]'''
-   
+
     #today=date.today()-timedelta(1)
     start_date=(today-timedelta(370)).__format__('%Y-%m-%d')
     end_date=today.__format__("%Y-%m-%d")
@@ -33,7 +33,7 @@ def query_code(mysql,today):
     for t in group:
         #print(t)
         #print(t[1].shape[0])
-        if t[1].shape[0]>25:
+        if t[1].shape[0]>1:
             t[1]['date']=pd.to_datetime(t[1]['date'])
             df=t[1].set_index('date')
             df1=pd.DataFrame(data={df.iloc[1]['code']:df['close']},index=df.index)

@@ -199,7 +199,7 @@ def update_from_code(neo):
     strip_code=[]
     for c in code:
         strip_code.append(c.replace('\t','').replace('\n',''))
-    today=date.today()-timedelta()
+    today=date.today()-timedelta(0)
     today=today.__format__('%y-%m-%d')
     codestr=str(strip_code)
     codestr1='('+codestr[1:-1]+')'
@@ -247,12 +247,15 @@ def update_from_code(neo):
     ) \
     AND t1.code  in %s'''%(today,today,codestr1)
     r=mysql.read_query(sql)
-    df1=pd.DataFrame(data=r,columns=['code','chg1m_1w_diff']).set_index('code')
+    df1=pd.DataFrame(data=r,columns=['code','stdchg1m_1w_diff']).set_index('code')
     df=pd.merge(df,df1,'outer',left_index=True,right_index=True)
     #neo.add_indicator_to_company()
     df=df.where(df.notnull(),None)
-    df = df.fillna(value=0, method=None, axis=None, inplace=False, limit=None, downcast=None)
+    #df = df.fillna(value=0, method=None, axis=None, inplace=False, limit=None, downcast=None)
     df=df.dropna(how='all').round(2)
+    print(df.head())
+    logger.info(df.head())
+    logger.info(df.shape)
     cypher_list=[]
     for i,r in df.iterrows():
         
@@ -267,8 +270,9 @@ def update_from_code(neo):
         
         cypher_list.append(cypher)
     print(f"{len(cypher_list)} cyphers loaded")
-    print(cypher_list[0])
-    r=neo.multi_cypher(cypher_list)  
+    if cypher_list:
+        print(cypher_list[0])
+        r=neo.multi_cypher(cypher_list)  
     #neo.close()
     mysql.close()
     return r

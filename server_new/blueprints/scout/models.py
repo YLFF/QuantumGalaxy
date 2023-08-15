@@ -61,7 +61,7 @@ class ScoutHelper():
         #summary,description  侦察逻辑customfield_11216
         jira_data=[]
         for code in self.codelist:
-            get_issue=self.jira.search_issues(f'project = COMPSTUDY AND 万得代码 ={code}')
+            get_issue=self.jira.search_issues(f'project = COMPSTUDY  AND issuetype = 公司研究 AND 万得代码 ={code}')
             if not get_issue:
                 self.no_jira_list.append(code)
             else:
