@@ -18,3 +18,4 @@ dist
 build
 server_83/cookies/
 leet
+*.ipynb_checkpoints

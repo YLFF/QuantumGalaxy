@@ -1,5 +1,0 @@
-{
-    "python.formatting.provider": "yapf",
-    "jupyter.jupyterServerType": "local",
-    "python.analysis.typeCheckingMode": "off"
-}
