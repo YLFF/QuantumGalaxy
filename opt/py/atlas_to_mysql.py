@@ -1,4 +1,5 @@
-
+# -*- coding: utf-8 -*-
+'''将atlas信息同步到mysql，停用'''
 
 import sys
 import logging

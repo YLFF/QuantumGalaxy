@@ -1,41 +1,25 @@
-
+# -*- coding: utf-8 -*-
+'''从同花顺标的池获取新标的写入qgdbs'''
 from iFinDPy import *
 import sys
 import logging
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
-from QGI.mysql import MYSQL
+from QGI.mysql import MYSQL,get_mysql
 import time
-
-def get_logger():
-    logger=logging.getLogger('logger')
-    logger.setLevel(logging.INFO)
-    fh=logging.FileHandler("E:/wangzhilin/QuantumGalaxy/logs/ths_new_stock.log",'a',encoding='utf-8')
-    fh.setLevel(logging.INFO)
-    ch=logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    formatter=logging.Formatter(fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',datefmt='%m-%d %H:%M')
-    ch.setFormatter(formatter)
-    fh.setFormatter(formatter)
-    logger.addHandler(ch)
-    logger.addHandler(fh)
-    return logger
-logger=get_logger()
+from QGI.logger import get_logger
+''''write a doc about this project'''
+logger=get_logger(fh=True,f_name='ths_new_stock')
+mysql=get_mysql()
 
 
+#logger=get_logger()
 
-host='localhost'
-user='Local_Editor'
-password='QuantumGalaxy'
-database='qgdbs'
-mysql=MYSQL(host,user,password,database)
+
 
 
 
 def init_ticker_info():
-    user='Local_Editor'
-    password='QuantumGalaxy'
-    database='qgdbs'
-    mysql=MYSQL(host,user,password,database)
+
     THS_iFinDLogin('lzxh0011','450503')
     today=(date.today()-timedelta(1)).__format__('%Y-%m-%d')
     dic={'CN':'001005120','HK':'011001012','US':'161001001'}
@@ -54,13 +38,13 @@ def init_ticker_info():
             val.append((r['THSCODE'],r['SECURITY_NAME']))
         result=mysql.write_many_query(sql,val)
         result=mysql.write_many_query(sql1,val)
-    mysql.close()
-    #THS_iFinDLogout()
+    
+    THS_iFinDLogout()
 
 
 
 init_ticker_info()
 THS_iFinDLogout()
-
+mysql.close()
 
 #time.sleep()

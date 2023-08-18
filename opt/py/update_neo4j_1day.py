@@ -1,14 +1,14 @@
-
+'''将mysql中的数据更新到neo4j-atlas中'''
 from iFinDPy import *
 import sys
 import logging
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
-from QGI.mysql import MYSQL
+from QGI.mysql import MYSQL,get_mysql
 from datetime import date
 import pandas as pd
 import numpy as np
 from QGI.neoapi import Neo4j
-
+from QGI.logger import get_logger
 
 
 def get_logger():
@@ -254,6 +254,8 @@ def update_from_code(neo):
 
 
 if __name__=='__main__':
+    logger=get_logger(f_name='update_neo4j',fh=True)
+    mysql=get_mysql()
     neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
     neo_user = "QG_Editor"
     neo_password = "editor"

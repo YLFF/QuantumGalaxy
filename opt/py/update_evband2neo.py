@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+'''市值走廊任务，从服务器读取现存的走廊并写入neo数据库对应节点。停用'''
+
 from datetime import datetime,timedelta
 import sys
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
@@ -6,10 +9,11 @@ import pandas as pd
 import numpy as np
 from QGI.neoapi import Neo4j
 from QGI.feishu import *
-from QGI.mysql import MYSQL
+from QGI.mysql import MYSQL,get_mysql
 from QGI.logger import get_logger
 
-mysql=MYSQL(db='web_server')
+mysql=get_mysql('web_server')
+
 uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
 user = "QG_Editor"
 password = "editor"

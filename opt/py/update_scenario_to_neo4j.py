@@ -1,4 +1,4 @@
-
+'''将jira中的scenario更新到neo4j中，已停用'''
 from jira import JIRA
 import pandas as pd
 import sys

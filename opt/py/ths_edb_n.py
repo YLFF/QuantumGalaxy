@@ -1,4 +1,5 @@
-
+# -*- coding: utf-8 -*-
+'''同花顺国债信息，计算N值并写入qgdbs'''
 import logging
 import jira
 import sys
@@ -8,25 +9,12 @@ sys.path.append('E:\wangzhilin\QuantumGalaxy')
 #print(sys.path)
 from QGI.feishu import *
 import numpy as np
-from QGI.mysql import MYSQL
+from QGI.mysql import MYSQL,get_mysql
 from iFinDPy import *
 import pandas as pd
 import time
-
-def get_logger():
-    logger=logging.getLogger('logger')
-    logger.setLevel(logging.INFO)
-    fh=logging.FileHandler("E:/wangzhilin/QuantumGalaxy/logs/n_log.log",'a')
-    fh.setLevel(logging.INFO)
-    ch=logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    formatter=logging.Formatter(fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',datefmt='%m-%d %H:%M')
-    ch.setFormatter(formatter)
-    fh.setFormatter(formatter)
-    logger.addHandler(ch)
-    logger.addHandler(fh)
-    return logger
-
+from QGI.logger import get_logger
+from datetime import date,timedelta
 
 
 
@@ -125,12 +113,8 @@ def feishu_work(mysql,day):
 
 def job():
     time.sleep(5)
-    logger=get_logger()
-    host='localhost'
-    user='Local_Editor'
-    password='QuantumGalaxy'
-    database='qgdbs'
-    mysql=MYSQL(host,user,password,database)
+    logger=get_logger(f_name='n_log')
+    mysql=get_mysql()
     day=date.today()-timedelta(1)
     day=day.strftime('%Y-%m-%d')
     r0=get_query_list(mysql)

@@ -1,30 +1,18 @@
-
+'''将mysql中的行情和处理数据更新到neo4j-nova中'''
 from iFinDPy import *
 import sys
 import logging
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
-from QGI.mysql import MYSQL
+from QGI.mysql import MYSQL,get_mysql
 from datetime import date
 import pandas as pd
 import numpy as np
 from QGI.neoapi import Neo4j
 from jira import JIRA
+from QGI.logger import get_logger
 
 
-def get_logger():
-    logger=logging.getLogger('logger')
-    logger.setLevel(logging.INFO)
-    fh=logging.FileHandler("E:/wangzhilin/QuantumGalaxy/logs/aura_api_log.log",'a',encoding='utf-8')
-    fh.setLevel(logging.INFO)
-    ch=logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    formatter=logging.Formatter(fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',datefmt='%m-%d %H:%M')
-    ch.setFormatter(formatter)
-    fh.setFormatter(formatter)
-    logger.addHandler(ch)
-    logger.addHandler(fh)
-    return logger
-logger=get_logger()
+
 
 
 def update_from_name():
@@ -182,6 +170,7 @@ def update_clue_from_jira(neo):
     return 1
                     
 def update_from_code(neo):
+    
     #neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
     #neo_user = "QG_Editor"
     #neo_password = "editor"
@@ -190,11 +179,8 @@ def update_from_code(neo):
     #user = "neo4j"
     #password = "QuantumGalaxy"
     #neo=Neo4j(uri,user,password)
-    sql_host='localhost'
-    sql_user='Local_Editor'
-    sql_password='QuantumGalaxy'
-    database='qgdbs'
-    mysql=MYSQL(sql_host,sql_user,sql_password,database)
+    
+
     code=neo.fetch_company_and_indicator_with_code()
     strip_code=[]
     for c in code:
@@ -283,6 +269,8 @@ def update_from_code(neo):
 
 
 if __name__=='__main__':
+    logger=get_logger(f_name='update_neo4j',fh=True)
+    mysql=get_mysql()
     neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
     neo_user = "QG_Editor"
     neo_password = "editor"

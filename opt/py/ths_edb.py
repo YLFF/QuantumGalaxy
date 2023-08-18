@@ -8,25 +8,12 @@ sys.path.append('E:\wangzhilin\QuantumGalaxy')
 #print(sys.path)
 
 import numpy as np
-from QGI.mysql import MYSQL
+from QGI.mysql import MYSQL,get_mysql
+from QGI.logger import get_logger
 from iFinDPy import *
 import pandas as pd
 import time
-
-def get_logger():
-    logger=logging.getLogger('ths_edb')
-    logger.setLevel(logging.INFO)
-    fh=logging.FileHandler("E:/wangzhilin/QuantumGalaxy/logs/ths_log.log",'a')
-    fh.setLevel(logging.INFO)
-    ch=logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    formatter=logging.Formatter(fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',datefmt='%m-%d %H:%M')
-    ch.setFormatter(formatter)
-    fh.setFormatter(formatter)
-    logger.addHandler(ch)
-    logger.addHandler(fh)
-    return logger
-
+from datetime import date,timedelta
 
 
 
@@ -66,7 +53,7 @@ def ths_query(result,end,start=None):
 
 
 
-def job(logger,end=date.today()-timedelta(1)):
+def job(end=date.today()-timedelta(1)):
     THS_iFinDLogin('lzxh0011','450503')
     time.sleep(5)
     
@@ -109,9 +96,9 @@ def job(logger,end=date.today()-timedelta(1)):
 
 
 if __name__=='__main__':
-    logger=get_logger()
+    logger=get_logger(f_name='ths_log')
     for i in range(1,2):
         
         end=date.today()-timedelta(i)
-        job(logger,end)
+        job(end)
 

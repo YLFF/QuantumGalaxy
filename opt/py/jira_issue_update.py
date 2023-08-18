@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+'''获取全部jira中COMPSTUDY.公司研究issue，和qgdbs中A股比对，更新jira中标的名称并为新标的创建issue'''
 import pandas as pd
 import sys
 from jira import JIRA
@@ -54,8 +56,8 @@ def threading_jira_search_2(jql, maxResults=500, startAt=0, num_threads=4):
     print('total issue:', len(result))
     return result
 if __name__=='__main__':
-    print('?')
-    logger=get_logger(name='jira_issue_update',fh=True)
+    #print('?')
+    logger=get_logger(f_name='jira_issue_update',fh=True)
     mysql=get_mysql()
     jql='project = COMPSTUDY AND issuetype = 公司研究'
     #jql="project = COMPSTUDY AND updated >=   startOfDay('-1d')"

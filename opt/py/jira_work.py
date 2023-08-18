@@ -1,4 +1,4 @@
-
+#用来更新n值，目前qgdbs所有ticker都在jira issue中，此任务可下线
 import logging
 from  jira import JIRA
 import sys
@@ -8,22 +8,9 @@ sys.path.append('E:\wangzhilin\QuantumGalaxy')
 #print(sys.path)
 
 import numpy as np
-from QGI.mysql import MYSQL
+from QGI.mysql import MYSQL,get_mysql
 from datetime import date, timedelta
-
-def get_logger():
-    logger=logging.getLogger('logger')
-    logger.setLevel(logging.INFO)
-    #fh=logging.FileHandler("E:/wangzhilin/QuantumGalaxy/logs/n_log.log",'a')
-    #fh.setLevel(logging.INFO)
-    ch=logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    formatter=logging.Formatter(fmt='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',datefmt='%m-%d %H:%M')
-    ch.setFormatter(formatter)
-    #fh.setFormatter(formatter)
-    logger.addHandler(ch)
-    #logger.addHandler(fh)
-    return logger
+from QGI.logger import get_logger
 if __name__=='__main__':
     logger=get_logger()
     jira = JIRA('https://research.quantumgalaxy.cn/', basic_auth=('wangzhilin', "wangzhilin"))
