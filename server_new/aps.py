@@ -26,7 +26,7 @@ def job0():
     pass
 
 
-@scheduler.task('interval',id='openai_test',seconds=3600*6)
+#@scheduler.task('interval',id='openai_test',seconds=3600*6)
 def job1():
     print('test openai')
     r=openai_test()

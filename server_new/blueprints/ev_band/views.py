@@ -1,10 +1,11 @@
 
 from . import ev_band
-from .models import ev_band_check,Code2JS,fetch_all_position,New_band
+from .models import ev_band_check,Code2JS,fetch_all_position,New_band,New_band2
 
 
-
-from flask import render_template,redirect,abort,session, template_rendered,url_for,request
+from flask import abort
+from datetime import datetime
+from flask import render_template,redirect,abort,session, template_rendered,url_for,request,jsonify
 import json 
 
 
@@ -67,6 +68,7 @@ def return_ev_band(code):
 
 from datetime import datetime
 
+
 def draw_ev_band(code,summary,data):
         
         print(code,summary,data)
@@ -79,9 +81,72 @@ def draw_ev_band(code,summary,data):
         band_info=json.dumps(band_info)
         model=json.dumps(model)
         return render_template('ev_band.html',summary=summary,json=js,num=num,info=band_info,model=model)
+@ev_band.route('/draw_bandv2',methods=['GET','POST','PUT'])
+def draw_bandv2():
+        if session['name'] not in ['王之霖','张凌宇']:
+                return abort(403,"YOU'VE REACHED A FORBIDDEN AREA!")
+        code=request.args.get('code',None)
+        if not code:
+                return render_template('ev_band_draw_v2.html')
+        #zip request agrs to data, if key not in request args, return 400 error
+        data={key:request.args.get(key,None) for key in ['start_date','target_date','start_upper','start_lower','target_upper','target_lower','name']}
+        if not all(data.values()):
+                #give the none value key
+                return abort(400,f"输入有误，请返回,缺少{[key for key,value in data.items() if not value]}")
+        try:
+                use_default_start=request.args.get('use_default',None)
+                worker=New_band2(code,data,use_default_start=use_default_start)
+                r=worker.work()
+                if 'error info' in r.keys():
+                        return abort(400,r['error info']['error'])
+                info=r.pop('info')
+                code=r.pop('code')
+                info['code']=code
+                print(len(r['source']))
+                info=[info]
+                data=[r]
+                print(info)
+                #print(data)
+                #return jsonify(r)
+                return render_template('ev_band_v2.html',data=data,info=info)
+        # if exception, return traceback as json
+        except Exception as e:
+                import traceback
+                #print('here?')
+                #logger.error(e)
+                traceback_str = traceback.format_exc()
+                #logger.error(e)
+                #logger.error(traceback_str)
+                return abort(400,description='输入信息有误，请返回。   error info:'+str(e))
+                return jsonify({'error':str(e)},{'traceback':traceback_str})
+                #return abort(400,str(e))
 
 @ev_band.route('/draw_band',methods=['GET','POST'])
 def draw_band():
+    if session['name'] not in ['王之霖','张凌宇']:
+        return abort(403,"YOU'VE REACHED A FORBIDDEN AREA!")
+
+    code = request.args.get('code')
+
+    if not code:
+        return render_template('ev_band_draw.html')
+    try:
+        params = {key: request.args.get(key) for key in ['name', 'pc', 'po', 'xc', 'xo']}
+        dates = {key: datetime.strptime(request.args.get(key), '%Y-%m-%d') if request.args.get(key) else None for key in ['start', 'target']}
+        #change keys :'start'->'start_date','target'->'target_date'
+        dates = {key + '_date': value for key, value in dates.items()}
+        
+        params.update(dates)
+        #params['summary'] = code + ' ' + request.args.get('name')
+        #refactor the last line with f_string
+        params['summary'] = f'{code} {request.args.get("name")}'
+        
+        return draw_ev_band(code, params['summary'], [params])
+    except:
+        #return '输入有误，请返回'
+        return abort(400,"输入有误，请返回")
+
+def draw_band_old():
         if session['name'] in ['王之霖','张凌宇']:
                 code=request.args.get('code',None)
                 if not code:
@@ -96,5 +161,7 @@ def draw_band():
                                 return draw_ev_band(code,summary,data)
                         except:
                                 return '输入有误，请返回'
+                                return abort(400,"输入有误，请返回")
         else:
-                return "YOU'VE REACHED A FORBIDDEN AREA!"
+                #return 403,"YOU'VE REACHED A FORBIDDEN AREA!"
+                return abort(403,"YOU'VE REACHED A FORBIDDEN AREA!")

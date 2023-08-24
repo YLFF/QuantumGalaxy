@@ -124,9 +124,9 @@ def meta_job(region,today=None):
     if not today:
         today=date.today()-timedelta(0) if region in {'CN','HK'} else date.today()-timedelta(days=1)
     number=process_job(region,today)
-    
-    info='processed %s records for region %s on  %s'%(number,region,today.__format__("%Y-%m-%d"))
-    if number<=500:
+    week_day=today.weekday()
+    info='processed %s records for region %s on  %s, %s'%(number,region,today.__format__("%Y-%m-%d"),week_day)
+    if number<=500 and week_day in {0,1,2,3,4}:
             info+='******may have some problems******'
     logger.info(info)
     text_group_msg(info)

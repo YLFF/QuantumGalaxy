@@ -3,7 +3,7 @@ import sys
 sys.path.append('E:\wangzhilin\QuantumGalaxy')
 
 
-from QGI.mysql import MYSQL
+from QGI.mysql import MYSQL,get_mysql
 import numpy as np
 import pandas as pd
 import json
@@ -54,13 +54,10 @@ class Code2JS():
     '''对issue changelog分析并拆解为多个走廊（一个走廊初始数据为6个数）'''
     def __init__(self,code):
         self.code=code
-        host='localhost'
-        user='Local_Editor'
-        password='QuantumGalaxy'
-        database='qgdbs'
+
         self.m='xn'
-        self.mysql=MYSQL(host,user,password,database)
-        self.server_mysql=MYSQL(host,user,password,db='web_server')
+        self.mysql=get_mysql()
+        self.server_mysql=get_mysql('web_server')
     def find_issue(self):
         from atlassian import Jira
         #print(self.code)
@@ -485,14 +482,193 @@ class Code2JS():
             #raise Exception
             logger.error('had exception during process data: %s'%e)
             return False
-    
+class New_band2(Code2JS):
+    '''写一个Code2JS的子类，重写gen_dataset 和one work方法，使得新实例接受start_date target_date start_upper start_lower target_upper target_lower 进行初始化'''
+    def __init__(self, code,data,use_default_start=False):
+        super().__init__(code)
+        self.server_mysql.close()
+        del self.server_mysql
+        #check if data has keys: start_date target_date start_upper start_lower target_upper target_lower, raise exception if data not valid
+        # if use_default_start, do not require start_upper start_lower
+        if not set(['start_date','target_date','start_upper','start_lower','target_upper','target_lower']).issubset(set(data.keys())):
+            if use_default_start:
+                if not set(['start_date','target_date','target_upper','target_lower']).issubset(set(data.keys())):
+                    raise Exception('data not valid')
+                else:
+                    #give data a default start_upper start_lower as 0
+                    data['start_upper']=0
+                    data['start_lower']=0
+        self.data=data
+        self.data['start_date']=datetime.strptime(self.data['start_date'],'%Y-%m-%d')
+        self.data['target_date']=datetime.strptime(self.data['target_date'],'%Y-%m-%d')
+        self.data['start_upper']=round(float(self.data['start_upper']),2)
+        self.data['start_lower']=round(float(self.data['start_lower']),2)
+        self.data['target_upper']=round(float(self.data['target_upper']),2)
+        self.data['target_lower']=round(float(self.data['target_lower']),2)
+        self.use_default_start=use_default_start #if true, use default start point, else use start_upper start_lower as start point
+    def gen_dataset(self):
+        code=self.code
+        mysql=self.mysql
+        data=self.data
+        if True:
+
+            target_date=data['target_date']
+            start_date=data['start_date']
+            #start_date=datetime.strptime(start_date,'%Y-%m-%d')
+            #target_date=datetime.strptime(target_date,'%Y-%m-%d')
+            
+            
+            stock_start_date=start_date-timedelta(183)
+            stock_start_date=stock_start_date.strftime('%Y-%m-%d')
+
+            #print(xo,xc,po,pc,target_date,start_date)
+            ev_data=mysql.read_query('select date,market_value from ticker_data where code="%s" and date<=now() and date>="%s"'%(code,stock_start_date))
+            ev_data=[ev for ev in ev_data]
+            if not ev_data:
+                return {'error info':'no ticker data, please check if code is valid'}
+            stock_end_date=ev_data[-1][0]
+
+            import math
+            
+            #print(s,mu)
+            df=pd.DataFrame(data=ev_data,columns=['date','ev'])
+            df.set_index('date',inplace=True)
+
+
+            stock_data=mysql.read_query(f'select date,market_value from ticker_data where code="{code}" and date<="{start_date}" order by date desc limit 45')
+            
+
+            stock_data=[float(p) for (d,p) in stock_data]
+            stock_data=geo_mean(stock_data)
+            #print(stock_data)
+            def default_start():
+                stock_data=mysql.read_query(f'select date,market_value from ticker_data where code="{code}" and date<="{start_date}" order by date desc limit 45')
+                vol=mysql.read_query(f'select vol from processed_data where code="{code}" and date<="{start_date}" order by date desc limit 1')
+                vol=vol[0][0]
+
+                stock_data=[float(p) for (d,p) in stock_data]
+                stock_data=geo_mean(stock_data)
+                #print(stock_data)
+
+                factor=[(1-vol)**10,(1-vol)**5,1,(1+vol)**5,(1+vol)**10,]
+                start=np.outer(stock_data,factor)[0]
+                return start
+            if self.use_default_start:
+                start=default_start()
+                #in this case, start upper would be start[3], start lower would be start[1]
+                self.data['start_upper']=start[3]
+                self.data['start_lower']=start[1]
+            else:
+                start_diff=(data['start_upper']-data['start_lower'])/2
+                start=[data['start_lower']-start_diff,data['start_lower'],data['start_lower']+start_diff,data['start_upper'],data['start_upper']+start_diff]
+            end_diff=(data['target_upper']-data['target_lower'])/2
+            end=[data['target_lower']-end_diff,data['target_lower'],data['target_lower']+end_diff,data['target_upper'],data['target_upper']+end_diff]
+            
+            
+            #print(start_date)
+            #start_date=datetime.strptime(start_date,'%Y-%m-%d')
+            #target_date=datetime.strptime(target_date,'%Y-%m-%d')
+            days=(target_date-start_date).days
+            interp_num=days-1
+            day_list=[start_date+timedelta(i) for i in range(days+1)]
+            day_list=[datetime.date(d) for d in day_list]
+            level0=log_inter1(interp_num,start[0],end[0])
+
+            level1=log_inter1(interp_num,start[1],end[1])
+
+            level2=log_inter1(interp_num,start[2],end[2])
+            #print(level2)
+            level3=log_inter1(interp_num,start[3],end[3])
+
+            level4=log_inter1(interp_num,start[4],end[4])
+            level4=[level4[i]-level3[i] for i in range(len(level4))]
+            level3=[level3[i]-level2[i] for i in range(len(level4))]
+            level2=[level2[i]-level1[i] for i in range(len(level4))]
+            level1=[level1[i]-level0[i] for i in range(len(level4))]
+            level0=tuple(dict(zip(day_list,level0)).items())
+            level1=tuple(dict(zip(day_list,level1)).items())
+            level2=tuple(dict(zip(day_list,level2)).items())
+            level3=tuple(dict(zip(day_list,level3)).items())
+            level4=tuple(dict(zip(day_list,level4)).items())
+            down_pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1])
+            pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1]+level2[-1][1])
+            up_pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1]+level2[-1][1]+level3[-1][1])
+            down_pred_point=np.round(down_pred_point[1],2)
+            pred_point=np.round(pred_point[1],2)
+
+            up_pred_point=np.round(up_pred_point[1],2)
+            df['last_ev']=None
+            df.loc[df.index[-1],'last_ev']=float(df['ev'][-1]).__round__(2)
+            #df['last_ev'][-1]=df['ev'][-1]
+            df1=pd.DataFrame(level0,columns=['date','level0'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df1=pd.DataFrame(level1,columns=['date','level1'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df1=pd.DataFrame(level2,columns=['date','level2'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df1=pd.DataFrame(level3,columns=['date','level3'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df1=pd.DataFrame(level4,columns=['date','level4'])
+            df1.set_index('date',inplace=True)
+            df=pd.concat([df,df1],axis=1)
+            df['down_pred_point']=None
+            df['pred_point']=None
+            df['up_pred_point']=None
+            down_pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1])
+            pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1]+level2[-1][1])
+            up_pred_point=(level0[-1][0],level0[-1][1]+level1[-1][1]+level2[-1][1]+level3[-1][1])
+            down_pred_point=np.round(down_pred_point[1],2)
+            pred_point=np.round(pred_point[1],2)
+
+            up_pred_point=np.round(up_pred_point[1],2)
+            df.sort_index(inplace=True)
+            last_row=df.iloc[-1:]
+            last_row.index+=timedelta(1)
+            #print(last_row.index)
+            df=pd.concat([df,last_row])
+            df.index=df.index.astype('str',)
+            df=df.reset_index()
+            df.loc[df.shape[0]-2,'down_pred_point']=down_pred_point
+            df.loc[df.shape[0]-2,'up_pred_point']=up_pred_point
+            df.loc[df.shape[0]-2,'pred_point']=pred_point
+            df = df.astype(object).replace(np.nan, 'None')
+            dataset={}
+            dataset['source']=[df.columns.to_list()]
+            dataset['source']
+            for i,r in df.iterrows():
+
+                row=r.to_list()
+                dataset['source'].append(row)
+            return dataset
+
+    def work(self):
+        #--> dict{'source','data','code'}
+        
+            result=self.gen_dataset()
+            
+            
+            self.data['start_upper']=round(float(self.data['start_upper']),2)
+            self.data['start_lower']=round(float(self.data['start_lower']),2)
+            self.data['start_date']=self.data['start_date'].strftime("%Y-%m-%d")
+            self.data['target_date']=self.data['target_date'].strftime("%Y-%m-%d")
+            #print(self.data)
+            result['info']=self.data
+            result['code']=self.code
+            #print(dataset)
+            return result
+
+
 
 class New_band(Code2JS):
 
     def __init__(self,code,data):
         super(New_band, self).__init__(code)
         
-        self.data=data
+        self.data=data # a dic with date/pc/xo ...
     def work(self,):
             results=self.data
             js=[]
@@ -509,10 +685,8 @@ class New_band(Code2JS):
 
 def fetch_all_position():
     try:
-        host='localhost'
-        user='Local_Editor'
-        password='QuantumGalaxy'
-        mysql=MYSQL(host,user,password,'web_server')
+
+        mysql=get_mysql('web_server')
         issues=mysql.read_query('select name,code from ev_band_info where status=1')
         r=[]
         for issue in issues:

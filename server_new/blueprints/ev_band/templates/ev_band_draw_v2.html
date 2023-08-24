@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QuantumGalaxy EV Band</title>
+</head>
+<body>
+    <h3>输入信息画一个理论走廊，给出起始和目标时间，以及两个时间点的市值上下沿（也可以根据行情生成默认起始位置）</h3>
+    <!-- ['start_date','target_date','start_upper','start_lower','target_upper','target_lower'] -->
+
+    <script>
+        function toggleVisibility() {
+            var checkbox = document.getElementById("use_default");
+            var startGroup = document.getElementById("start_group");
+            
+            if (checkbox.checked) {
+                // 如果复选框被选中，隐藏整行并设置默认值
+                startGroup.style.display = "none";
+                document.getElementById("start_upper").value = "0";
+                document.getElementById("start_lower").value = "0";
+            } else {
+                // 如果复选框未被选中，显示整行
+                startGroup.style.display = "block";
+                document.getElementById("start_upper").value = "";
+                document.getElementById("start_lower").value = "";
+            }
+        }
+        </script>
+        
+    <form action="" method='put'>
+        公司代码: <input type="text" name="code" >
+        <br>
+
+        公司名称: <input type="text" name="name" >
+        <br>
+
+        <label for="date-picker">起始时间</label>
+        <input type="date" id="date-picker" name="start_date">
+        <br>
+
+        <label for="date-picker">目标时间</label>
+        <input type="date" id="date-picker" name="target_date">
+        <br>
+        <input type="checkbox" id="use_default" name="use_default" value="yes" onclick="toggleVisibility()">
+        <label for="use_default">是否使用默认起始位置</label>
+        <br>
+        
+        <div id="start_group">
+            起始市值下沿: <input type="text" id="start_lower" name="start_lower" >
+            <br>
+        
+            起始市值上沿: <input type="text" id="start_upper" name="start_upper" >
+            <br>
+        </div>
+
+        目标市值上沿: <input type="text" name="target_lower" >
+        <br>
+
+        乐观市值下沿: <input type="text" name="target_upper" >
+        <br>
+
+        <input type="submit" value="提交">
+        </form>
+
+            
+            
+
+        
+
+        
+</body>
+</html>
