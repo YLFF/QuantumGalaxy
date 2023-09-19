@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>QuantumGalaxy EV Band</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+  </script>
 </head>
 <body>
+<h1>QuantumGalaxy EV Band</h1>
+
+
+
+
     <h3>输入信息画一个理论走廊，给出起始和目标时间，以及两个时间点的市值上下沿（也可以根据行情生成默认起始位置）</h3>
     <!-- ['start_date','target_date','start_upper','start_lower','target_upper','target_lower'] -->
 
@@ -29,32 +36,33 @@
         
     <form action="" method='put'>
         公司代码: <input type="text" name="code" >
-        <br>
+        
 
         公司名称: <input type="text" name="name" >
         <br>
 
         <label for="date-picker">起始时间</label>
         <input type="date" id="date-picker" name="start_date">
+        <input type="checkbox" id="use_default" name="use_default" value="yes" onclick="toggleVisibility()">
+        <label for="use_default">是否使用默认起始位置</label>
+        
+        
+        <div id="start_group">
+            起始市值下沿: <input type="text" id="start_lower" name="start_lower" >
+            
+        
+            起始市值上沿: <input type="text" id="start_upper" name="start_upper" >
+            
+        </div>
         <br>
 
         <label for="date-picker">目标时间</label>
         <input type="date" id="date-picker" name="target_date">
-        <br>
-        <input type="checkbox" id="use_default" name="use_default" value="yes" onclick="toggleVisibility()">
-        <label for="use_default">是否使用默认起始位置</label>
-        <br>
         
-        <div id="start_group">
-            起始市值下沿: <input type="text" id="start_lower" name="start_lower" >
-            <br>
         
-            起始市值上沿: <input type="text" id="start_upper" name="start_upper" >
-            <br>
-        </div>
 
         目标市值上沿: <input type="text" name="target_lower" >
-        <br>
+        
 
         乐观市值下沿: <input type="text" name="target_upper" >
         <br>

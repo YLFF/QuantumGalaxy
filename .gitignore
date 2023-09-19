@@ -18,4 +18,7 @@ dist
 build
 server_83/cookies/
 leet
+wzl
 *.ipynb_checkpoints
+*.sqlite
+logs

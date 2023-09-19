@@ -125,6 +125,7 @@ def meta_job(region,today=None):
         today=date.today()-timedelta(0) if region in {'CN','HK'} else date.today()-timedelta(days=1)
     number=process_job(region,today)
     week_day=today.weekday()
+    week_day=['mon','tue','wed','thu','fri','sat','sun'][week_day]
     info='processed %s records for region %s on  %s, %s'%(number,region,today.__format__("%Y-%m-%d"),week_day)
     
     if number<=500 and week_day in {0,1,2,3,4}:

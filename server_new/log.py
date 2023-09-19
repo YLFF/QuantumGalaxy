@@ -58,7 +58,8 @@ class Logger(object):
                 logging.getLogger('sqlalchemy'),
                 logging.getLogger('werkzeug'),
                 #logging.getLogger('login logger'),
-                logging.getLogger('user log')
+                logging.getLogger('user log'),
+                logging.getLogger('ev_band logger')
 
         ):
             logger.addHandler(file_handler)

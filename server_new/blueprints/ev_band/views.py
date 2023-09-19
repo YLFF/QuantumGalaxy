@@ -9,7 +9,8 @@ from flask import render_template,redirect,abort,session, template_rendered,url_
 import json 
 
 
-
+from utils import get_logger
+logger=get_logger('ev_band logger',)
 
 @ev_band.route('/',methods=['GET'])
 def redi_index():
@@ -67,8 +68,20 @@ def return_ev_band(code):
             return render_template('ev_band.html',summary=summary,json=js,num=num,info=band_info,model=model)
 
 from datetime import datetime
-
-
+def draw_band_index(code='000300.SH'):
+        '''return a front page with default code as 000300.SH
+        '''
+        worker=New_band2('000300.SH',{'start_date':'2022-01-01','target_date':'2023-12-31','start_upper':5100,'start_lower':4500,'target_upper':4500,'target_lower':3500,'name':'示例：沪深300'})
+        r=worker.work(model='price')
+        info=r.pop('info')
+        code=r.pop('code')
+        info['code']=code
+        print(len(r['source']))
+        info=[info]
+        data=[r]
+        print(info)
+        return render_template('ev_band_v2.html',data=data,info=info)
+        
 def draw_ev_band(code,summary,data):
         
         print(code,summary,data)
@@ -86,15 +99,18 @@ def draw_bandv2():
         if session['name'] not in ['王之霖','张凌宇']:
                 return abort(403,"YOU'VE REACHED A FORBIDDEN AREA!")
         code=request.args.get('code',None)
+        logger.info(request.args)
+        logger.info('processing')
         if not code:
-                return render_template('ev_band_draw_v2.html')
+                return draw_band_index()
         #zip request agrs to data, if key not in request args, return 400 error
         data={key:request.args.get(key,None) for key in ['start_date','target_date','start_upper','start_lower','target_upper','target_lower','name']}
         if not all(data.values()):
                 #give the none value key
                 return abort(400,f"输入有误，请返回,缺少{[key for key,value in data.items() if not value]}")
         try:
-                use_default_start=request.args.get('use_default',None)
+                use_default_start_arg=request.args.get('use_default',None)
+                use_default_start=use_default_start_arg=='true'
                 worker=New_band2(code,data,use_default_start=use_default_start)
                 r=worker.work()
                 if 'error info' in r.keys():
@@ -115,9 +131,54 @@ def draw_bandv2():
                 #print('here?')
                 #logger.error(e)
                 traceback_str = traceback.format_exc()
-                #logger.error(e)
-                #logger.error(traceback_str)
+                logger.error(e)
+                logger.error(traceback_str)
                 return abort(400,description='输入信息有误，请返回。   error info:'+str(e))
+                return jsonify({'error':str(e)},{'traceback':traceback_str})
+                #return abort(400,str(e))
+#open an api endpoint for draw_bandv2, return json dic data rather than html
+#data with a res code, 0 for success, 1 for error, when success, return data and info, when error, return error info
+@ev_band.route('/draw_bandv2_api',methods=['GET','POST','PUT'])
+def draw_bandv2_api():
+        if session['name'] not in ['王之霖','张凌宇']:
+                return jsonify({'res':1,'error':"YOU'VE REACHED A FORBIDDEN AREA!"})
+        logger.info(request.args)
+        logger.info('processing')
+        code=request.args.get('code',None)
+        if not code:
+                return jsonify({'res':2,'error':'code is None'})
+        #zip request agrs to data, if key not in request args, return 400 error
+        data={key:request.args.get(key,None) for key in ['start_date','target_date','start_upper','start_lower','target_upper','target_lower','name']}
+        if not all(data.values()):
+                #give the none value key
+                return jsonify({'res':3,'error':f"输入有误，请返回,缺少{[key for key,value in data.items() if not value]}"})
+        try:
+                use_default_start_str=request.args.get('use_default',None)
+                use_default_start=use_default_start_str=='true'
+                worker=New_band2(code,data,use_default_start=use_default_start)
+                r=worker.work()
+                if 'error info' in r.keys():
+                        return jsonify({'res':4,'error':r['error info']['error']})
+                info=r.pop('info')
+                code=r.pop('code')
+                info['code']=code
+                print(len(r['source']))
+                info=[info]
+                data=[r]
+                print(info)
+                #print(data)
+                #return jsonify(r)
+                return jsonify({'res':0,'data':data,'info':info})
+        # if exception, return traceback as json
+        except Exception as e:
+                import traceback
+                #print('here?')
+                #logger.error(e)
+                traceback_str = traceback.format_exc()
+                logger.error(e)
+                logger.error(traceback_str)
+                
+                return jsonify({'res':5,'error':'输入信息有误，请检查代码、市值信息。   error info:'+str(e)})
                 return jsonify({'error':str(e)},{'traceback':traceback_str})
                 #return abort(400,str(e))
 
