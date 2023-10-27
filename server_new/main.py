@@ -146,6 +146,6 @@ scheduler.init_app(app)
 scheduler.start()
 
 logger.init_app(app)
-
+# run in prod model
 app.run(host='0.0.0.0', port=82)
 

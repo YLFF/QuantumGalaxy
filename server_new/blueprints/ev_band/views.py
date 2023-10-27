@@ -71,7 +71,7 @@ from datetime import datetime
 def draw_band_index(code='000300.SH'):
         '''return a front page with default code as 000300.SH
         '''
-        worker=New_band2('000300.SH',{'start_date':'2022-01-01','target_date':'2023-12-31','start_upper':5100,'start_lower':4500,'target_upper':4500,'target_lower':3500,'name':'示例：沪深300'})
+        worker=New_band2('000300.SH',{'start_date':'2023-01-01','target_date':'2023-12-31','start_upper':5100,'start_lower':4500,'target_upper':4500,'target_lower':3500,'name':'示例：沪深300'})
         r=worker.work(model='price')
         info=r.pop('info')
         code=r.pop('code')
@@ -181,7 +181,6 @@ def draw_bandv2_api():
                 return jsonify({'res':5,'error':'输入信息有误，请检查代码、市值信息。   error info:'+str(e)})
                 return jsonify({'error':str(e)},{'traceback':traceback_str})
                 #return abort(400,str(e))
-
 @ev_band.route('/draw_band',methods=['GET','POST'])
 def draw_band():
     if session['name'] not in ['王之霖','张凌宇']:

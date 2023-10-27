@@ -555,6 +555,7 @@ class New_band2(Code2JS):
 
             stock_data=[float(p) for (d,p) in stock_data]
             if not self.check_ev_data(stock_data):
+                logger.error('市值模式check不通过')
                 raise ValueError('市值模式check不通过')
                 
             stock_data=geo_mean(stock_data)
