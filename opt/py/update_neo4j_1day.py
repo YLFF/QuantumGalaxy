@@ -28,9 +28,9 @@ logger=get_logger()
 
 
 def update_from_name():
-    neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    neo_uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
     neo_user = "QG_Editor"
-    neo_password = "editor"
+    neo_password = "qgeditor"
     neo=Neo4j(neo_uri,neo_user,neo_password)
     sql_host='localhost'
     sql_user='Local_Editor'
@@ -256,9 +256,9 @@ def update_from_code(neo):
 if __name__=='__main__':
     logger=get_logger(f_name='update_neo4j',fh=True)
     mysql=get_mysql()
-    neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    neo_uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
     neo_user = "QG_Editor"
-    neo_password = "editor"
+    neo_password = "qgeditor"
     neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
     uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
     user = "neo4j"

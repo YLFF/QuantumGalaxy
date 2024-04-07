@@ -137,7 +137,7 @@ def receive_message():
             url=chat_url,
             data={
                 "session_token":
-                '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',
+                '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',
                 "prompt": content
             })
         res_content = res_content.decode()

@@ -30,9 +30,9 @@ from server_new.utils import get_logger
 from .utils import *
 logger=get_logger(__name__)
 def get_neo():
-    uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
     user = "QG_Editor"
-    password = "editor"
+    password = "qgeditor"
     neo=Neo4j(uri,user,password)
     return neo
 def get_backbone_index():
@@ -45,9 +45,9 @@ class QGDiGraph(nx.DiGraph):
 class Backbone2JS():
     def __init__(self,name):
         self.name=name
-        uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+        uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
         user = "QG_Editor"
-        password = "editor"
+        password = "qgeditor"
         self.neo=Neo4j(uri,user,password)
         host='localhost'
         user='Local_Editor'
@@ -58,9 +58,9 @@ class Backbone2JS():
     def _close_neo(self):
         self.neo.close()
     def _restart_neo(self):
-        uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+        uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
         user = "QG_Editor"
-        password = "editor"
+        password = "qgeditor"
         self.neo=Neo4j(uri,user,password)
         return self.neo
     def _get_backbone_from_neo(self):

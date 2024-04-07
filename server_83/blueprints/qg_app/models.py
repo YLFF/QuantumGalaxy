@@ -13,9 +13,9 @@ def get_neo():
     neo_user = "neo4j"
     neo_password = "QuantumGalaxy"
 
-    '''neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    '''neo_uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
     neo_user = "QG_Editor"
-    neo_password = "editor"'''
+    neo_password = "qgeditor"'''
 
 
     neo=Neo4j(neo_uri,neo_user,neo_password)

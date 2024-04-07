@@ -40,9 +40,9 @@ logger=get_logger()
 
 
 def update_from_code_1day():
-    neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    neo_uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
     neo_user = "QG_Editor"
-    neo_password = "editor"
+    neo_password = "qgeditor"
     neo=Neo4j(neo_uri,neo_user,neo_password)
     sql_host='localhost'
     sql_user='Local_Editor'
@@ -133,7 +133,7 @@ def update_from_code_1day():
 
 
 def update_from_code(neo):
-    #neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    #neo_uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
     #neo_user = "QG_Editor"
     #neo_password = "editor"
     #neo=Neo4j(neo_uri,neo_user,neo_password)

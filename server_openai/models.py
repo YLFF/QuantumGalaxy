@@ -25,20 +25,38 @@ def handle_res(res_func):
         else:
             return {'code':-2,'msg':'后台gpt服务器返回出错：%s'%res.status_code}
     return wrapper
+def choose_host():
+    '''try ping http://43.153.23.232:81/test ,if good, use this host
+    otherwise try localhost http://localhost:84/test
+    
+    
+    '''
+    r=requests.get('http://43.153.23.232:81/test',)
+    r=r.json()
+    if r['code']==0:
+        #us host is ok, return url
+        print('use us host')
+        return 'http://43.153.23.232:81'
+    else:
+        #use local
+        print('use local host')
+        return 'http://82.156.248.152:84/localapi'
 @handle_res
 def base_gpt(message):
-    
-    r=requests.post('http://43.153.23.232:81/chat',json=json.dumps({'message':message}))
+    url=choose_host()+'/chat'
+    r=requests.post(url,json=json.dumps({'message':message}))
     return r
 
 @handle_res
-def cust_gpt(messages):        
-    r=requests.post('http://43.153.23.232:81/cust_chat',json=json.dumps({'messages':messages}))
+def cust_gpt(messages):     
+    url=choose_host()+'/cust_chat'   
+    r=requests.post(url,json=json.dumps({'messages':messages}))
     return r
 
 @handle_res
 def compltion(prompt):
-    r=requests.post('http://43.153.23.232:81/completion',json=json.dumps({'prompt':prompt}))
+    url=choose_host()+'/completion'
+    r=requests.post(url,json=json.dumps({'prompt':prompt}))
     return r
 
 def get_clue(code):
@@ -559,19 +577,21 @@ class GPTAPP():
     
     @handle_res
     def base_gpt(self,message):
-        
-        r=requests.post('http://43.153.23.232:81/chat',json=json.dumps({'message':message}))
+        url=choose_host()+'/chat'
+        r=requests.post(url,json=json.dumps({'message':message}))
         return r
 
     @handle_res
     def cust_gpt(self,messages):     
         #base={}   
-        r=requests.post('http://43.153.23.232:81/cust_chat',json=json.dumps({'messages':messages}))
+        url=choose_host()+'/cust_chat'
+        r=requests.post(url,json=json.dumps({'messages':messages}))
         return r
     
     @handle_res
     def compltion(self,prompt):
-        r=requests.post('http://43.153.23.232:81/completion',json=json.dumps({'prompt':prompt}))
+        url=choose_host()+'/completion'
+        r=requests.post(url,json=json.dumps({'prompt':prompt}))
         return r
     def insert_question(self,question):
         print('预处理')

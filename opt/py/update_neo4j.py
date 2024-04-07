@@ -15,11 +15,8 @@ from QGI.logger import get_logger
 
 
 
-def update_from_name():
-    neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
-    neo_user = "QG_Editor"
-    neo_password = "editor"
-    neo=Neo4j(neo_uri,neo_user,neo_password)
+def update_from_name(neo):
+    
     sql_host='localhost'
     sql_user='Local_Editor'
     sql_password='QuantumGalaxy'
@@ -44,9 +41,9 @@ def update_from_name():
 
 
 def update_from_code_1day():
-    neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    neo_uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
     neo_user = "QG_Editor"
-    neo_password = "editor"
+    neo_password = "qgeditor"
     neo=Neo4j(neo_uri,neo_user,neo_password)
     sql_host='localhost'
     sql_user='Local_Editor'
@@ -271,18 +268,22 @@ def update_from_code(neo):
 if __name__=='__main__':
     logger=get_logger(f_name='update_neo4j',fh=True)
     mysql=get_mysql()
-    neo_uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    neo_uri = "neo4j+ssc://e37a9393.databases.neo4j.io"
     neo_user = "QG_Editor"
-    neo_password = "editor"
+    neo_password = "qgeditor"
     neo_atlas=Neo4j(neo_uri,neo_user,neo_password)
     uri = "neo4j+ssc://534ea9b7.databases.neo4j.io:7687"
     user = "neo4j"
     password = "QuantumGalaxy"
     neo_nova=Neo4j(uri,user,password)
+    if datetime.today().weekday()==0:
+        #update neo_atlas once a week
+        update_from_code(neo_atlas)
     #update_from_code(neo_atlas)
-    update_from_code(neo_nova)
-    update_clue_from_jira(neo_nova)
-    neo_nova.close()
+    update_from_code(neo_atlas)
+    #update_from_code(neo_nova)
+    #update_clue_from_jira(neo_nova)
+    neo_nova.close() 
 
 
 

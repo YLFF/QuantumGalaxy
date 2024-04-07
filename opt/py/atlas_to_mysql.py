@@ -27,9 +27,9 @@ def get_logger():
 logger=logging.getLogger()
 
 
-uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
 user = "QG_Editor"
-password = "editor"
+password = "qgeditor"
 
 
 neo=Neo4j(uri,user,password)

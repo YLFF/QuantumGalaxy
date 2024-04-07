@@ -20,9 +20,9 @@ def reset_mysql():
     mysql=get_mysql(database='web_server')
     mysql.write_query('delete from backbone_edges')
     mysql.write_query('delete from backbone_nodes')
-    uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+    uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
     user = "QG_Editor"
-    password = "editor"
+    password = "qgeditor"
     neo=Neo4j(uri,user,password)
     nodes=neo.read_query(cypher='match (n) where n.backbone contains "" \
         return distinct n.name,labels(n),n.backbone,n.code \

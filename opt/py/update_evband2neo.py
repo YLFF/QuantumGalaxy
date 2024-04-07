@@ -14,9 +14,9 @@ from QGI.logger import get_logger
 
 mysql=get_mysql('web_server')
 
-uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+uri = "neo4j+ssc://0789bfae9.databases.neo4j.io"
 user = "QG_Editor"
-password = "editor"
+password = "qgeditor"
 neo=Neo4j(uri,user,password)
 codes=mysql.read_query('select code from ev_band_info where status=1')
 logger=get_logger('evband2neo')

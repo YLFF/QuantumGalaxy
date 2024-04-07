@@ -19,7 +19,7 @@ feishu=FeishuAPI()
 from config import args
 from models import *
 from flask_cors import CORS
-
+from blueprints.localapi import localapi
 from jira import JIRA
 
 from flask import request, render_template, redirect, abort, url_for,session,Response,jsonify
@@ -34,6 +34,8 @@ app.config["JSON_AS_ASCII"] = False
 app.config['SCHEDULER_API_ENABLED'] = True
 app.config["SECRET_KEY"] = "core-quantumgalaxy"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=24)
+app.register_blueprint(localapi)
+
 @app.before_request
 def limit_remote_addr():
 
@@ -96,9 +98,15 @@ def test():
         r=requests.get('http://43.153.23.232:81/test',timeout=(5, 10))
         r=r.json()
         if r['code']==0:
-            r['msg']='ALL OK'
+            r['msg']='us server ALL OK'
     except:
-        r={'code':-2,'msg':'US SERVER DOWN'}
+        try:
+            r=requests.get('http://82.156.248.152:84/localapi/test',timeout=(5, 10))
+            r=r.json()
+            if r['code']==0:
+                r['msg']='local server ALL OK'
+        except:
+            r={'code':-2,'msg':'all SERVER DOWN'}
     print(r)
     return jsonify(r)
 @app.route('/test1',methods=['get'])

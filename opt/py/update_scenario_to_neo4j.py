@@ -9,9 +9,9 @@ from QGI.neoapi import Neo4j
 import time
 import numpy as np
 
-uri = "neo4j+ssc://08ef0a79.databases.neo4j.io"
+uri = "neo4j+ssc://789bfae9.databases.neo4j.io"
 user = "QG_Editor"
-password = "editor"
+password = "qgeditor"
 
 
 neo=Neo4j(uri,user,password)
